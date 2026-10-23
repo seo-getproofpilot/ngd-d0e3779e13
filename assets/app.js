@@ -1,4 +1,4 @@
-import { mountHero, STAGES } from './hero3d.js';
+import { mountSequence, STAGES } from './seq.js';
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -21,7 +21,7 @@ menu.addEventListener('click', e => { if (e.target.closest('a')) burger.click();
 
 /* ---------- hero: 3D build tied to scroll ---------- */
 const hero = $('.hero'), steps = $$('.build-list li');
-const NAMES = ['Frame', 'Hang', 'Tape', 'Mud', 'Level 5'];
+const NAMES = ['Hang', 'Fasten', 'Tape', 'Mud', 'Level 5'];
 const setStage = s => {
   $('.hud-stage').textContent = `${String(s + 1).padStart(2, '0')} · ${NAMES[s]}`;
   steps.forEach((li, i) => { li.classList.toggle('on', i === s); li.classList.toggle('done', i < s); });
@@ -30,9 +30,9 @@ const onProgress = p => {
   $('.hud-tape').style.setProperty('--p', p);
   steps.forEach((li, i) => li.style.setProperty('--f', clamp((p - STAGES[i]) / (STAGES[i + 1] - STAGES[i]))));
 };
-let api = null;
-try { api = mountHero($('.hero-canvas'), { onStage: setStage, onProgress, reduced }); } catch (e) { console.warn(e); }
-if (!api) document.documentElement.classList.add('no-gl');
+const load = $('.hero-load');
+const api = mountSequence($('.hero-canvas'), { onStage: setStage, onProgress, reduced,
+  onLoad: f => { load.style.setProperty('--l', f); if (f >= 1) load.classList.add('done'); } });
 
 /* ---------- finish levels: sheets stack as you scroll ---------- */
 const LV = [
@@ -81,34 +81,48 @@ function runFrame() {
   $$('.rs', run).forEach((el, i) => el.classList.toggle('in', p > (narrow ? i / 4 : i * .22 + .05)));
 }
 
-/* ---------- builders: production board fills with scroll ---------- */
-const grid = $('.board-grid'), units = [];
-['A', 'B', 'C', 'D'].forEach(b => {
-  const bl = document.createElement('div'); bl.className = 'bldg';
-  bl.innerHTML = `<span class="bldg-l">BLDG ${b}</span><div class="units"></div>`;
-  const u = $('.units', bl);
-  for (let i = 0; i < 50; i++) { const c = document.createElement('i'); c.className = 'u'; u.appendChild(c); units.push(c); }
-  grid.appendChild(bl);
-});
-// a believable order: buildings overlap, floors go bottom-up
-const order = units.map((u, i) => {
-  const b = Math.floor(i / 50), k = i % 50, floor = 9 - Math.floor(k / 5);
-  return { u, t: b * .16 + floor * .055 + (k % 5) * .008 + Math.random() * .02 };
-}).sort((x, y) => x.t - y.t);
-const bpSec = $('.bp'), cH = $('.c-h'), cT = $('.c-t'), cF = $('.c-f'), cN = $('.board-n b');
-function boardFrame() {
-  const r = bpSec.getBoundingClientRect();
-  const p = clamp((innerHeight - r.top) / (r.height * .9 + innerHeight * .2));
-  let h = 0, t = 0, f = 0;
-  order.forEach((o, i) => {
-    const k = i / order.length;
-    const st = p > k * .55 + .45 ? 3 : p > k * .55 + .25 ? 2 : p > k * .55 ? 1 : 0;
-    o.u.className = 'u' + (st === 1 ? ' h' : st === 2 ? ' t' : st === 3 ? ' f' : '');
-    if (st >= 1) h++; if (st >= 2) t++; if (st >= 3) f++;
+/* ---------- builders: floors move through the trades as you scroll ---------- */
+// production climbs the building: floor 1 is hung first, so mid-scroll every floor sits at a different stage
+const FLOW = [['Hanging', '#d9f23c'], ['Taping', '#e6cf95'], ['Finishing', '#ffffff'], ['Paint-ready', '#7fd6a2']];
+const floorsEl = $$('.fl'), sched = $('.sched');
+function siteFrame() {
+  const r = $('.site-photo').getBoundingClientRect();
+  const phase = clamp((innerHeight - r.top) / (r.height + innerHeight)) * 6.3;   // centred photo = every floor at a different stage
+  floorsEl.forEach((fl, i) => {
+    const k = 3 - i;                                                  // .fl order is FL 4 down to FL 1
+    const st = Math.min(3, Math.floor(phase - k * .9));
+    fl.classList.toggle('on', st >= 0);
+    if (st >= 0) { fl.style.setProperty('--c', FLOW[st][1]); $('em', fl).textContent = FLOW[st][0]; }
   });
-  cH.textContent = h; cT.textContent = t; cF.textContent = f; cN.textContent = h;
+  sched.style.setProperty('--grow', clamp((innerHeight * .98 - sched.getBoundingClientRect().top) / 140));
 }
-$('.tb-date').textContent = new Date().toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: '2-digit' });
+
+/* ---------- services: cards slide in from the right and stack ---------- */
+const svcTrack = $('.svc-track'), cards = $$('.sc'), svcIdx = $$('.svc-index li');
+function servicesFrame() {
+  const deck = $('.svc-deck'), Wd = deck.clientWidth, spine = parseFloat(getComputedStyle(deck).getPropertyValue('--spine')) || 58;
+  const a = clamp(sectionProgress(svcTrack) * 6.3 - .25, 0, 5);
+  cards.forEach((c, i) => {
+    const t = i === 0 ? 1 : ease(clamp(a - i + 1));
+    const home = i * spine, start = Wd + 40;
+    c.style.transform = `translateX(${start + (home - start) * t}px)`;
+    c.style.zIndex = i;
+    c.style.setProperty('--sp', a > i + .35 ? 1 : 0);                 // once covered, the spine label shows
+  });
+  const cur = Math.round(a);
+  svcIdx.forEach((li, i) => { li.classList.toggle('on', i === cur); li.classList.toggle('done', i < cur); });
+}
+
+/* ---------- texture lab: a work light you move; drifts on its own when you don't ---------- */
+$$('.lab-img').forEach((el, k) => {
+  let held = false, live = false, raf = 0;
+  const set = (x, y) => { el.style.setProperty('--lx', x + '%'); el.style.setProperty('--ly', y + '%'); };
+  el.addEventListener('pointermove', e => { const r = el.getBoundingClientRect(); held = true; set((e.clientX - r.left) / r.width * 100, (e.clientY - r.top) / r.height * 100); });
+  el.addEventListener('pointerleave', () => { held = false; });
+  const drift = t => { if (!live) return; raf = requestAnimationFrame(drift); if (held || reduced) return;
+    const s = t / 1000 + k * 1.7; set(50 + Math.sin(s * .6) * 34, 46 + Math.sin(s * .9 + k) * 30); };
+  new IntersectionObserver(([e]) => { live = e.isIntersecting; cancelAnimationFrame(raf); if (live) raf = requestAnimationFrame(drift); }).observe(el);
+});
 
 /* ---------- one scroll loop ---------- */
 const callbar = $('.callbar');
@@ -119,7 +133,7 @@ function onScroll() {
   api && api.setProgress(p);
   hero.classList.toggle('moved', scrollY > 40);
   callbar.classList.toggle('on', scrollY > innerHeight * .6);
-  levelsFrame(); runFrame(); boardFrame();
+  levelsFrame(); runFrame(); siteFrame(); servicesFrame();
 }
 addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(onScroll); } }, { passive: true });
 addEventListener('resize', onScroll);
@@ -131,36 +145,9 @@ const io = new IntersectionObserver(es => es.forEach(e => {
 }), { rootMargin: '0px 0px -18% 0px' });
 $$('.permit, .cred, .bid').forEach(el => io.observe(el));
 
-/* ---------- scopes: coverflow carousel ---------- */
-(function flow() {
-  const box = $('.flow'), cards = $$('.scard', box), n = cards.length, count = $('.flow-count b');
-  let cur = 0, timer = null, hover = false;
-  const draw = () => {
-    cards.forEach((c, i) => {
-      let o = i - cur; if (o > n / 2) o -= n; if (o < -n / 2) o += n;
-      c.style.setProperty('--o', o); c.style.setProperty('--a', Math.abs(o));
-      c.classList.toggle('on', o === 0); c.classList.toggle('far', Math.abs(o) > 2);
-      c.setAttribute('aria-hidden', o !== 0);
-      $$('a', c).forEach(a => a.tabIndex = o === 0 ? 0 : -1);
-    });
-    count.textContent = String(cur + 1).padStart(2, '0');
-  };
-  const go = d => { cur = (cur + d + n) % n; draw(); };
-  const auto = () => { clearInterval(timer); if (!reduced) timer = setInterval(() => { if (!hover && !document.hidden) go(1); }, 4200); };
-  $('.flow-next').addEventListener('click', () => { go(1); auto(); });
-  $('.flow-prev').addEventListener('click', () => { go(-1); auto(); });
-  cards.forEach((c, i) => c.addEventListener('click', e => { if (!c.classList.contains('on')) { e.preventDefault(); let o = i - cur; if (o > n / 2) o -= n; if (o < -n / 2) o += n; go(o); auto(); } }));
-  box.addEventListener('pointerenter', () => hover = true); box.addEventListener('pointerleave', () => hover = false);
-  box.addEventListener('keydown', e => { if (e.key === 'ArrowRight') { go(1); auto(); } if (e.key === 'ArrowLeft') { go(-1); auto(); } });
-  let sx = null;
-  box.addEventListener('pointerdown', e => { sx = e.clientX; });
-  box.addEventListener('pointerup', e => { if (sx === null) return; const dx = e.clientX - sx; sx = null; if (Math.abs(dx) > 40) { go(dx < 0 ? 1 : -1); auto(); } });
-  draw(); auto();
-})();
-
 /* ---------- crews: panels light up on their own, in random order ---------- */
 (function crews() {
-  const panels = $$('.cp'), DUR = 3600;
+  const panels = $$('.cp'), DUR = 2200;
   panels.forEach(p => { const b = document.createElement('i'); b.className = 'cp-bar'; p.appendChild(b); p.style.setProperty('--dur', DUR + 'ms'); });
   let cur = -1, timer = null, held = false, bag = [];
   const next = () => {

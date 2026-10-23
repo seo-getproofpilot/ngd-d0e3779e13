@@ -11,8 +11,8 @@
 <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/site.css?v=p3e78d9d6">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Barlow+Semi+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css?v=pc2e0b2cc">
 </head>
 <body>
 
@@ -67,7 +67,7 @@
 
 <main id="main">
 
-<!-- ============ HERO: a live build, copy beside it, never on top of it ============ -->
+<!-- ============ HERO: first-person footage, scrubbed by scroll ============ -->
 <section class="hero" id="top" aria-label="Next Gen Drywall">
   <div class="hero-stage">
     <div class="hero-copy">
@@ -83,24 +83,22 @@
         <a class="hero-phone" href="#" data-preview-off="1"><svg class="ic"><use href="#i-phone"/></svg>480-799-8173</a>
       </div>
       <ol class="build-list" aria-label="How a wall gets built">
-        <li data-s="0"><svg class="ic"><use href="#i-stud"/></svg><b>Frame</b><span>Studs 16 in on center, laser at 48 in</span></li>
-        <li data-s="1"><svg class="ic"><use href="#i-board"/></svg><b>Hang</b><span>5/8 in board, screws just under the paper</span></li>
+        <li data-s="0"><svg class="ic"><use href="#i-board"/></svg><b>Hang</b><span>Sheet lifted onto studs 16 in on center</span></li>
+        <li data-s="1"><svg class="ic"><use href="#i-screwgun"/></svg><b>Fasten</b><span>Screws set just under the paper</span></li>
         <li data-s="2"><svg class="ic"><use href="#i-tape"/></svg><b>Tape</b><span>Paper tape bedded over every seam</span></li>
-        <li data-s="3"><svg class="ic"><use href="#i-pan"/></svg><b>Mud</b><span>Three coats, each feathered wider</span></li>
+        <li data-s="3"><svg class="ic"><use href="#i-pan"/></svg><b>Mud</b><span>Coats feathered wider every pass</span></li>
         <li data-s="4"><svg class="ic"><use href="#i-knife"/></svg><b>Level 5</b><span>A skim over the whole face</span></li>
       </ol>
     </div>
 
     <div class="hero-view">
-      <canvas class="hero-canvas" aria-label="3D animation of a drywall crew's work: framing, hanging, taping, mudding and a Level 5 skim"></canvas>
-      <div class="hero-fallback" aria-hidden="true"></div>
+      <canvas class="hero-canvas" aria-label="First-person footage of drywall being hung, taped, mudded and skimmed to a Level 5 finish"></canvas>
+      <div class="hero-load" aria-hidden="true"><i></i></div>
       <div class="view-hud" aria-hidden="true">
-        <span class="hud-tl">Wall A · 16'-0" × 8'-0" · 5/8" Type X</span>
-        <span class="hud-tr"><i class="rec"></i>Live build</span>
-        <div class="hud-tape"><div class="hud-ticks"></div><div class="hud-fill"></div><span class="hud-stage">01 · Frame</span></div>
+        <span class="hud-tl">Your view · Wall A</span>
+        <div class="hud-tape"><div class="hud-ticks"></div><div class="hud-fill"></div><span class="hud-stage">01 · Hang</span></div>
       </div>
-      <span class="view-corners" aria-hidden="true"></span>
-      <span class="scroll-hint" aria-hidden="true">Scroll to build</span>
+      <span class="scroll-hint" aria-hidden="true">Scroll to pick up the board</span>
     </div>
   </div>
 </section>
@@ -123,6 +121,30 @@
       <span><svg class="ic"><use href="#i-clock"/></svg>On-schedule execution</span>
       <span><svg class="ic"><use href="#i-fire"/></svg>Fire-rated assemblies</span>
       <span><svg class="ic"><use href="#i-shield"/></svg>ROC-334040 · licensed &amp; insured</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SERVICES: cards slide in left to right and stack ============ -->
+<section class="svc" id="scope">
+  <div class="svc-track">
+    <div class="svc-pin">
+      <div class="svc-info">
+        <p class="eyebrow">Services</p>
+        <h2 class="h2">Six scopes.<br>One crew answers for all of it.</h2>
+        <p class="lede">We self-perform every scope item. No subbing out the taping, no finger-pointing between hangers and finishers.</p>
+        <ol class="svc-index">
+          <li>Installation</li><li>Commercial</li><li>Residential</li><li>Taping</li><li>Finishing</li><li>Repair</li>
+        </ol>
+      </div>
+      <div class="svc-deck">
+        <article class="sc"><div class="sc-spine"><b>01</b><span>Installation</span></div><div class="sc-photo"><img src="assets/img/job-three-lift.webp" alt="Three Next Gen hangers lifting a ceiling board"></div><div class="sc-body"><span class="sc-n">01 · Residential &amp; commercial</span><h3>Drywall installation</h3><p>Straight boards, tight joints, clean screw patterns. Single rooms, custom homes and full multifamily buildings, with the schedule protected.</p><a class="sc-go" href="#bid">Bid this scope<svg class="ic"><use href="#i-arrow"/></svg></a></div></article>
+        <article class="sc"><div class="sc-spine"><b>02</b><span>Commercial</span></div><div class="sc-photo"><img src="assets/img/job-measuring.webp" alt="Next Gen crew hanging ceilings across a large open floor"></div><div class="sc-body"><span class="sc-n">02 · GCs &amp; developers</span><h3>Commercial drywall</h3><p>Offices, suites, retail and multifamily. We stay ahead of the other trades, hit inspection dates and keep your critical path moving.</p><a class="sc-go" href="#bid">Bid this scope<svg class="ic"><use href="#i-arrow"/></svg></a></div></article>
+        <article class="sc"><div class="sc-spine"><b>03</b><span>Residential</span></div><div class="sc-photo"><img src="assets/img/job-team-floor.webp" alt="Next Gen crew working on stilts in a home interior"></div><div class="sc-body"><span class="sc-n">03 · Homeowners &amp; builders</span><h3>Residential drywall</h3><p>Custom homes, remodels, garage conversions and casitas. Commercial crew discipline in the house you actually live in.</p><a class="sc-go" href="#bid">Bid this scope<svg class="ic"><use href="#i-arrow"/></svg></a></div></article>
+        <article class="sc"><div class="sc-spine"><b>04</b><span>Taping</span></div><div class="sc-photo"><img src="assets/img/job-stilts-tall.webp" alt="Two Next Gen finishers on stilts taping a ceiling joint"></div><div class="sc-body"><span class="sc-n">04 · Where problems start</span><h3>Drywall taping</h3><p>Flat joints, straight corners and feathered seams that stay invisible under paint. We treat taping like the main event.</p><a class="sc-go" href="#bid">Bid this scope<svg class="ic"><use href="#i-arrow"/></svg></a></div></article>
+        <article class="sc"><div class="sc-spine"><b>05</b><span>Finishing</span></div><div class="sc-photo"><img src="assets/img/job-stilts-wide.webp" alt="Next Gen finishers on stilts in a framed interior"></div><div class="sc-body"><span class="sc-n">05 · The part everyone sees</span><h3>Drywall finishing</h3><p>Orange peel, knockdown, skip trowel and true Level 5 smooth. In a great room with low evening light, the finish level is what saves the wall.</p><a class="sc-go" href="#bid">Bid this scope<svg class="ic"><use href="#i-arrow"/></svg></a></div></article>
+        <article class="sc"><div class="sc-spine"><b>06</b><span>Repair</span></div><div class="sc-photo"><img src="assets/img/job-screwgun.webp" alt="Next Gen installer driving screws into a ceiling board"></div><div class="sc-body"><span class="sc-n">06 · Homes &amp; rentals</span><h3>Drywall repair</h3><p>Settling cracks, doorknob holes and water-stained ceilings, matched to your texture so the repair disappears into the wall.</p><a class="sc-go" href="#bid">Bid this scope<svg class="ic"><use href="#i-arrow"/></svg></a></div></article>
+      </div>
     </div>
   </div>
 </section>
@@ -160,84 +182,23 @@
     </div>
   </div>
 
-  <div class="wrap tex">
-    <div class="tex-head">
-      <h3 class="h3">Already have a texture? We match it.</h3>
-      <p>Orange peel, knockdown and skip trowel, matched to the wall you have so the repair disappears. Hover a sample to drop the sun on it.</p>
-    </div>
-    <div class="tex-grid">
-      <figure class="tx"><div class="tx-img"><img src="assets/img/tex-orange-peel-flat.webp" alt="" loading="lazy"><img class="rake" src="assets/img/tex-orange-peel-rake.webp" alt="" loading="lazy"></div><figcaption>Orange peel</figcaption></figure>
-      <figure class="tx"><div class="tx-img"><img src="assets/img/tex-knockdown-flat.webp" alt="" loading="lazy"><img class="rake" src="assets/img/tex-knockdown-rake.webp" alt="" loading="lazy"></div><figcaption>Knockdown</figcaption></figure>
-      <figure class="tx"><div class="tx-img"><img src="assets/img/tex-skip-trowel-flat.webp" alt="" loading="lazy"><img class="rake" src="assets/img/tex-skip-trowel-rake.webp" alt="" loading="lazy"></div><figcaption>Skip trowel</figcaption></figure>
-      <figure class="tx"><div class="tx-img"><img src="assets/img/tex-smooth-flat.webp" alt="" loading="lazy"><img class="rake" src="assets/img/tex-smooth-rake.webp" alt="" loading="lazy"></div><figcaption>Smooth</figcaption></figure>
-    </div>
-  </div>
 </section>
 
-<!-- ============ SCOPES: a carousel of board faces ============ -->
-<section class="scope" id="scope">
-  <div class="wrap scope-head">
-    <div>
-      <p class="eyebrow eyebrow-dark">Services</p>
-      <h2 class="h2">Six scopes.<br>One crew answers for all of it.</h2>
+<!-- ============ TEXTURE LAB: a work light in a dark room ============ -->
+<section class="lab" id="textures">
+  <div class="wrap">
+    <div class="lab-head">
+      <div>
+        <p class="eyebrow eyebrow-dark">Texture match</p>
+        <h2 class="h2">Already have a texture?<br>We match it.</h2>
+      </div>
+      <p class="lede">Low light is how we check a repair before we call it done. Move your light across each sample.</p>
     </div>
-    <p class="lede">We self-perform every scope item. No subbing out the taping, no finger-pointing between hangers and finishers.</p>
-  </div>
-  <div class="flow" tabindex="0" aria-roledescription="carousel" aria-label="Services">
-    <div class="flow-track">
-      <article class="scard" aria-roledescription="slide" aria-label="1 of 6">
-        <div class="sc-print">NEXT GEN DRYWALL · SCOPE 01 · RESIDENTIAL · COMMERCIAL</div>
-        <div class="sc-ic"><svg class="ic"><use href="#i-board"/></svg></div>
-        <h3>Drywall installation</h3>
-        <p>Straight boards, tight joints, clean screw patterns. Single rooms, custom homes and full multifamily buildings.</p>
-        <ul><li>Walls &amp; ceilings</li><li>Fire-rated Type X</li><li>Schedule protected</li></ul>
-        <a class="sc-go" href="#bid">Bid this scope<svg class="ic"><use href="#i-arrow"/></svg></a>
-      </article>
-      <article class="scard" aria-roledescription="slide" aria-label="2 of 6">
-        <div class="sc-print">NEXT GEN DRYWALL · SCOPE 02 · GCs · DEVELOPERS</div>
-        <div class="sc-ic"><svg class="ic"><use href="#i-building"/></svg></div>
-        <h3>Commercial drywall</h3>
-        <p>Offices, suites, retail and multifamily. We stay ahead of the other trades and hit inspection dates.</p>
-        <ul><li>Tenant improvement</li><li>Multifamily</li><li>Critical path kept</li></ul>
-        <a class="sc-go" href="#bid">Bid this scope<svg class="ic"><use href="#i-arrow"/></svg></a>
-      </article>
-      <article class="scard" aria-roledescription="slide" aria-label="3 of 6">
-        <div class="sc-print">NEXT GEN DRYWALL · SCOPE 03 · HOMEOWNERS · BUILDERS</div>
-        <div class="sc-ic"><svg class="ic"><use href="#i-house"/></svg></div>
-        <h3>Residential drywall</h3>
-        <p>Custom homes, remodels, garage conversions and casitas. Commercial crew discipline in the house you live in.</p>
-        <ul><li>Occupied homes</li><li>Additions &amp; casitas</li><li>Site kept clean</li></ul>
-        <a class="sc-go" href="#bid">Bid this scope<svg class="ic"><use href="#i-arrow"/></svg></a>
-      </article>
-      <article class="scard" aria-roledescription="slide" aria-label="4 of 6">
-        <div class="sc-print">NEXT GEN DRYWALL · SCOPE 04 · WHERE PROBLEMS START</div>
-        <div class="sc-ic"><svg class="ic"><use href="#i-tape"/></svg></div>
-        <h3>Drywall taping</h3>
-        <p>Flat joints, straight corners and feathered seams that stay invisible under paint. We treat taping like the main event.</p>
-        <ul><li>Paper &amp; mesh</li><li>Corner bead</li><li>Invisible seams</li></ul>
-        <a class="sc-go" href="#bid">Bid this scope<svg class="ic"><use href="#i-arrow"/></svg></a>
-      </article>
-      <article class="scard" aria-roledescription="slide" aria-label="5 of 6">
-        <div class="sc-print">NEXT GEN DRYWALL · SCOPE 05 · THE PART EVERYONE SEES</div>
-        <div class="sc-ic"><svg class="ic"><use href="#i-knife"/></svg></div>
-        <h3>Drywall finishing</h3>
-        <p>Orange peel, knockdown, skip trowel and true Level 5 smooth. The finish level is what saves a wall in low light.</p>
-        <ul><li>Level 3, 4 &amp; 5</li><li>Textures</li><li>Prime-ready</li></ul>
-        <a class="sc-go" href="#bid">Bid this scope<svg class="ic"><use href="#i-arrow"/></svg></a>
-      </article>
-      <article class="scard" aria-roledescription="slide" aria-label="6 of 6">
-        <div class="sc-print">NEXT GEN DRYWALL · SCOPE 06 · HOMES · RENTALS</div>
-        <div class="sc-ic"><svg class="ic"><use href="#i-patch"/></svg></div>
-        <h3>Drywall repair</h3>
-        <p>Settling cracks, doorknob holes and water-stained ceilings, matched to your texture so the repair disappears.</p>
-        <ul><li>Water damage</li><li>Texture match</li><li>Rental turns</li></ul>
-        <a class="sc-go" href="#bid">Bid this scope<svg class="ic"><use href="#i-arrow"/></svg></a>
-      </article>
-    </div>
-    <div class="flow-ctl">
-      <button class="flow-prev" aria-label="Previous service"><svg class="ic"><use href="#i-arrow"/></svg></button>
-      <span class="flow-count"><b>01</b> / 06</span>
-      <button class="flow-next" aria-label="Next service"><svg class="ic"><use href="#i-arrow"/></svg></button>
+    <div class="lab-grid">
+      <figure class="lab-p"><div class="lab-img"><img src="assets/img/tex-orange-peel-flat.webp" alt="" loading="lazy"><img class="rake" src="assets/img/tex-orange-peel-rake.webp" alt="" loading="lazy"><i class="beam"></i></div><figcaption><b>Orange peel</b><span>Fine spatter, rolled smooth</span></figcaption></figure>
+      <figure class="lab-p"><div class="lab-img"><img src="assets/img/tex-knockdown-flat.webp" alt="" loading="lazy"><img class="rake" src="assets/img/tex-knockdown-rake.webp" alt="" loading="lazy"><i class="beam"></i></div><figcaption><b>Knockdown</b><span>Spatter, knocked flat with a knife</span></figcaption></figure>
+      <figure class="lab-p"><div class="lab-img"><img src="assets/img/tex-skip-trowel-flat.webp" alt="" loading="lazy"><img class="rake" src="assets/img/tex-skip-trowel-rake.webp" alt="" loading="lazy"><i class="beam"></i></div><figcaption><b>Skip trowel</b><span>Hand-troweled, every wall unique</span></figcaption></figure>
+      <figure class="lab-p"><div class="lab-img"><img src="assets/img/tex-smooth-flat.webp" alt="" loading="lazy"><img class="rake" src="assets/img/tex-smooth-rake.webp" alt="" loading="lazy"><i class="beam"></i></div><figcaption><b>Smooth</b><span>Level 5, nothing to hide behind</span></figcaption></figure>
     </div>
   </div>
 </section>
@@ -280,7 +241,7 @@
       <p class="lede">The same four steps on a hallway patch and a 200-unit build, because both fail the same way: rushed prep, sloppy taping, missed dates.</p>
     </div>
     <div class="run">
-      <div class="run-tape" aria-hidden="true"><i></i></div>
+      <div class="run-tape" aria-hidden="true"><i></i><b class="run-mud"></b><svg class="run-knife" viewBox="0 0 90 120"><path d="M8 112h74l-10-46H18z" fill="#d3d9de" stroke="#7c858c" stroke-width="2"/><path d="M33 66V54h24v12" fill="#9aa2a8"/><rect x="36" y="6" width="18" height="50" rx="7" fill="#1b1b1b"/><rect x="36" y="10" width="18" height="12" rx="4" fill="#d9f23c"/></svg></div>
       <ol class="run-steps">
         <li class="rs"><span class="rs-dab">01</span><svg class="ic"><use href="#i-clipboard"/></svg><h3>Project review</h3><p>We walk the job or read the plans, then tell you honestly which finish level each room needs.</p></li>
         <li class="rs"><span class="rs-dab">02</span><svg class="ic"><use href="#i-laser"/></svg><h3>Prep &amp; setup</h3><p>Materials staged, floors covered, work areas set so the crew runs without stopping.</p></li>
@@ -310,42 +271,43 @@
   </div>
 </section>
 
-<!-- ============ BUILDERS: a drawing sheet with a live production board ============ -->
-<section class="bp" id="builders">
-  <div class="wrap">
-    <div class="bp-sheet">
-      <div class="bp-top">
-        <div class="bp-copy">
-          <p class="bp-k">For builders, GCs &amp; developers</p>
-          <h2 class="bp-h">200 units on the board.<br><em>Every one on schedule.</em></h2>
-          <p class="bp-p">A hallway patch and a 200-unit build fail the same way. So we run them the same way: crews sized for volume, ahead of the other trades, and on the inspection date we committed to.</p>
-          <div class="bp-cta">
-            <a class="btn btn-hv" href="#bid"><span>Send us the plans</span><svg class="ic"><use href="#i-upload"/></svg></a>
-            <a class="bp-phone" href="#" data-preview-off="1">480-799-8173</a>
-          </div>
-        </div>
-        <div class="board" aria-label="Sample production board: 200 units moving through hang, tape and finish">
-          <div class="board-head"><span>Production board · Bldg A–D</span><span class="board-n"><b>0</b> / 200 units</span></div>
-          <div class="board-grid"></div>
-          <div class="board-legend"><span><i class="lg-h"></i>Hung <b class="c-h">0</b></span><span><i class="lg-t"></i>Taped <b class="c-t">0</b></span><span><i class="lg-f"></i>Finished <b class="c-f">0</b></span></div>
-          <p class="board-note">Sample board. Your units, your schedule.</p>
-        </div>
-      </div>
-      <ol class="keys">
-        <li><span class="hex">1</span><div><b>Fire-rated assemblies</b><span>Installed to code and to the project spec</span></div></li>
-        <li><span class="hex">2</span><div><b>Multifamily &amp; apartments</b><span>Production crews built for volume</span></div></li>
-        <li><span class="hex">3</span><div><b>Tenant improvement &amp; office</b><span>Ahead of the other trades</span></div></li>
-        <li><span class="hex">4</span><div><b>Production &amp; custom homes</b><span>Same standard on lot 300 as on a one-off custom</span></div></li>
-        <li><span class="hex">5</span><div><b>Standing bids for builders</b><span>No starting from scratch every phase</span></div></li>
-      </ol>
-      <div class="tblock">
-        <div><span>Project</span><b>Your next build</b></div>
-        <div><span>Drywall contractor</span><b>Next Gen Drywall LLC</b></div>
-        <div><span>License</span><b>AZ ROC-334040 · CR-10</b></div>
-        <div><span>Sheet</span><b>D-200</b></div>
-        <div><span>Date</span><b class="tb-date"></b></div>
-      </div>
+<!-- ============ BUILDERS: a building moving floor by floor ============ -->
+<section class="site" id="builders">
+  <div class="wrap site-head">
+    <div>
+      <p class="eyebrow eyebrow-dark">For builders, GCs &amp; developers</p>
+      <h2 class="h2">Every floor moving.<br>Every date held.</h2>
     </div>
+    <div>
+      <p class="lede">A hallway patch and a 200-unit build fail the same way. So we run them the same way: crews sized for volume, ahead of the other trades, on the inspection date we committed to.</p>
+      <div class="site-cta"><a class="btn btn-hv" href="#bid"><span>Send us the plans</span><svg class="ic"><use href="#i-upload"/></svg></a><a class="site-phone" href="#" data-preview-off="1">480-799-8173</a></div>
+    </div>
+  </div>
+  <div class="site-photo">
+    <img src="assets/img/site-multifamily.webp" alt="Illustration: a four-story apartment building under construction at dusk with work lights on inside" loading="lazy">
+    <div class="floors" aria-hidden="true">
+      <div class="fl" style="--t:31%;--h:12%"><span class="fl-tag"><b>FL 4</b><em></em></span></div>
+      <div class="fl" style="--t:45%;--h:13%"><span class="fl-tag"><b>FL 3</b><em></em></span></div>
+      <div class="fl" style="--t:59%;--h:13%"><span class="fl-tag"><b>FL 2</b><em></em></span></div>
+      <div class="fl" style="--t:73%;--h:13%"><span class="fl-tag"><b>FL 1</b><em></em></span></div>
+    </div>
+    <p class="site-note">Illustration of how we stage a multifamily build</p>
+  </div>
+  <div class="wrap">
+    <div class="sched" aria-label="Where drywall sits in the schedule">
+      <div class="sched-row"><span>Framing &amp; MEP</span><i style="--a:0;--b:.34" class="bar done"></i></div>
+      <div class="sched-row hl"><span>Drywall · Next Gen</span><i style="--a:.3;--b:.72" class="bar us"></i><em class="flag" style="--x:.72">Inspection</em></div>
+      <div class="sched-row"><span>Paint</span><i style="--a:.66;--b:.9" class="bar"></i></div>
+      <div class="sched-row"><span>Flooring &amp; trim</span><i style="--a:.82;--b:1" class="bar"></i></div>
+      <i class="sched-now" aria-hidden="true"></i>
+    </div>
+    <ul class="caps">
+      <li><svg class="ic"><use href="#i-fire"/></svg><b>Fire-rated assemblies</b><span>To code and to the project spec</span></li>
+      <li><svg class="ic"><use href="#i-building"/></svg><b>Multifamily &amp; apartments</b><span>Production crews built for volume</span></li>
+      <li><svg class="ic"><use href="#i-stud"/></svg><b>Tenant improvement</b><span>Ahead of the other trades</span></li>
+      <li><svg class="ic"><use href="#i-house"/></svg><b>Production &amp; custom homes</b><span>Same standard on lot 300 as on a one-off</span></li>
+      <li><svg class="ic"><use href="#i-clipboard"/></svg><b>Standing bids</b><span>No starting from scratch every phase</span></li>
+    </ul>
   </div>
 </section>
 
@@ -466,7 +428,6 @@
 
 <div class="callbar"><a href="#" data-preview-off="1"><svg class="ic"><use href="#i-phone"/></svg>Call</a><a class="cb-bid" href="#bid">Request a bid<svg class="ic"><use href="#i-arrow"/></svg></a></div>
 
-<script type="importmap">{"imports":{"three":"./assets/vendor/three.module.min.js"}}</script>
-<script type="module" src="assets/app.js?v=p3e78d9d6"></script>
+<script type="module" src="assets/app.js?v=pc2e0b2cc"></script>
 </body>
 </html>
