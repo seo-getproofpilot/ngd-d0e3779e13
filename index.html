@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/site.css?v=p708a6073">
+<link rel="stylesheet" href="assets/site.css?v=p3e78d9d6">
 </head>
 <body>
 
@@ -67,47 +67,40 @@
 
 <main id="main">
 
-<!-- ============ HERO: the wall builds as you scroll ============ -->
+<!-- ============ HERO: a live build, copy beside it, never on top of it ============ -->
 <section class="hero" id="top" aria-label="Next Gen Drywall">
   <div class="hero-stage">
-    <canvas class="hero-canvas" aria-hidden="true"></canvas>
-    <div class="hero-fallback" aria-hidden="true"></div>
-    <div class="hero-shade" aria-hidden="true"></div>
-
-    <div class="hero-copy wrap">
-      <p class="kicker"><span class="dot"></span>San Tan Valley · Queen Creek · East Valley</p>
+    <div class="hero-copy">
+      <p class="kicker"><span class="dot"></span>Drywall contractor · San Tan Valley &amp; Queen Creek, AZ</p>
       <h1 class="hero-h1">
-        <span class="h1-line">Drywall that</span>
-        <span class="h1-line">doesn’t call</span>
-        <span class="h1-line"><em>you back.</em></span>
-        <span class="h1-seo">Drywall contractor in San Tan Valley &amp; Queen Creek, AZ</span>
+        <span class="h1-line">Drywall,</span>
+        <span class="h1-line">done right</span>
+        <span class="h1-line"><em>the first time.</em></span>
       </h1>
-      <a class="hero-phone" href="#" data-preview-off="1">480-799-8173</a>
-      <p class="hero-sub">Hang, tape, finish and repair. The owner is on the job site, not behind a desk.</p>
+      <p class="hero-sub">Hanging, taping, finishing and repair for builders, general contractors and homeowners across the East Valley. The owner stays on the job site.</p>
       <div class="hero-ctas">
         <a class="btn btn-hv" href="#bid"><span>Request a bid</span><svg class="ic"><use href="#i-arrow"/></svg></a>
-        <a class="btn btn-ghost" href="#levels"><span>See the finish levels</span></a>
+        <a class="hero-phone" href="#" data-preview-off="1"><svg class="ic"><use href="#i-phone"/></svg>480-799-8173</a>
       </div>
-      <ul class="hero-proof">
-        <li><b>500+</b> projects across the Valley</li>
-        <li><b>25+ yrs</b> combined trade experience</li>
-        <li><b>ROC 334040</b> licensed &amp; insured</li>
-      </ul>
+      <ol class="build-list" aria-label="How a wall gets built">
+        <li data-s="0"><svg class="ic"><use href="#i-stud"/></svg><b>Frame</b><span>Studs 16 in on center, laser at 48 in</span></li>
+        <li data-s="1"><svg class="ic"><use href="#i-board"/></svg><b>Hang</b><span>5/8 in board, screws just under the paper</span></li>
+        <li data-s="2"><svg class="ic"><use href="#i-tape"/></svg><b>Tape</b><span>Paper tape bedded over every seam</span></li>
+        <li data-s="3"><svg class="ic"><use href="#i-pan"/></svg><b>Mud</b><span>Three coats, each feathered wider</span></li>
+        <li data-s="4"><svg class="ic"><use href="#i-knife"/></svg><b>Level 5</b><span>A skim over the whole face</span></li>
+      </ol>
     </div>
 
-    <div class="build-rail" aria-hidden="true">
-      <div class="rail-readout">
-        <span class="rail-n">01</span>
-        <div><b class="rail-t">Frame</b><span class="rail-c">Studs 16 in on center. Laser at 48 in.</span></div>
+    <div class="hero-view">
+      <canvas class="hero-canvas" aria-label="3D animation of a drywall crew's work: framing, hanging, taping, mudding and a Level 5 skim"></canvas>
+      <div class="hero-fallback" aria-hidden="true"></div>
+      <div class="view-hud" aria-hidden="true">
+        <span class="hud-tl">Wall A · 16'-0" × 8'-0" · 5/8" Type X</span>
+        <span class="hud-tr"><i class="rec"></i>Live build</span>
+        <div class="hud-tape"><div class="hud-ticks"></div><div class="hud-fill"></div><span class="hud-stage">01 · Frame</span></div>
       </div>
-      <div class="rail-tape">
-        <div class="rail-ticks"></div>
-        <div class="rail-fill"></div>
-        <ol class="rail-steps">
-          <li data-s="0">Frame</li><li data-s="1">Hang</li><li data-s="2">Tape</li><li data-s="3">Mud</li><li data-s="4">Level 5</li>
-        </ol>
-      </div>
-      <span class="rail-scroll">Scroll to build the wall</span>
+      <span class="view-corners" aria-hidden="true"></span>
+      <span class="scroll-hint" aria-hidden="true">Scroll to build</span>
     </div>
   </div>
 </section>
@@ -117,318 +110,338 @@
   <div class="strip-track">
     <div class="strip-row">
       <span><svg class="ic"><use href="#i-building"/></svg>Commercial &amp; multifamily</span>
+      <span><svg class="ic"><use href="#i-house"/></svg>Custom homes &amp; remodels</span>
       <span><svg class="ic"><use href="#i-clipboard"/></svg>Fast bid turnaround</span>
       <span><svg class="ic"><use href="#i-clock"/></svg>On-schedule execution</span>
-      <span><svg class="ic"><use href="#i-shield"/></svg>Licensed · insured · ROC-334040</span>
-      <span><svg class="ic"><use href="#i-house"/></svg>Custom homes &amp; remodels</span>
       <span><svg class="ic"><use href="#i-fire"/></svg>Fire-rated assemblies</span>
+      <span><svg class="ic"><use href="#i-shield"/></svg>ROC-334040 · licensed &amp; insured</span>
     </div>
     <div class="strip-row" aria-hidden="true">
       <span><svg class="ic"><use href="#i-building"/></svg>Commercial &amp; multifamily</span>
+      <span><svg class="ic"><use href="#i-house"/></svg>Custom homes &amp; remodels</span>
       <span><svg class="ic"><use href="#i-clipboard"/></svg>Fast bid turnaround</span>
       <span><svg class="ic"><use href="#i-clock"/></svg>On-schedule execution</span>
-      <span><svg class="ic"><use href="#i-shield"/></svg>Licensed · insured · ROC-334040</span>
-      <span><svg class="ic"><use href="#i-house"/></svg>Custom homes &amp; remodels</span>
       <span><svg class="ic"><use href="#i-fire"/></svg>Fire-rated assemblies</span>
+      <span><svg class="ic"><use href="#i-shield"/></svg>ROC-334040 · licensed &amp; insured</span>
     </div>
   </div>
 </section>
 
-<!-- ============ FINISH LEVELS (the "price board") ============ -->
+<!-- ============ FINISH LEVELS: sheets stack as you scroll ============ -->
 <section class="levels board-bg" id="levels">
-  <div class="wrap">
-    <div class="sec-head">
-      <p class="eyebrow">Finish level board · GA-214 levels 0 to 5</p>
-      <h2 class="h2 snap">Six finish levels.<br>One standard.<br>Here’s every one.</h2>
-      <p class="lede">When an Arizona great room catches low evening light, the finish level is what saves the wall. Drag the sun and watch what each level hides, and what it doesn’t.</p>
-    </div>
-
-    <div class="sun" role="group" aria-label="Light angle">
-      <div class="sun-arc" aria-hidden="true"><svg class="sun-ic"><use href="#i-sun"/></svg></div>
-      <div class="sun-row">
-        <span class="sun-l">12:00 PM<small>light from above</small></span>
-        <input class="sun-range" type="range" min="0" max="100" value="0" aria-label="Move the sun from noon to evening raking light">
-        <span class="sun-r">6:40 PM<small>low sun across the wall</small></span>
+  <div class="lv-track">
+    <div class="lv-pin">
+      <div class="lv-info">
+        <p class="eyebrow">Finish levels 0 to 5</p>
+        <h2 class="h2">Six levels.<br>Watch them<br>stack up.</h2>
+        <div class="lv-read" aria-live="polite">
+          <p class="lv-big">Level <span class="lv-num">0</span></p>
+          <p class="lv-tag">Hung, not finished</p>
+          <p class="lv-desc">Board screwed off, no tape. Temporary walls, or work where the final decorating isn’t decided.</p>
+        </div>
+        <div class="lv-ticks" role="group" aria-label="Jump to a finish level">
+          <button data-l="0" aria-label="Level 0">0</button><button data-l="1" aria-label="Level 1">1</button><button data-l="2" aria-label="Level 2">2</button><button data-l="3" aria-label="Level 3">3</button><button data-l="4" aria-label="Level 4">4</button><button data-l="5" aria-label="Level 5">5</button>
+        </div>
+        <div class="sun" role="group" aria-label="Light angle">
+          <svg class="ic sun-ic"><use href="#i-sun"/></svg>
+          <span class="sun-l">Noon</span>
+          <input class="sun-range" type="range" min="0" max="100" value="45" aria-label="Move the sun from noon to low evening light">
+          <span class="sun-r">6:40 PM</span>
+        </div>
+      </div>
+      <div class="stack" aria-hidden="true">
+        <div class="sheet" data-l="0"><div class="endtape"><span>NEXT GEN DRYWALL</span><span>LEVEL 0</span><span>HUNG, NOT FINISHED</span><span>5/8"</span></div><div class="sheet-img"><img src="assets/img/level-0-flat.webp" alt=""><img class="rake" src="assets/img/level-0-rake.webp" alt=""></div><i class="sweep"></i></div>
+        <div class="sheet" data-l="1"><div class="endtape"><span>NEXT GEN DRYWALL</span><span>LEVEL 1</span><span>FIRE-TAPING</span><span>5/8"</span></div><div class="sheet-img"><img src="assets/img/level-1-flat.webp" alt=""><img class="rake" src="assets/img/level-1-rake.webp" alt=""></div><i class="sweep"></i></div>
+        <div class="sheet" data-l="2"><div class="endtape"><span>NEXT GEN DRYWALL</span><span>LEVEL 2</span><span>TILE BACKER &amp; UTILITY</span><span>5/8"</span></div><div class="sheet-img"><img src="assets/img/level-2-flat.webp" alt=""><img class="rake" src="assets/img/level-2-rake.webp" alt=""></div><i class="sweep"></i></div>
+        <div class="sheet" data-l="3"><div class="endtape"><span>NEXT GEN DRYWALL</span><span>LEVEL 3</span><span>TEXTURED SURFACES</span><span>5/8"</span></div><div class="sheet-img"><img src="assets/img/level-3-flat.webp" alt=""><img class="rake" src="assets/img/level-3-rake.webp" alt=""></div><i class="sweep"></i></div>
+        <div class="sheet" data-l="4"><div class="endtape"><span>NEXT GEN DRYWALL</span><span>LEVEL 4</span><span>STANDARD PAINTED</span><span>5/8"</span></div><div class="sheet-img"><img src="assets/img/level-4-flat.webp" alt=""><img class="rake" src="assets/img/level-4-rake.webp" alt=""></div><i class="sweep"></i></div>
+        <div class="sheet" data-l="5"><div class="endtape"><span>NEXT GEN DRYWALL</span><span>LEVEL 5</span><span>SKIM COAT · PREMIUM</span><span>5/8"</span></div><div class="sheet-img"><img src="assets/img/level-5-flat.webp" alt=""><img class="rake" src="assets/img/level-5-rake.webp" alt=""></div><i class="sweep"></i></div>
       </div>
     </div>
+  </div>
 
-    <div class="lv-grid">
-      <article class="lv" data-lv="0">
-        <div class="lv-img"><img src="assets/img/level-0-flat.webp" alt="" loading="lazy"><img class="rake" src="assets/img/level-0-rake.webp" alt="" loading="lazy"></div>
-        <div class="lv-body"><span class="lv-tag">Hung, not finished</span><h3 class="lv-n">Level 0</h3><p>Board screwed off, no tape. Temporary walls, or work where the final decorating isn’t decided.</p></div>
-      </article>
-      <article class="lv" data-lv="1">
-        <div class="lv-img"><img src="assets/img/level-1-flat.webp" alt="" loading="lazy"><img class="rake" src="assets/img/level-1-rake.webp" alt="" loading="lazy"></div>
-        <div class="lv-body"><span class="lv-tag">Fire-taping, concealed areas</span><h3 class="lv-n">Level 1</h3><p>Tape bedded in compound, ridges left. Above ceilings, in attics, wherever a fire rating is the only job.</p></div>
-      </article>
-      <article class="lv" data-lv="2">
-        <div class="lv-img"><img src="assets/img/level-2-flat.webp" alt="" loading="lazy"><img class="rake" src="assets/img/level-2-rake.webp" alt="" loading="lazy"></div>
-        <div class="lv-body"><span class="lv-tag">Tile backer &amp; utility</span><h3 class="lv-n">Level 2</h3><p>One coat over the tape and every screw. Garages, storage and walls that will take tile.</p></div>
-      </article>
-      <article class="lv" data-lv="3">
-        <div class="lv-img"><img src="assets/img/level-3-flat.webp" alt="" loading="lazy"><img class="rake" src="assets/img/level-3-rake.webp" alt="" loading="lazy"></div>
-        <div class="lv-body"><span class="lv-tag">Textured surfaces</span><h3 class="lv-n">Level 3</h3><p>Two coats, feathered. The base for orange peel, knockdown and skip trowel.</p></div>
-      </article>
-      <article class="lv" data-lv="4">
-        <div class="lv-img"><img src="assets/img/level-4-flat.webp" alt="" loading="lazy"><img class="rake" src="assets/img/level-4-rake.webp" alt="" loading="lazy"></div>
-        <div class="lv-body"><span class="lv-tag">Standard painted interior</span><h3 class="lv-n">Level 4</h3><p>Three coats, sanded smooth. Right for flat paint in most rooms. Low sun can still find the joints.</p></div>
-      </article>
-      <article class="lv lv-top" data-lv="5">
-        <div class="lv-img"><img src="assets/img/level-5-flat.webp" alt="" loading="lazy"><img class="rake" src="assets/img/level-5-rake.webp" alt="" loading="lazy"></div>
-        <div class="lv-body"><span class="lv-tag">Skim coat, gloss &amp; premium</span><h3 class="lv-n">Level 5</h3><p>A tight skim over the whole face. Nothing flashes through paint, even in that 6:40 light.</p></div>
-      </article>
+  <div class="wrap tex">
+    <div class="tex-head">
+      <h3 class="h3">Already have a texture? We match it.</h3>
+      <p>Orange peel, knockdown and skip trowel, matched to the wall you have so the repair disappears. Hover a sample to drop the sun on it.</p>
     </div>
-
-    <div class="tex">
-      <div class="tex-head">
-        <h3 class="h3">Already have a texture? <br>We match it.</h3>
-        <p>Orange peel, knockdown and skip trowel, matched to the wall you have so the repair disappears. Same sun, same test.</p>
-      </div>
-      <div class="tex-grid">
-        <figure class="tx"><div class="lv-img"><img src="assets/img/tex-orange-peel-flat.webp" alt="" loading="lazy"><img class="rake" src="assets/img/tex-orange-peel-rake.webp" alt="" loading="lazy"></div><figcaption>Orange peel</figcaption></figure>
-        <figure class="tx"><div class="lv-img"><img src="assets/img/tex-knockdown-flat.webp" alt="" loading="lazy"><img class="rake" src="assets/img/tex-knockdown-rake.webp" alt="" loading="lazy"></div><figcaption>Knockdown</figcaption></figure>
-        <figure class="tx"><div class="lv-img"><img src="assets/img/tex-skip-trowel-flat.webp" alt="" loading="lazy"><img class="rake" src="assets/img/tex-skip-trowel-rake.webp" alt="" loading="lazy"></div><figcaption>Skip trowel</figcaption></figure>
-        <figure class="tx"><div class="lv-img"><img src="assets/img/tex-smooth-flat.webp" alt="" loading="lazy"><img class="rake" src="assets/img/tex-smooth-rake.webp" alt="" loading="lazy"></div><figcaption>Smooth</figcaption></figure>
-      </div>
+    <div class="tex-grid">
+      <figure class="tx"><div class="tx-img"><img src="assets/img/tex-orange-peel-flat.webp" alt="" loading="lazy"><img class="rake" src="assets/img/tex-orange-peel-rake.webp" alt="" loading="lazy"></div><figcaption>Orange peel</figcaption></figure>
+      <figure class="tx"><div class="tx-img"><img src="assets/img/tex-knockdown-flat.webp" alt="" loading="lazy"><img class="rake" src="assets/img/tex-knockdown-rake.webp" alt="" loading="lazy"></div><figcaption>Knockdown</figcaption></figure>
+      <figure class="tx"><div class="tx-img"><img src="assets/img/tex-skip-trowel-flat.webp" alt="" loading="lazy"><img class="rake" src="assets/img/tex-skip-trowel-rake.webp" alt="" loading="lazy"></div><figcaption>Skip trowel</figcaption></figure>
+      <figure class="tx"><div class="tx-img"><img src="assets/img/tex-smooth-flat.webp" alt="" loading="lazy"><img class="rake" src="assets/img/tex-smooth-rake.webp" alt="" loading="lazy"></div><figcaption>Smooth</figcaption></figure>
     </div>
   </div>
 </section>
 
-<!-- ============ SCOPE TICKETS ============ -->
+<!-- ============ SCOPES: a carousel of board faces ============ -->
 <section class="scope" id="scope">
   <div class="wrap scope-head">
-    <h2 class="h2 snap">Six scopes.<br>One crew answers for all of it.</h2>
-    <p class="lede">We self-perform every scope item. No subbing the taping out, no finger-pointing between hangers and finishers.</p>
+    <div>
+      <p class="eyebrow eyebrow-dark">Services</p>
+      <h2 class="h2">Six scopes.<br>One crew answers for all of it.</h2>
+    </div>
+    <p class="lede">We self-perform every scope item. No subbing out the taping, no finger-pointing between hangers and finishers.</p>
   </div>
-  <div class="tickets" tabindex="0" aria-label="Services, scroll sideways">
-    <article class="ticket">
-      <header><span>Scope No. 01</span><svg class="ic"><use href="#i-board"/></svg></header>
-      <h3>Drywall installation</h3>
-      <ul><li>Straight boards, tight joints</li><li>Clean screw patterns</li><li>Single rooms to full buildings</li></ul>
-      <footer><span>Residential · Commercial</span><a href="#bid">Bid it <svg class="ic"><use href="#i-arrow"/></svg></a></footer>
-    </article>
-    <article class="ticket">
-      <header><span>Scope No. 02</span><svg class="ic"><use href="#i-building"/></svg></header>
-      <h3>Commercial drywall</h3>
-      <ul><li>Offices, suites, retail</li><li>Multifamily buildings</li><li>Inspection dates hit</li></ul>
-      <footer><span>GCs · Developers</span><a href="#bid">Bid it <svg class="ic"><use href="#i-arrow"/></svg></a></footer>
-    </article>
-    <article class="ticket">
-      <header><span>Scope No. 03</span><svg class="ic"><use href="#i-house"/></svg></header>
-      <h3>Residential drywall</h3>
-      <ul><li>Custom homes &amp; remodels</li><li>Garage conversions, casitas</li><li>Occupied homes, kept clean</li></ul>
-      <footer><span>Homeowners · Builders</span><a href="#bid">Bid it <svg class="ic"><use href="#i-arrow"/></svg></a></footer>
-    </article>
-    <article class="ticket">
-      <header><span>Scope No. 04</span><svg class="ic"><use href="#i-tape"/></svg></header>
-      <h3>Drywall taping</h3>
-      <ul><li>Flat joints, straight corners</li><li>Feathered seams</li><li>Invisible under paint</li></ul>
-      <footer><span>Where problems start</span><a href="#bid">Bid it <svg class="ic"><use href="#i-arrow"/></svg></a></footer>
-    </article>
-    <article class="ticket">
-      <header><span>Scope No. 05</span><svg class="ic"><use href="#i-knife"/></svg></header>
-      <h3>Drywall finishing</h3>
-      <ul><li>Level 3, 4 and true Level 5</li><li>Orange peel, knockdown, skip trowel</li><li>Prime-ready delivery</li></ul>
-      <footer><span>The part everyone sees</span><a href="#bid">Bid it <svg class="ic"><use href="#i-arrow"/></svg></a></footer>
-    </article>
-    <article class="ticket">
-      <header><span>Scope No. 06</span><svg class="ic"><use href="#i-patch"/></svg></header>
-      <h3>Drywall repair</h3>
-      <ul><li>Settling cracks, doorknob holes</li><li>Water-stained ceilings</li><li>Texture matched, repair gone</li></ul>
-      <footer><span>Homes · Rentals</span><a href="#bid">Bid it <svg class="ic"><use href="#i-arrow"/></svg></a></footer>
-    </article>
+  <div class="flow" tabindex="0" aria-roledescription="carousel" aria-label="Services">
+    <div class="flow-track">
+      <article class="scard" aria-roledescription="slide" aria-label="1 of 6">
+        <div class="sc-print">NEXT GEN DRYWALL · SCOPE 01 · RESIDENTIAL · COMMERCIAL</div>
+        <div class="sc-ic"><svg class="ic"><use href="#i-board"/></svg></div>
+        <h3>Drywall installation</h3>
+        <p>Straight boards, tight joints, clean screw patterns. Single rooms, custom homes and full multifamily buildings.</p>
+        <ul><li>Walls &amp; ceilings</li><li>Fire-rated Type X</li><li>Schedule protected</li></ul>
+        <a class="sc-go" href="#bid">Bid this scope<svg class="ic"><use href="#i-arrow"/></svg></a>
+      </article>
+      <article class="scard" aria-roledescription="slide" aria-label="2 of 6">
+        <div class="sc-print">NEXT GEN DRYWALL · SCOPE 02 · GCs · DEVELOPERS</div>
+        <div class="sc-ic"><svg class="ic"><use href="#i-building"/></svg></div>
+        <h3>Commercial drywall</h3>
+        <p>Offices, suites, retail and multifamily. We stay ahead of the other trades and hit inspection dates.</p>
+        <ul><li>Tenant improvement</li><li>Multifamily</li><li>Critical path kept</li></ul>
+        <a class="sc-go" href="#bid">Bid this scope<svg class="ic"><use href="#i-arrow"/></svg></a>
+      </article>
+      <article class="scard" aria-roledescription="slide" aria-label="3 of 6">
+        <div class="sc-print">NEXT GEN DRYWALL · SCOPE 03 · HOMEOWNERS · BUILDERS</div>
+        <div class="sc-ic"><svg class="ic"><use href="#i-house"/></svg></div>
+        <h3>Residential drywall</h3>
+        <p>Custom homes, remodels, garage conversions and casitas. Commercial crew discipline in the house you live in.</p>
+        <ul><li>Occupied homes</li><li>Additions &amp; casitas</li><li>Site kept clean</li></ul>
+        <a class="sc-go" href="#bid">Bid this scope<svg class="ic"><use href="#i-arrow"/></svg></a>
+      </article>
+      <article class="scard" aria-roledescription="slide" aria-label="4 of 6">
+        <div class="sc-print">NEXT GEN DRYWALL · SCOPE 04 · WHERE PROBLEMS START</div>
+        <div class="sc-ic"><svg class="ic"><use href="#i-tape"/></svg></div>
+        <h3>Drywall taping</h3>
+        <p>Flat joints, straight corners and feathered seams that stay invisible under paint. We treat taping like the main event.</p>
+        <ul><li>Paper &amp; mesh</li><li>Corner bead</li><li>Invisible seams</li></ul>
+        <a class="sc-go" href="#bid">Bid this scope<svg class="ic"><use href="#i-arrow"/></svg></a>
+      </article>
+      <article class="scard" aria-roledescription="slide" aria-label="5 of 6">
+        <div class="sc-print">NEXT GEN DRYWALL · SCOPE 05 · THE PART EVERYONE SEES</div>
+        <div class="sc-ic"><svg class="ic"><use href="#i-knife"/></svg></div>
+        <h3>Drywall finishing</h3>
+        <p>Orange peel, knockdown, skip trowel and true Level 5 smooth. The finish level is what saves a wall in low light.</p>
+        <ul><li>Level 3, 4 &amp; 5</li><li>Textures</li><li>Prime-ready</li></ul>
+        <a class="sc-go" href="#bid">Bid this scope<svg class="ic"><use href="#i-arrow"/></svg></a>
+      </article>
+      <article class="scard" aria-roledescription="slide" aria-label="6 of 6">
+        <div class="sc-print">NEXT GEN DRYWALL · SCOPE 06 · HOMES · RENTALS</div>
+        <div class="sc-ic"><svg class="ic"><use href="#i-patch"/></svg></div>
+        <h3>Drywall repair</h3>
+        <p>Settling cracks, doorknob holes and water-stained ceilings, matched to your texture so the repair disappears.</p>
+        <ul><li>Water damage</li><li>Texture match</li><li>Rental turns</li></ul>
+        <a class="sc-go" href="#bid">Bid this scope<svg class="ic"><use href="#i-arrow"/></svg></a>
+      </article>
+    </div>
+    <div class="flow-ctl">
+      <button class="flow-prev" aria-label="Previous service"><svg class="ic"><use href="#i-arrow"/></svg></button>
+      <span class="flow-count"><b>01</b> / 06</span>
+      <button class="flow-next" aria-label="Next service"><svg class="ic"><use href="#i-arrow"/></svg></button>
+    </div>
   </div>
 </section>
 
-<!-- ============ CREWS ============ -->
+<!-- ============ CREWS: panels light up on their own ============ -->
 <section class="crews" id="crews">
-  <div class="wrap">
-    <div class="crews-head">
-      <h2 class="h2 snap">Crews.</h2>
-      <p class="lede">Hangers, tapers and finishers under one foreman structure. A whole building is one bid, one schedule and one crew that answers for the wall.</p>
-    </div>
+  <div class="wrap crews-head">
+    <h2 class="h2">Crews.</h2>
+    <p class="lede">Hangers, tapers and finishers under one foreman structure. One bid, one schedule and one crew that answers for the wall.</p>
   </div>
-  <div class="crew-grid">
-    <a class="crew-tile" href="#scope">
+  <div class="crew-acc">
+    <div class="cp" data-i="0">
       <img src="assets/img/job-three-lift.webp" alt="Three Next Gen Drywall hangers lifting a ceiling board onto open framing" loading="lazy">
-      <span class="ct-k">Board up</span><h3>Hanging</h3><p>Straight boards, tight joints, clean screw patterns. Single rooms to full multifamily buildings.</p>
-    </a>
-    <a class="crew-tile" href="#levels">
+      <span class="cp-v">Hanging</span>
+      <div class="cp-body"><span class="cp-k"><svg class="ic"><use href="#i-board"/></svg>Board up</span><h3>Hanging</h3><p>Straight boards, tight joints, clean screw patterns. Single rooms to full multifamily buildings.</p></div>
+    </div>
+    <div class="cp" data-i="1">
       <img src="assets/img/job-stilts-wide.webp" alt="Next Gen Drywall finishers working on stilts in a framed interior" loading="lazy">
-      <span class="ct-k">On stilts</span><h3>Taping &amp; finishing</h3><p>Tape, three coats, sand. Level 3 to Level 5, chosen for the room, not the budget line.</p>
-    </a>
-    <a class="crew-tile" href="#builders">
+      <span class="cp-v">Taping &amp; finishing</span>
+      <div class="cp-body"><span class="cp-k"><svg class="ic"><use href="#i-stilts"/></svg>On stilts</span><h3>Taping &amp; finishing</h3><p>Tape, three coats, sand. Level 3 to Level 5, chosen for the room.</p></div>
+    </div>
+    <div class="cp" data-i="2">
       <img src="assets/img/job-measuring.webp" alt="Next Gen Drywall crew hanging ceilings across a large open floor" loading="lazy">
-      <span class="ct-k">Production</span><h3>Commercial &amp; multifamily</h3><p>Crews sized for volume. We stay ahead of the other trades and protect the critical path.</p>
-    </a>
-    <a class="crew-tile" href="#bid">
+      <span class="cp-v">Commercial &amp; multifamily</span>
+      <div class="cp-body"><span class="cp-k"><svg class="ic"><use href="#i-building"/></svg>Production</span><h3>Commercial &amp; multifamily</h3><p>Crews sized for volume. We stay ahead of the other trades and protect the critical path.</p></div>
+    </div>
+    <div class="cp" data-i="3">
       <img src="assets/img/job-screwgun.webp" alt="Next Gen Drywall installer driving screws into a ceiling board" loading="lazy">
-      <span class="ct-k">Small jobs too</span><h3>Repair &amp; remodel</h3><p>Patches, cracks, water damage. Matched to your texture so nobody can find it.</p>
-    </a>
+      <span class="cp-v">Repair &amp; remodel</span>
+      <div class="cp-body"><span class="cp-k"><svg class="ic"><use href="#i-patch"/></svg>Small jobs too</span><h3>Repair &amp; remodel</h3><p>Patches, cracks, water damage. Matched to your texture so nobody can find it.</p></div>
+    </div>
   </div>
 </section>
 
-<!-- ============ PROCESS ============ -->
+<!-- ============ PROCESS: a run of paper tape ============ -->
 <section class="process board-bg" id="process">
-  <div class="wrap process-grid">
-    <div class="process-left">
-      <h2 class="h2 snap">From walkthrough<br>to paint-ready.</h2>
-      <p class="lede">The same four steps on a hallway patch and a 200-unit build. Because they fail the same way: rushed prep, sloppy taping, missed dates.</p>
-      <ol class="steps">
-        <li class="step"><span class="step-n">01</span><div><h3><svg class="ic"><use href="#i-clipboard"/></svg>Project review</h3><p>We walk the job or read the plans, then tell you honestly which finish level each room needs.</p></div></li>
-        <li class="step"><span class="step-n">02</span><div><h3><svg class="ic"><use href="#i-laser"/></svg>Prep &amp; setup</h3><p>Materials staged, floors covered, work areas set so the crew runs without stopping.</p></div></li>
-        <li class="step"><span class="step-n">03</span><div><h3><svg class="ic"><use href="#i-knife"/></svg>Drywall work</h3><p>Hang, tape, coat and sand. Or repair and blend. Done with precision, done once.</p></div></li>
-        <li class="step"><span class="step-n">04</span><div><h3><svg class="ic"><use href="#i-level"/></svg>Final check</h3><p>Walls inspected under light, ready for paint or the next trade. The site is left clean.</p></div></li>
-      </ol>
-      <svg class="tape-line" aria-hidden="true" preserveAspectRatio="none" viewBox="0 0 10 100"><line x1="5" y1="0" x2="5" y2="100"/></svg>
+  <div class="wrap">
+    <div class="proc-head">
+      <h2 class="h2">From walkthrough<br>to paint-ready.</h2>
+      <p class="lede">The same four steps on a hallway patch and a 200-unit build, because both fail the same way: rushed prep, sloppy taping, missed dates.</p>
     </div>
-    <div class="process-right">
+    <div class="run">
+      <div class="run-tape" aria-hidden="true"><i></i></div>
+      <ol class="run-steps">
+        <li class="rs"><span class="rs-dab">01</span><svg class="ic"><use href="#i-clipboard"/></svg><h3>Project review</h3><p>We walk the job or read the plans, then tell you honestly which finish level each room needs.</p></li>
+        <li class="rs"><span class="rs-dab">02</span><svg class="ic"><use href="#i-laser"/></svg><h3>Prep &amp; setup</h3><p>Materials staged, floors covered, work areas set so the crew runs without stopping.</p></li>
+        <li class="rs"><span class="rs-dab">03</span><svg class="ic"><use href="#i-knife"/></svg><h3>Drywall work</h3><p>Hang, tape, coat and sand. Or repair and blend. Done with precision, done once.</p></li>
+        <li class="rs"><span class="rs-dab">04</span><svg class="ic"><use href="#i-level"/></svg><h3>Final check</h3><p>Walls inspected under light, ready for paint or the next trade. The site is left clean.</p></li>
+      </ol>
+    </div>
+  </div>
+  <div class="try">
+    <div class="wrap try-grid">
+      <div class="try-copy">
+        <p class="eyebrow eyebrow-dark">Step 03, try it</p>
+        <h3 class="h3">Skim the joint yourself.</h3>
+        <p>This is a Level 2 joint under low sunset light. Drag the knife across it until nothing shows. That’s the standard we finish to.</p>
+        <div class="try-meter"><span class="skim-pct"><b>0</b>%</span><span>skimmed</span></div>
+        <button class="skim-reset" type="button">Reset the wall</button>
+      </div>
       <div class="skim-card">
-        <div class="skim-top"><span class="eyebrow">Step 03, try it</span><span class="skim-pct"><b>0</b>% skimmed</span></div>
         <div class="skim-canvas-wrap">
           <canvas class="skim-canvas" width="900" height="560" aria-label="Drag across the wall to skim it with a taping knife"></canvas>
           <div class="skim-hint"><svg class="ic"><use href="#i-knife"/></svg>Drag the knife across the wall</div>
           <div class="skim-done"><svg class="ic"><use href="#i-check"/></svg>Level 5. Paint-ready.</div>
           <svg class="skim-knife" viewBox="0 0 120 60" aria-hidden="true"><path d="M8 50h104l-14-26H22z" fill="#cfd5da" stroke="#8b9399"/><path d="M44 24v-8h32v8" fill="#9aa2a8"/><rect x="50" y="2" width="20" height="14" rx="3" fill="#d9f23c"/></svg>
         </div>
-        <div class="skim-foot"><p>Low light across the wall, same as a great room at sunset. The rough side is a Level 2 joint.</p><button class="skim-reset" type="button">Reset wall</button></div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ============ BUILDERS (dark block) ============ -->
-<section class="builders" id="builders">
-  <div class="wrap builders-grid">
-    <div>
-      <p class="eyebrow eyebrow-dark">Builders, GCs and developers</p>
-      <p class="b-big" aria-hidden="true">200</p>
-      <h2 class="b-h">Units on the board.<br>Inspection on Friday.<br>Trades waiting on drywall.</h2>
-      <a class="b-phone" href="#" data-preview-off="1">480-799-8173</a>
-      <p class="b-copy">The best contractors don’t chase the lowest bid. They want a drywall partner who shows up, communicates and delivers what was committed. We hit inspection dates and keep your critical path moving.</p>
-      <div class="hero-ctas"><a class="btn btn-hv" href="#bid"><span>Send us the plans</span><svg class="ic"><use href="#i-upload"/></svg></a></div>
-    </div>
-    <ul class="b-list">
-      <li><svg class="ic"><use href="#i-fire"/></svg><div><b>Fire-rated assemblies</b><span>Installed to code and to the project spec</span></div><em>Type X</em></li>
-      <li><svg class="ic"><use href="#i-building"/></svg><div><b>Multifamily &amp; apartment complexes</b><span>Production crews built for volume</span></div><em>Volume</em></li>
-      <li><svg class="ic"><use href="#i-stud"/></svg><div><b>Tenant improvement &amp; office</b><span>We stay ahead of the other trades</span></div><em>TI</em></li>
-      <li><svg class="ic"><use href="#i-house"/></svg><div><b>Production &amp; custom homes</b><span>Same standard on lot 300 as on a one-off custom</span></div><em>New build</em></li>
-      <li><svg class="ic"><use href="#i-clipboard"/></svg><div><b>Standing bids for builders</b><span>No starting from scratch every phase</span></div><em>Phased</em></li>
-    </ul>
-  </div>
-</section>
-
-<!-- ============ BELIEF (feature photo) ============ -->
-<section class="belief" aria-label="What we believe">
-  <img class="belief-img" src="assets/img/job-stilts-tall.webp" alt="Two Next Gen Drywall finishers on stilts taping a ceiling joint" loading="lazy">
-  <div class="belief-shade"></div>
-  <div class="wrap belief-in">
-    <p class="belief-cap"><svg class="ic"><use href="#i-stilts"/></svg>Next Gen finishing crew on stilts</p>
-    <div class="belief-stat"><b>500+</b><span>projects across San Tan Valley, Queen Creek and the East Valley</span></div>
-    <blockquote>
-      <p>“Every board we hang, every seam we tape, every surface we finish is something another trade, and eventually a real person, will live and work next to.”</p>
-      <footer>What we believe · Next Gen Drywall</footer>
-    </blockquote>
-  </div>
-</section>
-
-<!-- ============ LICENSE + CREW ============ -->
-<section class="crew board-bg" id="crew">
+<!-- ============ BUILDERS: a drawing sheet with a live production board ============ -->
+<section class="bp" id="builders">
   <div class="wrap">
-    <div class="sec-head">
-      <h2 class="h2 snap">Licensed in Arizona.<br>Ask for the numbers.</h2>
-      <p class="lede">Next Gen Drywall LLC carries general liability and workers’ comp, licensed for commercial and residential work statewide. These are the people who run your job.</p>
-    </div>
-    <div class="lic">
-      <div class="lic-card lic-main">
-        <svg class="ic"><use href="#i-shield"/></svg>
-        <span class="lic-k">AZ Registrar of Contractors</span>
-        <b class="lic-n">ROC-334040</b>
-        <span class="lic-s">CR-10 Drywall · commercial &amp; residential, statewide</span>
+    <div class="bp-sheet">
+      <div class="bp-top">
+        <div class="bp-copy">
+          <p class="bp-k">For builders, GCs &amp; developers</p>
+          <h2 class="bp-h">200 units on the board.<br><em>Every one on schedule.</em></h2>
+          <p class="bp-p">A hallway patch and a 200-unit build fail the same way. So we run them the same way: crews sized for volume, ahead of the other trades, and on the inspection date we committed to.</p>
+          <div class="bp-cta">
+            <a class="btn btn-hv" href="#bid"><span>Send us the plans</span><svg class="ic"><use href="#i-upload"/></svg></a>
+            <a class="bp-phone" href="#" data-preview-off="1">480-799-8173</a>
+          </div>
+        </div>
+        <div class="board" aria-label="Sample production board: 200 units moving through hang, tape and finish">
+          <div class="board-head"><span>Production board · Bldg A–D</span><span class="board-n"><b>0</b> / 200 units</span></div>
+          <div class="board-grid"></div>
+          <div class="board-legend"><span><i class="lg-h"></i>Hung <b class="c-h">0</b></span><span><i class="lg-t"></i>Taped <b class="c-t">0</b></span><span><i class="lg-f"></i>Finished <b class="c-f">0</b></span></div>
+          <p class="board-note">Sample board. Your units, your schedule.</p>
+        </div>
       </div>
-      <div class="lic-card">
-        <svg class="ic"><use href="#i-hardhat"/></svg>
-        <span class="lic-k">Insurance</span>
-        <b class="lic-n">GL + Workers’ comp</b>
-        <span class="lic-s">General liability and workers’ compensation carried</span>
+      <ol class="keys">
+        <li><span class="hex">1</span><div><b>Fire-rated assemblies</b><span>Installed to code and to the project spec</span></div></li>
+        <li><span class="hex">2</span><div><b>Multifamily &amp; apartments</b><span>Production crews built for volume</span></div></li>
+        <li><span class="hex">3</span><div><b>Tenant improvement &amp; office</b><span>Ahead of the other trades</span></div></li>
+        <li><span class="hex">4</span><div><b>Production &amp; custom homes</b><span>Same standard on lot 300 as on a one-off custom</span></div></li>
+        <li><span class="hex">5</span><div><b>Standing bids for builders</b><span>No starting from scratch every phase</span></div></li>
+      </ol>
+      <div class="tblock">
+        <div><span>Project</span><b>Your next build</b></div>
+        <div><span>Drywall contractor</span><b>Next Gen Drywall LLC</b></div>
+        <div><span>License</span><b>AZ ROC-334040 · CR-10</b></div>
+        <div><span>Sheet</span><b>D-200</b></div>
+        <div><span>Date</span><b class="tb-date"></b></div>
       </div>
-      <div class="lic-card">
-        <svg class="ic"><use href="#i-clock"/></svg>
-        <span class="lic-k">Established</span>
-        <b class="lic-n">2021</b>
-        <span class="lic-s">San Tan Valley, Arizona</span>
-      </div>
-    </div>
-    <div class="badges">
-      <article class="badge-card"><div class="bc-clip"></div><img src="assets/img/crew-johnathan.webp" alt="Johnathan Becerra, owner of Next Gen Drywall" loading="lazy"><div class="bc-body"><b>Johnathan Becerra</b><span>Owner</span><p>Raised in a drywall family, led his own finishing crews before running the company. Still on every job.</p></div><div class="bc-stripe"></div></article>
-      <article class="badge-card"><div class="bc-clip"></div><img src="assets/img/crew-daniel.webp" alt="Daniel Perez, assistant finishing foreman" loading="lazy"><div class="bc-body"><b>Daniel Perez</b><span>Assistant finishing foreman</span></div><div class="bc-stripe"></div></article>
-      <article class="badge-card"><div class="bc-clip"></div><img src="assets/img/crew-jorge.webp" alt="Jorge Flores, finishing foreman" loading="lazy"><div class="bc-body"><b>Jorge Flores</b><span>Finishing foreman</span></div><div class="bc-stripe"></div></article>
-      <article class="badge-card"><div class="bc-clip"></div><img src="assets/img/crew-luis.webp" alt="Luis Espinoza, general finishing foreman" loading="lazy"><div class="bc-body"><b>Luis Espinoza</b><span>General finishing foreman</span></div><div class="bc-stripe"></div></article>
-      <article class="badge-card"><div class="bc-clip"></div><img src="assets/img/crew-jose.webp" alt="Jose Dennis Antunez, general hanging foreman" loading="lazy"><div class="bc-body"><b>Jose Dennis Antunez</b><span>General hanging foreman</span></div><div class="bc-stripe"></div></article>
     </div>
   </div>
 </section>
 
-<!-- ============ BID FORM ============ -->
+<!-- ============ CREDENTIALS: inspection card + badges on a rail ============ -->
+<section class="cred board-bg" id="crew">
+  <div class="wrap cred-top">
+    <div class="cred-copy">
+      <h2 class="h2">Licensed in Arizona.<br>Ask for the numbers.</h2>
+      <p class="lede">Next Gen Drywall LLC is licensed for commercial and residential work statewide and carries general liability and workers’ comp. The people below run your job.</p>
+    </div>
+    <div class="permit">
+      <div class="pm-head"><span>Credentials record</span><span>Post on site</span></div>
+      <div class="pm-title"><b>Next Gen Drywall LLC</b><span>San Tan Valley, Arizona · Est. 2021</span></div>
+      <div class="pm-row"><span>Contractor license</span><b>ROC-334040</b><i class="stamp">Active</i></div>
+      <div class="pm-row"><span>Classification</span><b>CR-10 Drywall</b><i class="stamp">Statewide</i></div>
+      <div class="pm-row"><span>General liability</span><b>Carried</b><i class="stamp">Insured</i></div>
+      <div class="pm-row"><span>Workers’ comp</span><b>Carried</b><i class="stamp">Insured</i></div>
+      <div class="pm-row"><span>Work types</span><b>Commercial · Residential</b><i class="stamp">Both</i></div>
+    </div>
+  </div>
+  <div class="rail-wrap">
+    <div class="rail" aria-hidden="true"></div>
+    <div class="badges">
+      <article class="badge"><i class="lanyard"></i><div class="bd"><div class="bd-top"><img src="assets/img/logo-white.png" alt=""><span>Crew ID</span></div><img class="bd-photo" src="assets/img/crew-johnathan.webp" alt="Johnathan Becerra, owner of Next Gen Drywall" loading="lazy"><div class="bd-body"><b>Johnathan Becerra</b><span>Owner</span><p>Raised in a drywall family and led his own finishing crews. Still on every job.</p></div><div class="bd-code"></div></div></article>
+      <article class="badge"><i class="lanyard"></i><div class="bd"><div class="bd-top"><img src="assets/img/logo-white.png" alt=""><span>Crew ID</span></div><img class="bd-photo" src="assets/img/crew-daniel.webp" alt="Daniel Perez, assistant finishing foreman" loading="lazy"><div class="bd-body"><b>Daniel Perez</b><span>Assistant finishing foreman</span></div><div class="bd-code"></div></div></article>
+      <article class="badge"><i class="lanyard"></i><div class="bd"><div class="bd-top"><img src="assets/img/logo-white.png" alt=""><span>Crew ID</span></div><img class="bd-photo" src="assets/img/crew-jorge.webp" alt="Jorge Flores, finishing foreman" loading="lazy"><div class="bd-body"><b>Jorge Flores</b><span>Finishing foreman</span></div><div class="bd-code"></div></div></article>
+      <article class="badge"><i class="lanyard"></i><div class="bd"><div class="bd-top"><img src="assets/img/logo-white.png" alt=""><span>Crew ID</span></div><img class="bd-photo" src="assets/img/crew-luis.webp" alt="Luis Espinoza, general finishing foreman" loading="lazy"><div class="bd-body"><b>Luis Espinoza</b><span>General finishing foreman</span></div><div class="bd-code"></div></div></article>
+      <article class="badge"><i class="lanyard"></i><div class="bd"><div class="bd-top"><img src="assets/img/logo-white.png" alt=""><span>Crew ID</span></div><img class="bd-photo" src="assets/img/crew-jose.webp" alt="Jose Dennis Antunez, general hanging foreman" loading="lazy"><div class="bd-body"><b>Jose Dennis Antunez</b><span>General hanging foreman</span></div><div class="bd-code"></div></div></article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ BID: a clipboard on a finished job ============ -->
 <section class="bid" id="bid">
+  <img class="bid-bg" src="assets/img/job-team-floor.webp" alt="" loading="lazy">
   <div class="wrap bid-grid">
     <div class="bid-left">
-      <h2 class="h2 snap">Send the plans.<br>Get a clear bid.</h2>
-      <p class="lede">General contractor with active plans, developer lining up the next build, or a homeowner with one bad ceiling: tell us about it and we’ll follow up promptly. Walkthroughs are free.</p>
-      <div class="bid-stats">
-        <div><b>500+</b><span>projects completed</span></div>
-        <div><b>25+</b><span>years combined experience</span></div>
-        <div><b>$0</b><span>for the bid or walkthrough</span></div>
-      </div>
+      <p class="eyebrow eyebrow-dark">Request a bid</p>
+      <h2 class="bid-h"><span><i>Send the plans.</i></span><span><i>Get a clear,</i></span><span><i><em>itemized bid.</em></i></span></h2>
+      <p class="lede">General contractor with active plans, developer lining up the next build, or a homeowner with one bad ceiling. Tell us about it and we’ll follow up promptly.</p>
+      <ol class="next">
+        <li><span>1</span><div><b>We read it</b>Plans, photos, or a few lines about the job.</div></li>
+        <li><span>2</span><div><b>We walk it with you</b>Free walkthrough, owner on site.</div></li>
+        <li><span>3</span><div><b>You get the number</b>A clear, itemized bid. No charge, no obligation.</div></li>
+      </ol>
       <ul class="bid-contact">
         <li><svg class="ic"><use href="#i-phone"/></svg><a href="#" data-preview-off="1">480-799-8173</a></li>
         <li><svg class="ic"><use href="#i-clock"/></svg>Mon–Fri, 8:00 AM to 4:00 PM</li>
-        <li><svg class="ic"><use href="#i-pin"/></svg>San Tan Valley, Arizona</li>
       </ul>
     </div>
-    <form class="bid-form" novalidate>
-      <div class="bf-head"><span>Bid request</span><span class="bf-date"></span></div>
-      <div class="bf-row">
-        <label><span>Full name</span><input name="name" autocomplete="name" required></label>
-        <label><span>Company <i>(optional)</i></span><input name="company" autocomplete="organization"></label>
-      </div>
-      <div class="bf-row">
-        <label><span>Phone</span><input name="phone" type="tel" autocomplete="tel" required></label>
-        <label><span>Email</span><input name="email" type="email" autocomplete="email"></label>
-      </div>
-      <fieldset class="bf-types">
-        <legend>Project type</legend>
-        <label><input type="radio" name="type" value="Repair / patch work" checked><span><svg class="ic"><use href="#i-patch"/></svg>Repair / patch</span></label>
-        <label><input type="radio" name="type" value="Renovation / tenant improvement"><span><svg class="ic"><use href="#i-stud"/></svg>Renovation / TI</span></label>
-        <label><input type="radio" name="type" value="New construction, residential"><span><svg class="ic"><use href="#i-house"/></svg>New residential</span></label>
-        <label><input type="radio" name="type" value="Multifamily / apartment complex"><span><svg class="ic"><use href="#i-building"/></svg>Multifamily</span></label>
-        <label><input type="radio" name="type" value="Commercial / office"><span><svg class="ic"><use href="#i-board"/></svg>Commercial / office</span></label>
-        <label><input type="radio" name="type" value="Mixed-use development"><span><svg class="ic"><use href="#i-clipboard"/></svg>Mixed-use</span></label>
-      </fieldset>
-      <label><span>Project location</span><input name="location" placeholder="City or cross streets"></label>
-      <label><span>Project details</span><textarea name="details" rows="3" placeholder="Square footage, finish level, texture, schedule. One line is fine."></textarea></label>
-      <label class="bf-file"><input type="file" name="files" multiple><svg class="ic"><use href="#i-upload"/></svg><span class="bf-file-t">Add plans or photos</span><small>Attach them to the email that opens</small></label>
-      <button class="btn btn-hv btn-block" type="submit"><span>Submit bid request</span><svg class="ic"><use href="#i-arrow"/></svg></button>
-      <p class="bf-note">No charge, no obligation. We never share your number.</p>
-      <p class="bf-msg" role="status" aria-live="polite"></p>
-    </form>
+    <div class="clipboard">
+      <div class="cb-clip" aria-hidden="true"><i></i></div>
+      <form class="bid-form" novalidate>
+        <div class="bf-head"><span>Bid request</span><span class="bf-date"></span></div>
+        <div class="bf-row">
+          <label><span>Full name</span><input name="name" autocomplete="name" required></label>
+          <label><span>Company <i>(optional)</i></span><input name="company" autocomplete="organization"></label>
+        </div>
+        <div class="bf-row">
+          <label><span>Phone</span><input name="phone" type="tel" autocomplete="tel" required></label>
+          <label><span>Email</span><input name="email" type="email" autocomplete="email"></label>
+        </div>
+        <fieldset class="bf-types">
+          <legend>Project type</legend>
+          <label><input type="radio" name="type" value="Repair / patch work" checked><span><svg class="ic"><use href="#i-patch"/></svg>Repair</span></label>
+          <label><input type="radio" name="type" value="Renovation / tenant improvement"><span><svg class="ic"><use href="#i-stud"/></svg>Remodel / TI</span></label>
+          <label><input type="radio" name="type" value="New construction, residential"><span><svg class="ic"><use href="#i-house"/></svg>New home</span></label>
+          <label><input type="radio" name="type" value="Multifamily / apartment complex"><span><svg class="ic"><use href="#i-building"/></svg>Multifamily</span></label>
+          <label><input type="radio" name="type" value="Commercial / office"><span><svg class="ic"><use href="#i-board"/></svg>Commercial</span></label>
+          <label><input type="radio" name="type" value="Mixed-use development"><span><svg class="ic"><use href="#i-clipboard"/></svg>Mixed-use</span></label>
+        </fieldset>
+        <label><span>Project location</span><input name="location" placeholder="City or cross streets"></label>
+        <label><span>Project details</span><textarea name="details" rows="3" placeholder="Square footage, finish level, texture, schedule. One line is fine."></textarea></label>
+        <label class="bf-file"><input type="file" name="files" multiple><svg class="ic"><use href="#i-upload"/></svg><span class="bf-file-t">Add plans or photos</span><small>Attach them to the email that opens</small></label>
+        <button class="btn btn-hv btn-block" type="submit"><span>Submit bid request</span><svg class="ic"><use href="#i-arrow"/></svg></button>
+        <p class="bf-msg" role="status" aria-live="polite"></p>
+      </form>
+    </div>
   </div>
 </section>
 
-<!-- ============ FAQ ============ -->
-<section class="faq board-bg" id="faq">
-  <div class="wrap faq-grid">
-    <div>
-      <h2 class="h2 snap">Questions.</h2>
-      <p class="lede">The ones we hear on every walkthrough. Anything else, call 480-799-8173.</p>
+<!-- ============ FAQ: the answer gets rolled on ============ -->
+<section class="faq" id="faq">
+  <div class="wrap faq-in">
+    <div class="faq-head">
+      <svg class="roller-ic" viewBox="0 0 64 40" aria-hidden="true"><rect x="2" y="4" width="44" height="16" rx="3"/><path d="M46 12h8v14H30v12"/></svg>
+      <h2 class="h2">Questions,<br>answered.</h2>
+      <p class="lede">The ones we hear on every walkthrough. Tap one and we’ll roll out the answer.</p>
     </div>
     <div class="faq-list">
-      <details><summary>Do I actually need a Level 5 finish?<svg class="ic"><use href="#i-plus"/></svg></summary><p>Usually for big open rooms with strong window light or gloss paint, where any lesser finish shows every joint. We’ll tell you honestly whether your walls need it or whether a standard Level 4 will look just as good.</p></details>
-      <details><summary>Can you match the texture on my walls?<svg class="ic"><use href="#i-plus"/></svg></summary><p>Yes. We match orange peel, knockdown and skip trowel, including older hand-applied textures nobody stocks a recipe for. We sample the wall and blend past the patch line so it doesn’t read as a repair.</p></details>
-      <details><summary>Are you licensed and insured?<svg class="ic"><use href="#i-plus"/></svg></summary><p>Yes. Next Gen Drywall LLC holds Arizona ROC license 334040 (CR-10 Drywall) and carries general liability and workers’ compensation. The license is statewide for commercial and residential work.</p></details>
-      <details><summary>Do you install fire-rated drywall?<svg class="ic"><use href="#i-plus"/></svg></summary><p>Yes. We install fire-rated assemblies that meet code and project specifications on commercial and multifamily work.</p></details>
-      <details><summary>Can you work in a home we’re living in?<svg class="ic"><use href="#i-plus"/></svg></summary><p>Yes. We work efficiently in occupied homes, keep disruption to a minimum and keep the site clean.</p></details>
-      <details><summary>How do builders get a bid?<svg class="ic"><use href="#i-plus"/></svg></summary><p>Send plans through the bid form. No charge, no obligation, and you get a clear, itemized quote. For production builders we’re happy to set up a standing bid relationship so you’re not starting from scratch each phase.</p></details>
+      <div class="fq"><button class="fq-q" aria-expanded="false"><span class="fq-n">01</span><span class="fq-t">Do I actually need a Level 5 finish?</span><svg class="ic"><use href="#i-plus"/></svg></button><div class="fq-a"><div class="fq-in"><div class="paint"><p>Usually for big open rooms with strong window light or gloss paint, where any lesser finish shows every joint. We’ll tell you honestly whether your walls need it or whether a standard Level 4 will look just as good.</p></div><i class="roller"></i></div></div></div>
+      <div class="fq"><button class="fq-q" aria-expanded="false"><span class="fq-n">02</span><span class="fq-t">Can you match the texture on my walls?</span><svg class="ic"><use href="#i-plus"/></svg></button><div class="fq-a"><div class="fq-in"><div class="paint"><p>Yes. We match orange peel, knockdown and skip trowel, including older hand-applied textures nobody stocks a recipe for. We sample the wall and blend past the patch line so it doesn’t read as a repair.</p></div><i class="roller"></i></div></div></div>
+      <div class="fq"><button class="fq-q" aria-expanded="false"><span class="fq-n">03</span><span class="fq-t">Are you licensed and insured?</span><svg class="ic"><use href="#i-plus"/></svg></button><div class="fq-a"><div class="fq-in"><div class="paint"><p>Yes. Next Gen Drywall LLC holds Arizona ROC license 334040 (CR-10 Drywall) and carries general liability and workers’ compensation. The license is statewide for commercial and residential work.</p></div><i class="roller"></i></div></div></div>
+      <div class="fq"><button class="fq-q" aria-expanded="false"><span class="fq-n">04</span><span class="fq-t">Do you install fire-rated drywall?</span><svg class="ic"><use href="#i-plus"/></svg></button><div class="fq-a"><div class="fq-in"><div class="paint"><p>Yes. We install fire-rated assemblies that meet code and project specifications on commercial and multifamily work.</p></div><i class="roller"></i></div></div></div>
+      <div class="fq"><button class="fq-q" aria-expanded="false"><span class="fq-n">05</span><span class="fq-t">Can you work in a home we’re living in?</span><svg class="ic"><use href="#i-plus"/></svg></button><div class="fq-a"><div class="fq-in"><div class="paint"><p>Yes. We work efficiently in occupied homes, keep disruption to a minimum and keep the site clean.</p></div><i class="roller"></i></div></div></div>
+      <div class="fq"><button class="fq-q" aria-expanded="false"><span class="fq-n">06</span><span class="fq-t">How do builders get a bid?</span><svg class="ic"><use href="#i-plus"/></svg></button><div class="fq-a"><div class="fq-in"><div class="paint"><p>Send plans through the bid form. No charge, no obligation, and you get a clear, itemized quote. For production builders we’re happy to set up a standing bid relationship so you’re not starting from scratch each phase.</p></div><i class="roller"></i></div></div></div>
     </div>
   </div>
 </section>
@@ -453,6 +466,7 @@
 
 <div class="callbar"><a href="#" data-preview-off="1"><svg class="ic"><use href="#i-phone"/></svg>Call</a><a class="cb-bid" href="#bid">Request a bid<svg class="ic"><use href="#i-arrow"/></svg></a></div>
 
-<script type="module" src="assets/app.js?v=p708a6073"></script>
+<script type="importmap">{"imports":{"three":"./assets/vendor/three.module.min.js"}}</script>
+<script type="module" src="assets/app.js?v=p3e78d9d6"></script>
 </body>
 </html>
