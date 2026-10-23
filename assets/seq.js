@@ -1,6 +1,6 @@
-// Scroll-scrubbed first-person footage: 163 frames drawn to a canvas, nearest frame wins.
+// Scroll-scrubbed footage of the wall building itself: 163 frames drawn to a canvas, nearest frame wins.
 // Frames load coarse-to-fine (every 16th, then every 4th, then all) so scrubbing works before the set is in.
-export const STAGES = [0, 0.12, 0.25, 0.5, 0.75, 1];   // hang | fasten | tape | mud | level 5
+export const STAGES = [0, 0.15, 0.24, 0.5, 0.75, 1];   // hang | fasten | tape | mud | level 5
 const N = 163;
 const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
 
@@ -45,7 +45,7 @@ export function mountSequence(canvas, { onStage, onProgress, onLoad, reduced } =
   function frame(t) {
     if (!running) return;
     requestAnimationFrame(frame);
-    if (!reduced) intro = Math.min(.05, ((t - t0) / 2200) * .05);   // the hands lift the sheet a little on load
+    if (!reduced) intro = Math.min(.05, ((t - t0) / 2200) * .05);   // the first sheet starts to lift on load
     const target = Math.max(progress, intro);
     shown += (target - shown) * (reduced ? 1 : .16);
     smx += (mx - smx) * .05; smy += (my - smy) * .05;

@@ -84,7 +84,7 @@ function runFrame() {
 /* ---------- builders: floors move through the trades as you scroll ---------- */
 // production climbs the building: floor 1 is hung first, so mid-scroll every floor sits at a different stage
 const FLOW = [['Hanging', '#d9f23c'], ['Taping', '#e6cf95'], ['Finishing', '#ffffff'], ['Paint-ready', '#7fd6a2']];
-const floorsEl = $$('.fl'), sched = $('.sched');
+const floorsEl = $$('.fl');
 function siteFrame() {
   const r = $('.site-photo').getBoundingClientRect();
   const phase = clamp((innerHeight - r.top) / (r.height + innerHeight)) * 6.3;   // centred photo = every floor at a different stage
@@ -94,7 +94,6 @@ function siteFrame() {
     fl.classList.toggle('on', st >= 0);
     if (st >= 0) { fl.style.setProperty('--c', FLOW[st][1]); $('em', fl).textContent = FLOW[st][0]; }
   });
-  sched.style.setProperty('--grow', clamp((innerHeight * .98 - sched.getBoundingClientRect().top) / 140));
 }
 
 /* ---------- services: cards slide in from the right and stack ---------- */
@@ -143,7 +142,7 @@ onScroll();
 const io = new IntersectionObserver(es => es.forEach(e => {
   if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
 }), { rootMargin: '0px 0px -18% 0px' });
-$$('.permit, .cred, .bid').forEach(el => io.observe(el));
+$$('.permit, .cred, .bid, .gantt').forEach(el => io.observe(el));
 
 /* ---------- crews: panels light up on their own, in random order ---------- */
 (function crews() {

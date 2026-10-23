@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Barlow+Semi+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/site.css?v=pc2e0b2cc">
+<link rel="stylesheet" href="assets/site.css?v=p66cc9704">
 </head>
 <body>
 
@@ -83,7 +83,7 @@
         <a class="hero-phone" href="#" data-preview-off="1"><svg class="ic"><use href="#i-phone"/></svg>480-799-8173</a>
       </div>
       <ol class="build-list" aria-label="How a wall gets built">
-        <li data-s="0"><svg class="ic"><use href="#i-board"/></svg><b>Hang</b><span>Sheet lifted onto studs 16 in on center</span></li>
+        <li data-s="0"><svg class="ic"><use href="#i-board"/></svg><b>Hang</b><span>Sheets up on studs 16 in on center</span></li>
         <li data-s="1"><svg class="ic"><use href="#i-screwgun"/></svg><b>Fasten</b><span>Screws set just under the paper</span></li>
         <li data-s="2"><svg class="ic"><use href="#i-tape"/></svg><b>Tape</b><span>Paper tape bedded over every seam</span></li>
         <li data-s="3"><svg class="ic"><use href="#i-pan"/></svg><b>Mud</b><span>Coats feathered wider every pass</span></li>
@@ -92,13 +92,13 @@
     </div>
 
     <div class="hero-view">
-      <canvas class="hero-canvas" aria-label="First-person footage of drywall being hung, taped, mudded and skimmed to a Level 5 finish"></canvas>
+      <canvas class="hero-canvas" aria-label="A steel stud wall gets hung with drywall, taped, mudded and skimmed to a Level 5 finish as you scroll"></canvas>
       <div class="hero-load" aria-hidden="true"><i></i></div>
       <div class="view-hud" aria-hidden="true">
-        <span class="hud-tl">Your view · Wall A</span>
+        <span class="hud-tl">Wall A · 16'-0" × 8'-0"</span>
         <div class="hud-tape"><div class="hud-ticks"></div><div class="hud-fill"></div><span class="hud-stage">01 · Hang</span></div>
       </div>
-      <span class="scroll-hint" aria-hidden="true">Scroll to pick up the board</span>
+      <span class="scroll-hint" aria-hidden="true">Scroll to build the wall</span>
     </div>
   </div>
 </section>
@@ -294,13 +294,18 @@
     <p class="site-note">Illustration of how we stage a multifamily build</p>
   </div>
   <div class="wrap">
-    <div class="sched" aria-label="Where drywall sits in the schedule">
-      <div class="sched-row"><span>Framing &amp; MEP</span><i style="--a:0;--b:.34" class="bar done"></i></div>
-      <div class="sched-row hl"><span>Drywall · Next Gen</span><i style="--a:.3;--b:.72" class="bar us"></i><em class="flag" style="--x:.72">Inspection</em></div>
-      <div class="sched-row"><span>Paint</span><i style="--a:.66;--b:.9" class="bar"></i></div>
-      <div class="sched-row"><span>Flooring &amp; trim</span><i style="--a:.82;--b:1" class="bar"></i></div>
-      <i class="sched-now" aria-hidden="true"></i>
+    <div class="gantt" role="img" aria-label="Sample schedule: framing, then drywall by Next Gen through inspection, then paint and trim">
+      <div class="g-names"><span class="g-hd">Trade</span><span>Framing &amp; MEP</span><span class="hl">Drywall · Next Gen</span><span>Paint</span><span>Flooring &amp; trim</span></div>
+      <div class="g-area">
+        <div class="g-hd g-weeks"><span>W1</span><span>W2</span><span>W3</span><span>W4</span><span>W5</span><span>W6</span><span>W7</span><span>W8</span><span>W9</span><span>W10</span><span>W11</span><span>W12</span></div>
+        <div class="g-row"><i class="g-bar done" style="--a:0;--b:.34"><em>Framing</em></i></div>
+        <div class="g-row"><i class="g-bar us" style="--a:.3;--b:.72"><em>Hang · tape · finish</em></i></div>
+        <div class="g-row"><i class="g-bar" style="--a:.66;--b:.9"><em>Paint</em></i></div>
+        <div class="g-row"><i class="g-bar" style="--a:.82;--b:1"><em>Trim</em></i></div>
+        <b class="g-ms" style="--x:.72"><span>Inspection</span></b>
+      </div>
     </div>
+    <p class="g-note">Sample schedule. Drywall starts as framing and rough-ins sign off, and wraps before the inspection date.</p>
     <ul class="caps">
       <li><svg class="ic"><use href="#i-fire"/></svg><b>Fire-rated assemblies</b><span>To code and to the project spec</span></li>
       <li><svg class="ic"><use href="#i-building"/></svg><b>Multifamily &amp; apartments</b><span>Production crews built for volume</span></li>
@@ -428,6 +433,6 @@
 
 <div class="callbar"><a href="#" data-preview-off="1"><svg class="ic"><use href="#i-phone"/></svg>Call</a><a class="cb-bid" href="#bid">Request a bid<svg class="ic"><use href="#i-arrow"/></svg></a></div>
 
-<script type="module" src="assets/app.js?v=pc2e0b2cc"></script>
+<script type="module" src="assets/app.js?v=p66cc9704"></script>
 </body>
 </html>
