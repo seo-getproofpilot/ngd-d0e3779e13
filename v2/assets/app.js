@@ -1,7 +1,8 @@
-// Next Gen Drywall v2d.
+// Next Gen Drywall v2f.
 // Two scroll-scrubbed walks share one player: the hero (a house going from bare studs to paint-ready) and the bid
 // walk (a second house, stopping at each thing that sets the price). Each is AI-generated footage joined at its
-// keyframes and cut to frames at 12fps. The walk holds in each room long enough to read it, then moves on.
+// keyframes and cut to every frame at 24fps (tools-seq.py). Scroll is mapped to how far the picture has moved, not to
+// clip time, so fast turns get more scroll and the camera seems to walk at one steady pace.
 const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
 const smooth = t => t * t * (3 - 2 * t);
@@ -9,63 +10,115 @@ const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const small = matchMedia('(max-width: 820px)').matches;
 
 /* ---------- the scrub player ---------- */
-function walk({ section, canvas, seq, N, KEY, HOLD, WALK, vh = 72, eager = false, drift = 1, frameEl, cards, onStage, onFrame, onDraw, focus }) {
+// stops: which of motion.json's keys the walk halts at (one per card)
+function walk({ section, canvas, seq, stops, HOLD, WALK, vh = 72, eager = false, drift = 1, pace = .42, holdPace = 1.4, frameEl, cards, onStage, onFrame, onDraw, focus }) {
   const ctx = canvas.getContext('2d'), dir = small ? 'm' : 'd';
   const SEG = []; let U = 0;
-  for (let k = 0; k < KEY.length; k++) {
+  for (let k = 0; k < stops.length; k++) {
     SEG.push({ kind: 'hold', k, a: U, b: U += HOLD[k] });
-    if (k < KEY.length - 1) SEG.push({ kind: 'walk', k, a: U, b: U += WALK[k] });
+    if (k < stops.length - 1) SEG.push({ kind: 'walk', k, a: U, b: U += WALK[k] });
   }
   section.style.height = `${100 + U * vh}vh`;
-  const frames = new Array(N).fill(null);
-  let loaded = 0, started = false;
-  const order = [];
-  for (const step of [24, 6, 2, 1]) for (let i = 0; i < N; i += step) if (!order.includes(i)) order.push(i);
-  let next = 0;
-  const pump = () => {
-    if (next >= order.length) return;
-    const i = order[next++], im = new Image();
-    im.decoding = 'async';
-    im.onload = im.onerror = () => { if (im.naturalWidth) frames[i] = im; loaded++; onFrame && onFrame(loaded / N); pump(); };
-    im.src = `assets/${seq}/${dir}/${String(i).padStart(3, '0')}.webp`;
+
+  let N = 0, KEY = [], M = [];
+  const blobs = [], bmps = new Map();
+  let fetched = 0, inflight = 0, decoding = 0, want = 0, last = null;
+  const url = i => `assets/${seq}/${dir}/${String(i).padStart(4, '0')}.webp`;
+  // fetch order: a coarse pass first so the whole walk is scrubbable fast, then fill in, always nearest to where you are
+  const nextFetch = () => {
+    let best = -1, cost = Infinity;
+    for (let i = 0; i < N; i++) {
+      if (blobs[i] !== undefined) continue;
+      const c = Math.abs(i - want) / (i % 8 === 0 ? 10 : i % 2 === 0 ? 3 : 1);
+      if (c < cost) { cost = c; best = i; }
+    }
+    return best;
   };
-  const start = () => { if (started) return; started = true; for (let k = 0; k < 6; k++) pump(); };
+  const pump = () => {
+    while (inflight < 8) {
+      const i = nextFetch(); if (i < 0) return;
+      blobs[i] = null; inflight++;
+      fetch(url(i)).then(r => r.ok ? r.blob() : null).catch(() => null).then(b => {
+        blobs[i] = b || false; inflight--; fetched++; onFrame && onFrame(fetched / N); pump();
+      });
+    }
+  };
+  // decoded frames live only in a window around where you are; everything else stays compressed
+  const AHEAD = small ? 50 : 80, BEHIND = small ? 30 : 40;
+  const decode = () => {
+    for (const [i, b] of bmps) if (i < want - BEHIND - 20 || i > want + AHEAD + 20) { if (b && b !== last) b.close && b.close(); bmps.delete(i); }   // never close the frame on screen
+    for (let d = 0; d <= AHEAD && decoding < 6; d++) for (const i of d ? [want + d, want - d] : [want]) {
+      if (i < 0 || i >= N || i < want - BEHIND || bmps.has(i) || !blobs[i] || decoding >= 6) continue;
+      decoding++; bmps.set(i, null);
+      createImageBitmap(blobs[i]).then(b => { if (bmps.has(i)) bmps.set(i, b); else b.close && b.close(); }).catch(() => bmps.delete(i)).finally(() => decoding--);
+    }
+  };
+  let ready = false;
+  const start = () => fetch(`assets/${seq}/motion.json`).then(r => r.json()).then(j => {
+    N = j.n; KEY = stops.map(s => j.keys[s]); M = j.motion; ready = true; pump();
+  });
   if (eager) start();
-  else new IntersectionObserver(([e], io) => { if (e.isIntersecting) { start(); io.disconnect(); } }, { rootMargin: '1600px 0px' }).observe(section);
-  const nearest = i => { for (let d = 0; d < N; d++) { if (frames[i - d]) return i - d; if (frames[i + d]) return i + d; } return -1; };
+  else new IntersectionObserver(([e], io) => { if (e.isIntersecting) { start(); io.disconnect(); } }, { rootMargin: '1800px 0px' }).observe(section);
 
   let W = 1, H = 1, DPR = 1;
   const resize = () => { DPR = Math.min(devicePixelRatio || 1, 2); W = canvas.clientWidth; H = canvas.clientHeight; canvas.width = Math.round(W * DPR); canvas.height = Math.round(H * DPR); };
   addEventListener('resize', resize); resize();
   const posU = () => { const r = section.getBoundingClientRect(), span = r.height - innerHeight; return clamp(-r.top / span) * U; };
+  // the frame whose cumulative motion matches m, between frames a and b
+  const atMotion = (m, a, b) => {
+    let lo = a, hi = b;
+    while (hi - lo > 1) { const mid = (lo + hi) >> 1; if (M[mid] < m) lo = mid; else hi = mid; }
+    const span = M[hi] - M[lo];
+    return lo + (span > 0 ? clamp((m - M[lo]) / span) : 0);
+  };
   const frameAt = u => {
     for (const s of SEG) if (u <= s.b) {
       if (s.kind === 'hold') return KEY[s.k];
-      return KEY[s.k] + (KEY[s.k + 1] - KEY[s.k]) * smooth((u - s.a) / (s.b - s.a));
+      const t = (u - s.a) / (s.b - s.a), te = .8 * t + .2 * smooth(t);   // a touch of ease at each end, like a real stop
+      const a = KEY[s.k], b = KEY[s.k + 1];
+      return atMotion(M[a] + te * (M[b] - M[a]), a, b);
     }
     return KEY[KEY.length - 1];
   };
-  let shown = 0, stage = -1;
-  const t0 = performance.now();
+  // The scroll only says where the walk is headed. A playhead walks there at one steady pace, however hard you
+  // scroll: it eases up to speed, holds it, and eases to a stop, so the footage never sprints or lurches.
+  // `pace` is walking speed in scroll units a second; standing in a room passes quicker (`holdPace`).
+  let uP = posU(), vel = 0, shown = 0, stage = -1, amp = drift, prev = performance.now();
+  const t0 = prev;
+  const segAt = u => SEG.find(sg => u <= sg.b) || SEG[SEG.length - 1];
   function draw(now) {
-    const u = posU(), target = frameAt(u);
-    shown += (target - shown) * (reduced ? 1 : .11);
-    if (Math.abs(target - shown) < .01) shown = target;
+    const dt = Math.min(.05, (now - prev) / 1000); prev = now;
+    const goal = posU(), gap = goal - uP;
+    if (reduced || window.__ngdInstant) uP = goal;   // __ngdInstant: screenshot QC only
+    else {
+      const top = segAt(uP).kind === 'hold' ? holdPace : pace;
+      const want_v = Math.sign(gap) * Math.min(top, Math.abs(gap) * 2.2);   // slow down as it arrives
+      vel += (want_v - vel) * (1 - Math.exp(-dt * 5));                       // and speed up gently
+      uP += vel * dt;
+      if (Math.abs(gap) < .002 && Math.abs(vel) < .01) { uP = goal; vel = 0; }
+    }
+    const u = uP;
+    if (window.__ngdProbe && section.classList.contains('tour')) window.__ngdProbe.push([now, uP, goal]);   // QC only
+    if (ready) {
+      shown = frameAt(u);
+      want = Math.round(shown); pump(); decode();
+      amp += ((reduced ? 0 : drift * (Math.abs(vel) > .05 && segAt(u).kind === 'walk' ? 1.5 : 1)) - amp) * (1 - Math.exp(-dt * 2.5));
+    }
     const s = Math.max(W / 16, H / 9) * 1.07, w = 16 * s, h = 9 * s, tt = (now - t0) / 1000;
-    const amp = reduced ? 0 : drift * (1 + (Math.abs(target - shown) > .3 ? .6 : 0));
     const dx = (Math.sin(tt * .53) * 5 + Math.sin(tt * 1.37) * 2) * amp, dy = (Math.sin(tt * .71 + 1) * 3.5 + Math.sin(tt * 2.1) * 1.2) * amp;
     const rot = (Math.sin(tt * .43) * .0016 + Math.sin(tt * 1.1) * .0006) * amp;
-    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-    ctx.fillStyle = '#151618'; ctx.fillRect(0, 0, W, H);
     // on a tall phone the cover crop is narrow; `focus` says which part of the frame to keep (0 left, 1 right)
     const fx = focus ? focus(shown) : .5, cx = clamp(W / 2 + (.5 - fx) * w, W - w / 2, w / 2) - W / 2;
-    ctx.setTransform(DPR, 0, 0, DPR, (W / 2 + dx + cx) * DPR, (H / 2 + dy) * DPR);
-    ctx.rotate(rot); ctx.scale(w / W, h / H);
-    const a = Math.floor(shown), b = Math.min(N - 1, a + 1), fr = shown - a, fa = frames[a] ? a : nearest(a);
-    const put = (i, al) => { ctx.globalAlpha = al; ctx.drawImage(frames[i], -W / 2, -H / 2, W, H); };
-    if (fa >= 0) put(fa, 1);
-    if (fa === a && fr > .02 && frames[b]) put(b, fr);   // only blend true neighbours, never a stand-in frame
-    ctx.globalAlpha = 1;
+    let im = bmps.get(want);
+    if (!im) for (let d = 1; d < 40 && !im; d++) im = bmps.get(want - d) || bmps.get(want + d);
+    if (im) last = im;
+    if (last) {
+      ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+      ctx.fillStyle = '#151618'; ctx.fillRect(0, 0, W, H);
+      ctx.setTransform(DPR, 0, 0, DPR, (W / 2 + dx + cx) * DPR, (H / 2 + dy) * DPR);
+      ctx.rotate(rot); ctx.scale(w / W, h / H);
+      ctx.drawImage(last, -W / 2, -H / 2, W, H);
+    }
     onDraw && onDraw(shown, { x: (W - w) / 2 + dx + cx, y: (H - h) / 2 + dy, w, h });
     if (frameEl) Object.assign(frameEl.style, { left: `${(W - w) / 2 + dx + cx}px`, top: `${(H - h) / 2 + dy}px`, width: `${w}px`, height: `${h}px` });
     // which stage you are in, and how visible its card is
@@ -74,7 +127,7 @@ function walk({ section, canvas, seq, N, KEY, HOLD, WALK, vh = 72, eager = false
       if (sg.kind === 'hold') { k = sg.k; vis = 1; }
       else { const t = (u - sg.a) / (sg.b - sg.a); k = t < .5 ? sg.k : sg.k + 1; vis = t < .5 ? 1 - smooth(clamp(t / .22)) : smooth(clamp((t - .78) / .22)); }
     }
-    if (u >= U) { k = KEY.length - 1; vis = 1; }
+    if (u >= U) { k = stops.length - 1; vis = 1; }
     cards.forEach((c, i) => {
       const on = i === k ? vis : 0;
       c.style.opacity = on; c.style.transform = `translateY(${(1 - on) * 20}px)`; c.style.visibility = on > .01 ? 'visible' : 'hidden';
@@ -83,8 +136,9 @@ function walk({ section, canvas, seq, N, KEY, HOLD, WALK, vh = 72, eager = false
     onStage.vis && onStage.vis(u / U, vis);
   }
   let on = true;
-  new IntersectionObserver(([e]) => { on = e.isIntersecting; }, { rootMargin: '100px' }).observe(section);
-  const loop = now => { if (on) draw(now); requestAnimationFrame(loop); };
+  new IntersectionObserver(([e]) => { on = e.isIntersecting; }, { rootMargin: '200px' }).observe(section);
+  // off screen, the playhead jumps straight to the scroll so you come back to the right room
+  const loop = now => { if (on) draw(now); else { prev = now; uP = posU(); vel = 0; } requestAnimationFrame(loop); };
   requestAnimationFrame(loop);
   return {
     goTo(k) {
@@ -114,8 +168,6 @@ function quadMatrix(w, h, q) {
     'Put a light across it. Not a ridge anywhere.',
     'And this is the part you keep.',
   ];
-  // a short walk up from the yard sign was joined onto the front of the footage
-  const SEQ_N = 589, SEQ_KEY = [0, 204, 300, 396, 492, 588];
   const SIGN = [[1947.5 / 2560, 762 / 1440], [2204 / 2560, 763 / 1440], [2204 / 2560, 980 / 1440], [1947.5 / 2560, 999 / 1440]], sign = $('.sign-hd');
   const routeBtns = $$('.route button'), caption = $('.caption'), quote = $('.caption blockquote'), fill = $('.route-line i'), loadBar = $('.tour-load i');
   let capT;
@@ -127,16 +179,16 @@ function quadMatrix(w, h, q) {
   };
   onStage.vis = (p, vis) => { fill.style.transform = `scaleX(${p})`; caption.style.opacity = vis > .6 ? '' : 0; };
   const hero = walk({
-    section: $('.tour'), canvas: $('.tour-cv'), seq: 'seq', N: SEQ_N, KEY: SEQ_KEY,
-    HOLD: [.6, .9, .9, .9, .9, 1.2], WALK: [2.6, 1.15, 1.15, 1.15, 1.15], eager: true,
+    // clips: sign → door, door → foyer, then one per room; the walk doesn't stop at the door
+    section: $('.tour'), canvas: $('.tour-cv'), seq: 'seq', stops: [0, 2, 3, 4, 5, 6],
+    HOLD: [.6, .9, .9, .9, .9, 1.2], WALK: [2.8, 1.2, 1.2, 1.2, 1.2], eager: true,
     cards: [$('.tour-intro'), ...$$('.room')], onStage,
     // open on the yard sign, then ease back to centre as you walk to the door
-    focus: shown => .5 + .32 * (1 - smooth(clamp((shown - 6) / 60))),
+    focus: shown => .5 + .32 * (1 - smooth(clamp((shown - 12) / 120))),
     onDraw: (shown, r) => {
-      // the sign's corners in the opening frame, as fractions of the frame
       const q = SIGN.map(([u, v]) => [r.x + u * r.w, r.y + v * r.h]);
       sign.style.transform = quadMatrix(1050, 930, q);
-      sign.style.opacity = clamp(1 - shown / .35);   // hand off to the footage the moment the walk starts
+      sign.style.opacity = clamp(1 - shown / .7);   // hand off to the footage the moment the walk starts
     },
     onFrame: f => { loadBar.style.transform = `scaleX(${f})`; if (f >= 1) $('.tour-load').classList.add('done'); },
   });
@@ -156,8 +208,8 @@ function quadMatrix(w, h, q) {
   };
   onStage.vis = (p, vis) => { rail.style.transform = `scaleX(${p})`; $('.bw-frame').style.opacity = vis > .5 ? 1 : 0; };
   walk({
-    section: $('.bidwalk'), canvas: $('.bw-cv'), seq: 'seq2', N: 529, KEY: [0, 0, 96, 192, 264, 336, 432, 528],
-    HOLD: [.7, .9, .9, .9, .9, .9, .9, 1.3], WALK: [.4, 1.1, 1.1, .9, .9, 1.1, 1.3], drift: .6,
+    section: $('.bidwalk'), canvas: $('.bw-cv'), seq: 'seq2', stops: [0, 0, 1, 2, 3, 4, 5, 6],
+    HOLD: [.7, .9, .9, .9, .9, .9, .9, 1.3], WALK: [.4, 1.2, 1.2, 1, 1, 1.2, 1.4], drift: .6,
     frameEl: $('.bw-frame'), cards: [$('.bw-intro'), ...$$('.stop')], onStage,
   });
 }
