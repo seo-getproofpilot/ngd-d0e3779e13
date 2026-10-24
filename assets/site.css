@@ -376,7 +376,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
   .kicker { margin-bottom: 12px; font-size: 10.5px; }
   .hud-tl { display: none; } .hud-tr { top: 18px; right: 18px; }
   .hud-tape { left: 12px; right: 12px; top: 12px; height: 24px; }
-  .scroll-hint { bottom: 12px; }
+  .scroll-hint { bottom: auto; top: 46px; }
   .lv-pin { grid-template-columns: 1fr; grid-template-rows: auto 1fr; align-content: start; gap: 14px; padding-top: 16px; }
   .lv-info .h2, .lv-info .eyebrow { display: none; }
   .lv-read { min-height: 0; padding-top: 12px; }
