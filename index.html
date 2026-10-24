@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Barlow+Semi+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/site.css?v=p66cc9704">
+<link rel="stylesheet" href="assets/site.css?v=p7023903c">
 </head>
 <body>
 
@@ -194,11 +194,12 @@
       </div>
       <p class="lede">Low light is how we check a repair before we call it done. Move your light across each sample.</p>
     </div>
+    <span class="lab-word" aria-hidden="true">Matched.</span>
     <div class="lab-grid">
-      <figure class="lab-p"><div class="lab-img"><img src="assets/img/tex-orange-peel-flat.webp" alt="" loading="lazy"><img class="rake" src="assets/img/tex-orange-peel-rake.webp" alt="" loading="lazy"><i class="beam"></i></div><figcaption><b>Orange peel</b><span>Fine spatter, rolled smooth</span></figcaption></figure>
-      <figure class="lab-p"><div class="lab-img"><img src="assets/img/tex-knockdown-flat.webp" alt="" loading="lazy"><img class="rake" src="assets/img/tex-knockdown-rake.webp" alt="" loading="lazy"><i class="beam"></i></div><figcaption><b>Knockdown</b><span>Spatter, knocked flat with a knife</span></figcaption></figure>
-      <figure class="lab-p"><div class="lab-img"><img src="assets/img/tex-skip-trowel-flat.webp" alt="" loading="lazy"><img class="rake" src="assets/img/tex-skip-trowel-rake.webp" alt="" loading="lazy"><i class="beam"></i></div><figcaption><b>Skip trowel</b><span>Hand-troweled, every wall unique</span></figcaption></figure>
-      <figure class="lab-p"><div class="lab-img"><img src="assets/img/tex-smooth-flat.webp" alt="" loading="lazy"><img class="rake" src="assets/img/tex-smooth-rake.webp" alt="" loading="lazy"><i class="beam"></i></div><figcaption><b>Smooth</b><span>Level 5, nothing to hide behind</span></figcaption></figure>
+      <figure class="lab-p"><i class="lab-tape" aria-hidden="true"></i><div class="lab-frame"><div class="lab-img"><img src="assets/img/tex-orange-peel-flat.webp" alt="" loading="lazy"><img class="rake" src="assets/img/tex-orange-peel-rake.webp" alt="" loading="lazy"><i class="beam"></i></div></div><figcaption><em>Sample 01</em><b>Orange peel</b><span>Fine spatter, rolled smooth</span></figcaption></figure>
+      <figure class="lab-p"><i class="lab-tape" aria-hidden="true"></i><div class="lab-frame"><div class="lab-img"><img src="assets/img/tex-knockdown-flat.webp" alt="" loading="lazy"><img class="rake" src="assets/img/tex-knockdown-rake.webp" alt="" loading="lazy"><i class="beam"></i></div></div><figcaption><em>Sample 02</em><b>Knockdown</b><span>Spatter, knocked flat with a knife</span></figcaption></figure>
+      <figure class="lab-p"><i class="lab-tape" aria-hidden="true"></i><div class="lab-frame"><div class="lab-img"><img src="assets/img/tex-skip-trowel-flat.webp" alt="" loading="lazy"><img class="rake" src="assets/img/tex-skip-trowel-rake.webp" alt="" loading="lazy"><i class="beam"></i></div></div><figcaption><em>Sample 03</em><b>Skip trowel</b><span>Hand-troweled, every wall unique</span></figcaption></figure>
+      <figure class="lab-p"><i class="lab-tape" aria-hidden="true"></i><div class="lab-frame"><div class="lab-img"><img src="assets/img/tex-smooth-flat.webp" alt="" loading="lazy"><img class="rake" src="assets/img/tex-smooth-rake.webp" alt="" loading="lazy"><i class="beam"></i></div></div><figcaption><em>Sample 04</em><b>Smooth</b><span>Level 5, nothing to hide behind</span></figcaption></figure>
     </div>
   </div>
 </section>
@@ -253,20 +254,47 @@
   <div class="try">
     <div class="wrap try-grid">
       <div class="try-copy">
-        <p class="eyebrow eyebrow-dark">Step 03, try it</p>
-        <h3 class="h3">Skim the joint yourself.</h3>
-        <p>This is a Level 2 joint under low sunset light. Drag the knife across it until nothing shows. That’s the standard we finish to.</p>
-        <div class="try-meter"><span class="skim-pct"><b>0</b>%</span><span>skimmed</span></div>
-        <button class="skim-reset" type="button">Reset the wall</button>
+        <p class="eyebrow eyebrow-dark">Step 03, up close</p>
+        <h3 class="h3">Same wall.<br>Same 6:40 PM sun.</h3>
+        <p>Left is a joint the way a rushed crew leaves it. Right is what we hand you. Drag the knife across and watch the joint disappear.</p>
+        <ul class="try-keys"><li><b>Level 2</b>One coat, ridges left, the joint shows through paint</li><li><b>Level 5</b>Taped, three coats, sanded, skimmed. Nothing flashes</li></ul>
       </div>
-      <div class="skim-card">
-        <div class="skim-canvas-wrap">
-          <canvas class="skim-canvas" width="900" height="560" aria-label="Drag across the wall to skim it with a taping knife"></canvas>
-          <div class="skim-hint"><svg class="ic"><use href="#i-knife"/></svg>Drag the knife across the wall</div>
-          <div class="skim-done"><svg class="ic"><use href="#i-check"/></svg>Level 5. Paint-ready.</div>
-          <svg class="skim-knife" viewBox="0 0 120 60" aria-hidden="true"><path d="M8 50h104l-14-26H22z" fill="#cfd5da" stroke="#8b9399"/><path d="M44 24v-8h32v8" fill="#9aa2a8"/><rect x="50" y="2" width="20" height="14" rx="3" fill="#d9f23c"/></svg>
-        </div>
+      <div class="cmp" style="--x:50%">
+        <img src="assets/img/level-2-rake.webp" alt="A Level 2 drywall joint under low raking light, ridges and tape edges visible" loading="lazy">
+        <div class="cmp-top"><img src="assets/img/level-5-rake.webp" alt="The same wall finished to Level 5 under the same light, no joint visible" loading="lazy"></div>
+        <span class="cmp-tag cmp-l">Level 2 · rushed</span><span class="cmp-tag cmp-r">Level 5 · Next Gen</span>
+        <div class="cmp-h" aria-hidden="true"><svg viewBox="0 0 64 100"><path d="M10 92h44l-6-26H16z" fill="#d3d9de" stroke="#5d656b" stroke-width="2"/><path d="M24 66V58h16v8" fill="#9aa2a8"/><rect x="25" y="20" width="14" height="38" rx="5" fill="#1b1b1b"/><rect x="25" y="23" width="14" height="9" rx="3" fill="#d9f23c"/></svg></div>
+        <input class="cmp-range" type="range" min="0" max="100" value="50" aria-label="Slide between a Level 2 joint and a Level 5 finish">
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CREDENTIALS: inspection card + badges on a rail ============ -->
+<section class="cred board-bg" id="crew">
+  <div class="wrap cred-top">
+    <div class="cred-copy">
+      <h2 class="h2">Licensed in Arizona.<br>Ask for the numbers.</h2>
+      <p class="lede">Next Gen Drywall LLC is licensed for commercial and residential work statewide and carries general liability and workers’ comp. The people below run your job.</p>
+    </div>
+    <div class="permit">
+      <div class="pm-head"><span>Credentials record</span><span>Post on site</span></div>
+      <div class="pm-title"><b>Next Gen Drywall LLC</b><span>San Tan Valley, Arizona · Est. 2021</span></div>
+      <div class="pm-row"><span>Contractor license</span><b>ROC-334040</b><i class="stamp">Active</i></div>
+      <div class="pm-row"><span>Classification</span><b>CR-10 Drywall</b><i class="stamp">Statewide</i></div>
+      <div class="pm-row"><span>General liability</span><b>Carried</b><i class="stamp">Insured</i></div>
+      <div class="pm-row"><span>Workers’ comp</span><b>Carried</b><i class="stamp">Insured</i></div>
+      <div class="pm-row"><span>Work types</span><b>Commercial · Residential</b><i class="stamp">Both</i></div>
+    </div>
+  </div>
+  <div class="rail-wrap">
+    <div class="rail" aria-hidden="true"></div>
+    <div class="badges">
+      <article class="badge"><i class="lanyard"></i><div class="bd"><div class="bd-top"><img src="assets/img/logo-white.png" alt=""><span>Crew ID</span></div><img class="bd-photo" src="assets/img/crew-johnathan.webp" alt="Johnathan Becerra, owner of Next Gen Drywall" loading="lazy"><div class="bd-body"><b>Johnathan Becerra</b><span>Owner</span><p>Raised in a drywall family and led his own finishing crews. Still on every job.</p></div><div class="bd-code"></div></div></article>
+      <article class="badge"><i class="lanyard"></i><div class="bd"><div class="bd-top"><img src="assets/img/logo-white.png" alt=""><span>Crew ID</span></div><img class="bd-photo" src="assets/img/crew-daniel.webp" alt="Daniel Perez, assistant finishing foreman" loading="lazy"><div class="bd-body"><b>Daniel Perez</b><span>Assistant finishing foreman</span></div><div class="bd-code"></div></div></article>
+      <article class="badge"><i class="lanyard"></i><div class="bd"><div class="bd-top"><img src="assets/img/logo-white.png" alt=""><span>Crew ID</span></div><img class="bd-photo" src="assets/img/crew-jorge.webp" alt="Jorge Flores, finishing foreman" loading="lazy"><div class="bd-body"><b>Jorge Flores</b><span>Finishing foreman</span></div><div class="bd-code"></div></div></article>
+      <article class="badge"><i class="lanyard"></i><div class="bd"><div class="bd-top"><img src="assets/img/logo-white.png" alt=""><span>Crew ID</span></div><img class="bd-photo" src="assets/img/crew-luis.webp" alt="Luis Espinoza, general finishing foreman" loading="lazy"><div class="bd-body"><b>Luis Espinoza</b><span>General finishing foreman</span></div><div class="bd-code"></div></div></article>
+      <article class="badge"><i class="lanyard"></i><div class="bd"><div class="bd-top"><img src="assets/img/logo-white.png" alt=""><span>Crew ID</span></div><img class="bd-photo" src="assets/img/crew-jose.webp" alt="Jose Dennis Antunez, general hanging foreman" loading="lazy"><div class="bd-body"><b>Jose Dennis Antunez</b><span>General hanging foreman</span></div><div class="bd-code"></div></div></article>
     </div>
   </div>
 </section>
@@ -313,35 +341,6 @@
       <li><svg class="ic"><use href="#i-house"/></svg><b>Production &amp; custom homes</b><span>Same standard on lot 300 as on a one-off</span></li>
       <li><svg class="ic"><use href="#i-clipboard"/></svg><b>Standing bids</b><span>No starting from scratch every phase</span></li>
     </ul>
-  </div>
-</section>
-
-<!-- ============ CREDENTIALS: inspection card + badges on a rail ============ -->
-<section class="cred board-bg" id="crew">
-  <div class="wrap cred-top">
-    <div class="cred-copy">
-      <h2 class="h2">Licensed in Arizona.<br>Ask for the numbers.</h2>
-      <p class="lede">Next Gen Drywall LLC is licensed for commercial and residential work statewide and carries general liability and workers’ comp. The people below run your job.</p>
-    </div>
-    <div class="permit">
-      <div class="pm-head"><span>Credentials record</span><span>Post on site</span></div>
-      <div class="pm-title"><b>Next Gen Drywall LLC</b><span>San Tan Valley, Arizona · Est. 2021</span></div>
-      <div class="pm-row"><span>Contractor license</span><b>ROC-334040</b><i class="stamp">Active</i></div>
-      <div class="pm-row"><span>Classification</span><b>CR-10 Drywall</b><i class="stamp">Statewide</i></div>
-      <div class="pm-row"><span>General liability</span><b>Carried</b><i class="stamp">Insured</i></div>
-      <div class="pm-row"><span>Workers’ comp</span><b>Carried</b><i class="stamp">Insured</i></div>
-      <div class="pm-row"><span>Work types</span><b>Commercial · Residential</b><i class="stamp">Both</i></div>
-    </div>
-  </div>
-  <div class="rail-wrap">
-    <div class="rail" aria-hidden="true"></div>
-    <div class="badges">
-      <article class="badge"><i class="lanyard"></i><div class="bd"><div class="bd-top"><img src="assets/img/logo-white.png" alt=""><span>Crew ID</span></div><img class="bd-photo" src="assets/img/crew-johnathan.webp" alt="Johnathan Becerra, owner of Next Gen Drywall" loading="lazy"><div class="bd-body"><b>Johnathan Becerra</b><span>Owner</span><p>Raised in a drywall family and led his own finishing crews. Still on every job.</p></div><div class="bd-code"></div></div></article>
-      <article class="badge"><i class="lanyard"></i><div class="bd"><div class="bd-top"><img src="assets/img/logo-white.png" alt=""><span>Crew ID</span></div><img class="bd-photo" src="assets/img/crew-daniel.webp" alt="Daniel Perez, assistant finishing foreman" loading="lazy"><div class="bd-body"><b>Daniel Perez</b><span>Assistant finishing foreman</span></div><div class="bd-code"></div></div></article>
-      <article class="badge"><i class="lanyard"></i><div class="bd"><div class="bd-top"><img src="assets/img/logo-white.png" alt=""><span>Crew ID</span></div><img class="bd-photo" src="assets/img/crew-jorge.webp" alt="Jorge Flores, finishing foreman" loading="lazy"><div class="bd-body"><b>Jorge Flores</b><span>Finishing foreman</span></div><div class="bd-code"></div></div></article>
-      <article class="badge"><i class="lanyard"></i><div class="bd"><div class="bd-top"><img src="assets/img/logo-white.png" alt=""><span>Crew ID</span></div><img class="bd-photo" src="assets/img/crew-luis.webp" alt="Luis Espinoza, general finishing foreman" loading="lazy"><div class="bd-body"><b>Luis Espinoza</b><span>General finishing foreman</span></div><div class="bd-code"></div></div></article>
-      <article class="badge"><i class="lanyard"></i><div class="bd"><div class="bd-top"><img src="assets/img/logo-white.png" alt=""><span>Crew ID</span></div><img class="bd-photo" src="assets/img/crew-jose.webp" alt="Jose Dennis Antunez, general hanging foreman" loading="lazy"><div class="bd-body"><b>Jose Dennis Antunez</b><span>General hanging foreman</span></div><div class="bd-code"></div></div></article>
-    </div>
   </div>
 </section>
 
@@ -433,6 +432,6 @@
 
 <div class="callbar"><a href="#" data-preview-off="1"><svg class="ic"><use href="#i-phone"/></svg>Call</a><a class="cb-bid" href="#bid">Request a bid<svg class="ic"><use href="#i-arrow"/></svg></a></div>
 
-<script type="module" src="assets/app.js?v=p66cc9704"></script>
+<script type="module" src="assets/app.js?v=p7023903c"></script>
 </body>
 </html>

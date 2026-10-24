@@ -170,59 +170,22 @@ $$('.fq').forEach(f => $('.fq-q', f).addEventListener('click', () => {
   f.classList.toggle('open', open); $('.fq-q', f).setAttribute('aria-expanded', open);
 }));
 
-/* ---------- step 03: skim the wall with a knife ---------- */
-(function skimGame() {
-  const host = $('.try'), cv = $('.skim-canvas'), ctx = cv.getContext('2d');
-  const knife = $('.skim-knife'), pct = $('.skim-pct b');
-  const rough = new Image(), smooth = new Image();
-  rough.src = 'assets/img/skim-rough.webp'; smooth.src = 'assets/img/skim-smooth.webp';
-  const mask = document.createElement('canvas'); mask.width = 900; mask.height = 560;
-  const mctx = mask.getContext('2d');
-  const tmp = document.createElement('canvas'); tmp.width = 900; tmp.height = 560;
-  const tctx = tmp.getContext('2d');
-  const probe = document.createElement('canvas'); probe.width = 90; probe.height = 56;
-  const pctx = probe.getContext('2d', { willReadFrequently: true });
-  let last = null, dirty = true, loaded = 0, done = false;
-  const draw = () => {
-    if (loaded < 2) return;
-    ctx.drawImage(rough, 0, 0, 900, 560);
-    tctx.clearRect(0, 0, 900, 560); tctx.globalCompositeOperation = 'source-over';
-    tctx.drawImage(smooth, 0, 0, 900, 560);
-    tctx.globalCompositeOperation = 'destination-in'; tctx.drawImage(mask, 0, 0);
-    ctx.drawImage(tmp, 0, 0);
-  };
-  [rough, smooth].forEach(im => im.onload = () => { loaded++; dirty = true; });
-  const toCanvas = e => { const r = cv.getBoundingClientRect(); return { x: (e.clientX - r.left) / r.width * 900, y: (e.clientY - r.top) / r.height * 560, rx: e.clientX - r.left, ry: e.clientY - r.top }; };
-  const stroke = (a, b) => {
-    const steps = Math.max(1, Math.ceil(Math.hypot(b.x - a.x, b.y - a.y) / 6));
-    mctx.fillStyle = '#000';
-    for (let i = 0; i <= steps; i++) {
-      const x = a.x + (b.x - a.x) * i / steps, y = a.y + (b.y - a.y) * i / steps;
-      mctx.globalAlpha = .9; mctx.fillRect(x - 95, y - 16, 190, 32);
-    }
-    mctx.globalAlpha = 1; dirty = true;
-  };
-  const measure = () => {
-    pctx.clearRect(0, 0, 90, 56); pctx.drawImage(mask, 0, 0, 90, 56);
-    const d = pctx.getImageData(0, 0, 90, 56).data; let n = 0;
-    for (let i = 3; i < d.length; i += 4) if (d[i] > 160) n++;
-    const v = Math.round(n / (90 * 56) * 100); pct.textContent = v;
-    if (v >= 85 && !done) { done = true; host.classList.add('done'); mctx.fillRect(0, 0, 900, 560); dirty = true; pct.textContent = 100; }
-  };
-  const loop = () => { if (dirty) { draw(); dirty = false; } requestAnimationFrame(loop); };
-  loop();
-  const moveKnife = p => { knife.style.transform = `translate(${p.rx - 60}px, ${p.ry - 46}px)`; };
-  cv.addEventListener('pointerdown', e => { try { cv.setPointerCapture(e.pointerId); } catch {} last = toCanvas(e); host.classList.add('started', 'dragging'); stroke(last, last); moveKnife(last); });
-  let mt = 0;
-  cv.addEventListener('pointermove', e => {
-    const p = toCanvas(e); moveKnife(p); if (!last) return; stroke(last, p); last = p;
-    if (performance.now() - mt > 160) { mt = performance.now(); measure(); }
-  });
-  const end = () => { if (!last) return; last = null; host.classList.remove('dragging'); measure(); };
-  cv.addEventListener('pointerup', end); cv.addEventListener('pointercancel', end);
-  $('.skim-reset').addEventListener('click', () => {
-    mctx.clearRect(0, 0, 900, 560); done = false; host.classList.remove('done', 'started'); pct.textContent = 0; dirty = true;
-  });
+/* ---------- step 03: drag between a rushed joint and a Level 5 finish ---------- */
+(function compare() {
+  const box = $('.cmp'), range = $('.cmp-range');
+  const set = v => box.style.setProperty('--x', v + '%');
+  range.addEventListener('input', () => set(range.value));
+  if (reduced) return;
+  // one demo sweep the first time it comes into view
+  const io2 = new IntersectionObserver(([e]) => {
+    if (!e.isIntersecting) return; io2.disconnect();
+    const t0 = performance.now();
+    const step = t => { const k = Math.min(1, (t - t0) / 2400);
+      const v = k < .5 ? 50 + Math.sin(k * 2 * Math.PI) * 38 : 50 - Math.sin((k - .5) * 2 * Math.PI) * 38;
+      range.value = v; set(v); if (k < 1) requestAnimationFrame(step); };
+    requestAnimationFrame(step);
+  }, { threshold: .5 });
+  io2.observe(box);
 })();
 
 /* ---------- bid form: prefilled email (demo has no backend) ---------- */
