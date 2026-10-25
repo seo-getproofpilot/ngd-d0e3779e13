@@ -191,7 +191,7 @@ function quadMatrix(w, h, q) {
     HOLD: [.6, .9, .9, .9, .9, 1.2], WALK: [2.8, 1.2, 1.2, 1.2, 1.2], eager: true,
     cards: [$('.tour-intro'), ...$$('.room')], onStage,
     // open on the yard sign, then ease back to centre as you walk to the door
-    focus: shown => .5 + .34 * (1 - smooth(clamp((shown - 12) / 110))),
+    focus: shown => .5 + .18 * (1 - smooth(clamp((shown - 12) / 110))),
     onFrame: f => { loadBar.style.transform = `scaleX(${f})`; if (f >= 1) $('.tour-load').classList.add('done'); },
   });
   routeBtns.forEach(b => b.addEventListener('click', () => hero.goTo(+b.dataset.go)));
