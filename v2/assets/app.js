@@ -1,18 +1,21 @@
-// Next Gen Drywall v2f.
+// Next Gen Drywall v2g.
 // Two scroll-scrubbed walks share one player: the hero (a house going from bare studs to paint-ready) and the bid
 // walk (a second house, stopping at each thing that sets the price). Each is AI-generated footage joined at its
-// keyframes and cut to every frame at 24fps (tools-seq.py). Scroll is mapped to how far the picture has moved, not to
-// clip time, so fast turns get more scroll and the camera seems to walk at one steady pace.
+// keyframes, encoded as forward and reversed video (tools-video.py). Scroll is mapped to how far the picture has moved
+// (motion.json from tools-seq.py), not to clip time, so fast turns get more scroll and the camera walks at one pace.
 const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
 const smooth = t => t * t * (3 - 2 * t);
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const small = matchMedia('(max-width: 820px)').matches;
 
-/* ---------- the scrub player ---------- */
-// stops: which of motion.json's keys the walk halts at (one per card)
-function walk({ section, canvas, seq, stops, HOLD, WALK, vh = 72, eager = false, drift = 1, pace = .42, holdPace = 1.4, frameEl, cards, onStage, onFrame, onDraw, focus }) {
-  const ctx = canvas.getContext('2d'), dir = small ? 'm' : 'd';
+/* ---------- the walk player ---------- */
+// The footage plays as real video (hardware-decoded, so it stays smooth on a phone), forward or, when you scroll
+// back up, from a reversed copy. Your scroll only says where the walk is headed: a playhead walks there at one steady
+// pace however hard you scroll, easing up to speed and easing to a stop, and the video's playback rate follows it.
+// stops: which of motion.json's keys the walk halts at (one per card).
+function walk({ section, canvas, seq, stops, HOLD, WALK, vh = 72, eager = false, drift = 1, pace = .38, holdPace = 1.4, frameEl, cards, onStage, onFrame, onDraw, focus }) {
+  const ctx = canvas.getContext('2d'), dir = small ? 'm' : 'd', FPS = 24;
   const SEG = []; let U = 0;
   for (let k = 0; k < stops.length; k++) {
     SEG.push({ kind: 'hold', k, a: U, b: U += HOLD[k] });
@@ -20,42 +23,22 @@ function walk({ section, canvas, seq, stops, HOLD, WALK, vh = 72, eager = false,
   }
   section.style.height = `${100 + U * vh}vh`;
 
-  let N = 0, KEY = [], M = [];
-  const blobs = [], bmps = new Map();
-  let fetched = 0, inflight = 0, decoding = 0, want = 0, last = null;
-  const url = i => `assets/${seq}/${dir}/${String(i).padStart(4, '0')}.webp`;
-  // fetch order: a coarse pass first so the whole walk is scrubbable fast, then fill in, always nearest to where you are
-  const nextFetch = () => {
-    let best = -1, cost = Infinity;
-    for (let i = 0; i < N; i++) {
-      if (blobs[i] !== undefined) continue;
-      const c = Math.abs(i - want) / (i % 8 === 0 ? 10 : i % 2 === 0 ? 3 : 1);
-      if (c < cost) { cost = c; best = i; }
-    }
-    return best;
-  };
-  const pump = () => {
-    while (inflight < 8) {
-      const i = nextFetch(); if (i < 0) return;
-      blobs[i] = null; inflight++;
-      fetch(url(i)).then(r => r.ok ? r.blob() : null).catch(() => null).then(b => {
-        blobs[i] = b || false; inflight--; fetched++; onFrame && onFrame(fetched / N); pump();
-      });
-    }
-  };
-  // decoded frames live only in a window around where you are; everything else stays compressed
-  const AHEAD = small ? 50 : 80, BEHIND = small ? 30 : 40;
-  const decode = () => {
-    for (const [i, b] of bmps) if (i < want - BEHIND - 20 || i > want + AHEAD + 20) { if (b && b !== last) b.close && b.close(); bmps.delete(i); }   // never close the frame on screen
-    for (let d = 0; d <= AHEAD && decoding < 6; d++) for (const i of d ? [want + d, want - d] : [want]) {
-      if (i < 0 || i >= N || i < want - BEHIND || bmps.has(i) || !blobs[i] || decoding >= 6) continue;
-      decoding++; bmps.set(i, null);
-      createImageBitmap(blobs[i]).then(b => { if (bmps.has(i)) bmps.set(i, b); else b.close && b.close(); }).catch(() => bmps.delete(i)).finally(() => decoding--);
-    }
-  };
-  let ready = false;
+  let N = 0, KEY = [], M = [], ready = false, fwd = null, rev = null, active = null, way = 1;
+  const poster = new Image(); poster.src = `assets/${seq}/${dir}/0000.webp`;
+  // Each video is downloaded whole and played from memory, so jumping to any point is instant whatever the server
+  // supports. The forward walk streams first so it can start at once, then swaps to its in-memory copy unnoticed.
+  const fresh = () => { const v = document.createElement('video'); v.muted = true; v.playsInline = true; v.setAttribute('playsinline', ''); v.setAttribute('muted', ''); v.preload = 'auto'; return v; };
+  const whole = name => fetch(`assets/${seq}/${dir}-${name}.mp4`).then(r => r.blob()).then(b => URL.createObjectURL(b));
   const start = () => fetch(`assets/${seq}/motion.json`).then(r => r.json()).then(j => {
-    N = j.n; KEY = stops.map(s => j.keys[s]); M = j.motion; ready = true; pump();
+    N = j.n; KEY = stops.map(s => j.keys[s]); M = j.motion; ready = true;
+    fwd = fresh(); fwd.src = `assets/${seq}/${dir}-fwd.mp4`; active = fwd;
+    onFrame && fwd.addEventListener('progress', () => { if (fwd.duration && fwd.buffered.length) onFrame(fwd.buffered.end(fwd.buffered.length - 1) / fwd.duration); });
+    whole('fwd').then(url => {
+      const t = fwd.currentTime, playing = !fwd.paused, rate = fwd.playbackRate;
+      fwd.src = url;
+      fwd.addEventListener('loadeddata', () => { fwd.currentTime = t; fwd.playbackRate = rate; if (playing) fwd.play().catch(() => {}); onFrame && onFrame(1); }, { once: true });
+      return whole('rev');
+    }).then(url => { const v = fresh(); v.src = url; rev = v; });
   });
   if (eager) start();
   else new IntersectionObserver(([e], io) => { if (e.isIntersecting) { start(); io.disconnect(); } }, { rootMargin: '1800px 0px' }).observe(section);
@@ -64,7 +47,7 @@ function walk({ section, canvas, seq, stops, HOLD, WALK, vh = 72, eager = false,
   const resize = () => { DPR = Math.min(devicePixelRatio || 1, 2); W = canvas.clientWidth; H = canvas.clientHeight; canvas.width = Math.round(W * DPR); canvas.height = Math.round(H * DPR); };
   addEventListener('resize', resize); resize();
   const posU = () => { const r = section.getBoundingClientRect(), span = r.height - innerHeight; return clamp(-r.top / span) * U; };
-  // the frame whose cumulative motion matches m, between frames a and b
+  // the frame whose cumulative on-screen motion matches m, between frames a and b
   const atMotion = (m, a, b) => {
     let lo = a, hi = b;
     while (hi - lo > 1) { const mid = (lo + hi) >> 1; if (M[mid] < m) lo = mid; else hi = mid; }
@@ -80,9 +63,33 @@ function walk({ section, canvas, seq, stops, HOLD, WALK, vh = 72, eager = false,
     }
     return KEY[KEY.length - 1];
   };
-  // The scroll only says where the walk is headed. A playhead walks there at one steady pace, however hard you
-  // scroll: it eases up to speed, holds it, and eases to a stop, so the footage never sprints or lurches.
-  // `pace` is walking speed in scroll units a second; standing in a room passes quicker (`holdPace`).
+  // keep the video on the playhead: set its rate from the playhead's speed, nudge out small drift, seek only when paused or far off
+  const ok = v => v && v.readyState >= 2;
+  const toTime = (F, w) => (w > 0 ? F : N - 1 - F) / FPS;
+  let lastF = 0;
+  function sync(F, dt) {
+    const fv = (F - lastF) / Math.max(dt, 1e-3); lastF = F;
+    const want = fv < -.5 ? -1 : fv > .5 ? 1 : way;
+    if (want === -1 && !ok(rev)) {   // reverse copy not ready yet: step the forward video back instead
+      if (!fwd.paused) fwd.pause();
+      if (!fwd.seeking && Math.abs(fwd.currentTime - toTime(F, 1)) > .5 / FPS) fwd.currentTime = toTime(F, 1);
+      active = fwd; way = 1; return;
+    }
+    const v = want > 0 ? fwd : rev;
+    if (want !== way || v !== active) { if (active && active !== v) active.pause(); way = want; active = v; v.currentTime = toTime(F, way); }
+    const tt = toTime(F, way);
+    if (Math.abs(fv) < .5) {
+      if (!v.paused) v.pause();
+      if (!v.seeking && Math.abs(v.currentTime - tt) > .6 / FPS) v.currentTime = tt;
+      return;
+    }
+    const err = (tt - v.currentTime) * FPS;   // frames behind the playhead
+    if (Math.abs(err) > 36 && !v.seeking) { v.currentTime = tt; return; }
+    const rate = clamp((Math.abs(fv) + err * 1.6) / FPS, .1, 8);
+    if (Math.abs(rate - v.playbackRate) > .03) v.playbackRate = rate;
+    if (v.paused && !v.seeking) v.play().catch(() => {});
+  }
+
   let uP = posU(), vel = 0, shown = 0, stage = -1, amp = drift, prev = performance.now();
   const t0 = prev;
   const segAt = u => SEG.find(sg => u <= sg.b) || SEG[SEG.length - 1];
@@ -98,10 +105,9 @@ function walk({ section, canvas, seq, stops, HOLD, WALK, vh = 72, eager = false,
       if (Math.abs(gap) < .002 && Math.abs(vel) < .01) { uP = goal; vel = 0; }
     }
     const u = uP;
-    if (window.__ngdProbe && section.classList.contains('tour')) window.__ngdProbe.push([now, uP, goal]);   // QC only
-    if (ready) {
-      shown = frameAt(u);
-      want = Math.round(shown); pump(); decode();
+    if (window.__ngdProbe && section.classList.contains('tour')) window.__ngdProbe.push([now, uP, goal, shown, active ? (way > 0 ? active.currentTime * FPS : N - 1 - active.currentTime * FPS) : -1, active ? active.playbackRate : 0, way, active ? [active.readyState, active.seeking, active.paused, active.error && active.error.code, active.currentTime, active.duration, active === fwd] : 0]);   // QC only
+    if (ready && fwd) {
+      shown = frameAt(u); sync(shown, dt);
       amp += ((reduced ? 0 : drift * (Math.abs(vel) > .05 && segAt(u).kind === 'walk' ? 1.5 : 1)) - amp) * (1 - Math.exp(-dt * 2.5));
     }
     const s = Math.max(W / 16, H / 9) * 1.07, w = 16 * s, h = 9 * s, tt = (now - t0) / 1000;
@@ -109,19 +115,17 @@ function walk({ section, canvas, seq, stops, HOLD, WALK, vh = 72, eager = false,
     const rot = (Math.sin(tt * .43) * .0016 + Math.sin(tt * 1.1) * .0006) * amp;
     // on a tall phone the cover crop is narrow; `focus` says which part of the frame to keep (0 left, 1 right)
     const fx = focus ? focus(shown) : .5, cx = clamp(W / 2 + (.5 - fx) * w, W - w / 2, w / 2) - W / 2;
-    let im = bmps.get(want);
-    if (!im) for (let d = 1; d < 40 && !im; d++) im = bmps.get(want - d) || bmps.get(want + d);
-    if (im) last = im;
-    if (last) {
+    const src = ok(active) ? active : poster.complete && poster.naturalWidth ? poster : null;
+    if (src) {
       ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
       ctx.fillStyle = '#151618'; ctx.fillRect(0, 0, W, H);
       ctx.setTransform(DPR, 0, 0, DPR, (W / 2 + dx + cx) * DPR, (H / 2 + dy) * DPR);
       ctx.rotate(rot); ctx.scale(w / W, h / H);
-      ctx.drawImage(last, -W / 2, -H / 2, W, H);
+      ctx.drawImage(src, -W / 2, -H / 2, W, H);
     }
     onDraw && onDraw(shown, { x: (W - w) / 2 + dx + cx, y: (H - h) / 2 + dy, w, h });
     if (frameEl) Object.assign(frameEl.style, { left: `${(W - w) / 2 + dx + cx}px`, top: `${(H - h) / 2 + dy}px`, width: `${w}px`, height: `${h}px` });
-    // which stage you are in, and how visible its card is
+    // which stage the playhead is in, and how visible its card is
     let k = 0, vis = 0;
     for (const sg of SEG) if (u >= sg.a && u <= sg.b) {
       if (sg.kind === 'hold') { k = sg.k; vis = 1; }
@@ -137,8 +141,12 @@ function walk({ section, canvas, seq, stops, HOLD, WALK, vh = 72, eager = false,
   }
   let on = true;
   new IntersectionObserver(([e]) => { on = e.isIntersecting; }, { rootMargin: '200px' }).observe(section);
-  // off screen, the playhead jumps straight to the scroll so you come back to the right room
-  const loop = now => { if (on) draw(now); else { prev = now; uP = posU(); vel = 0; } requestAnimationFrame(loop); };
+  // off screen: stop the video and let the playhead jump straight to the scroll, so you come back to the right room
+  const loop = now => {
+    if (on) draw(now);
+    else { prev = now; uP = posU(); vel = 0; if (active && !active.paused) active.pause(); }
+    requestAnimationFrame(loop);
+  };
   requestAnimationFrame(loop);
   return {
     goTo(k) {
