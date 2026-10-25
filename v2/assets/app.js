@@ -9,7 +9,7 @@ const smooth = t => t * t * (3 - 2 * t);
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const small = matchMedia('(max-width: 820px)').matches;
 // stamped by tools-build-preview.py with a hash of the footage, so a new deploy is never served from an old cache
-const ASSET_V = 'fc401e4fcc';
+const ASSET_V = 'ba4cbab448';
 
 /* ---------- the walk player ---------- */
 // The footage plays as real video (hardware-decoded, so it stays smooth on a phone), forward or, when you scroll
@@ -193,7 +193,7 @@ function quadMatrix(w, h, q) {
     HOLD: [.6, .9, .9, .9, .9, 1.2], WALK: [2.8, 1.2, 1.2, 1.2, 1.2], eager: true,
     cards: [$('.tour-intro'), ...$$('.room')], onStage,
     // open on the yard sign, then ease back to centre as you walk to the door
-    focus: shown => .5 + .18 * (1 - smooth(clamp((shown - 12) / 110))),
+    focus: shown => .5 + .2 * (1 - smooth(clamp((shown - 12) / 110))),
     onFrame: f => { loadBar.style.transform = `scaleX(${f})`; if (f >= 1) $('.tour-load').classList.add('done'); },
   });
   routeBtns.forEach(b => b.addEventListener('click', () => hero.goTo(+b.dataset.go)));
