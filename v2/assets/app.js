@@ -176,7 +176,6 @@ function quadMatrix(w, h, q) {
     'Put a light across it. Not a ridge anywhere.',
     'And this is the part you keep.',
   ];
-  const SIGN = [[1947.5 / 2560, 762 / 1440], [2204 / 2560, 763 / 1440], [2204 / 2560, 980 / 1440], [1947.5 / 2560, 999 / 1440]], sign = $('.sign-hd');
   const routeBtns = $$('.route button'), caption = $('.caption'), quote = $('.caption blockquote'), fill = $('.route-line i'), loadBar = $('.tour-load i');
   let capT;
   const onStage = k => {
@@ -187,17 +186,12 @@ function quadMatrix(w, h, q) {
   };
   onStage.vis = (p, vis) => { fill.style.transform = `scaleX(${p})`; caption.style.opacity = vis > .6 ? '' : 0; };
   const hero = walk({
-    // clips: sign → door, door → foyer, then one per room; the walk doesn't stop at the door
-    section: $('.tour'), canvas: $('.tour-cv'), seq: 'seq', stops: [0, 2, 3, 4, 5, 6],
+    // clips: yard sign → door, up to the threshold, the step inside (a push-in dissolve), then one per room
+    section: $('.tour'), canvas: $('.tour-cv'), seq: 'seq', stops: [0, 3, 4, 5, 6, 7],
     HOLD: [.6, .9, .9, .9, .9, 1.2], WALK: [2.8, 1.2, 1.2, 1.2, 1.2], eager: true,
     cards: [$('.tour-intro'), ...$$('.room')], onStage,
     // open on the yard sign, then ease back to centre as you walk to the door
-    focus: shown => .5 + .32 * (1 - smooth(clamp((shown - 12) / 120))),
-    onDraw: (shown, r) => {
-      const q = SIGN.map(([u, v]) => [r.x + u * r.w, r.y + v * r.h]);
-      sign.style.transform = quadMatrix(1050, 930, q);
-      sign.style.opacity = clamp(1 - shown / .7);   // hand off to the footage the moment the walk starts
-    },
+    focus: shown => .5 + .34 * (1 - smooth(clamp((shown - 12) / 110))),
     onFrame: f => { loadBar.style.transform = `scaleX(${f})`; if (f >= 1) $('.tour-load').classList.add('done'); },
   });
   routeBtns.forEach(b => b.addEventListener('click', () => hero.goTo(+b.dataset.go)));
