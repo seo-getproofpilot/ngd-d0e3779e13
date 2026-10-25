@@ -8,6 +8,8 @@ const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
 const smooth = t => t * t * (3 - 2 * t);
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const small = matchMedia('(max-width: 820px)').matches;
+// stamped by tools-build-preview.py with a hash of the footage, so a new deploy is never served from an old cache
+const ASSET_V = 'fc401e4fcc';
 
 /* ---------- the walk player ---------- */
 // The footage plays as real video (hardware-decoded, so it stays smooth on a phone), forward or, when you scroll
@@ -24,14 +26,14 @@ function walk({ section, canvas, seq, stops, HOLD, WALK, vh = 72, eager = false,
   section.style.height = `${100 + U * vh}vh`;
 
   let N = 0, KEY = [], M = [], ready = false, fwd = null, rev = null, active = null, way = 1;
-  const poster = new Image(); poster.src = `assets/${seq}/${dir}/0000.webp`;
+  const poster = new Image(); poster.src = `assets/${seq}/${dir}/0000.webp?v=${ASSET_V}`;
   // Each video is downloaded whole and played from memory, so jumping to any point is instant whatever the server
   // supports. The forward walk streams first so it can start at once, then swaps to its in-memory copy unnoticed.
   const fresh = () => { const v = document.createElement('video'); v.muted = true; v.playsInline = true; v.setAttribute('playsinline', ''); v.setAttribute('muted', ''); v.preload = 'auto'; return v; };
-  const whole = name => fetch(`assets/${seq}/${dir}-${name}.mp4`).then(r => r.blob()).then(b => URL.createObjectURL(b));
-  const start = () => fetch(`assets/${seq}/motion.json`).then(r => r.json()).then(j => {
+  const whole = name => fetch(`assets/${seq}/${dir}-${name}.mp4?v=${ASSET_V}`).then(r => r.blob()).then(b => URL.createObjectURL(b));
+  const start = () => fetch(`assets/${seq}/motion.json?v=${ASSET_V}`).then(r => r.json()).then(j => {
     N = j.n; KEY = stops.map(s => j.keys[s]); M = j.motion; ready = true;
-    fwd = fresh(); fwd.src = `assets/${seq}/${dir}-fwd.mp4`; active = fwd;
+    fwd = fresh(); fwd.src = `assets/${seq}/${dir}-fwd.mp4?v=${ASSET_V}`; active = fwd;
     onFrame && fwd.addEventListener('progress', () => { if (fwd.duration && fwd.buffered.length) onFrame(fwd.buffered.end(fwd.buffered.length - 1) / fwd.duration); });
     whole('fwd').then(url => {
       const t = fwd.currentTime, playing = !fwd.paused, rate = fwd.playbackRate;
