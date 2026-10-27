@@ -71,6 +71,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .tour, .bidwalk { position: relative; background: var(--graphite); color: var(--gypsum); }
 .tour-pin, .bw-pin { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; }
 .tour-cv, .bw-cv { position: absolute; inset: 0; width: 100%; height: 100%; }
+.tour-vid { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transform: scale(1.07); will-change: transform; background: var(--graphite); }
 .tour-shade, .bw-shade { position: absolute; inset: 0; pointer-events: none;
   background: radial-gradient(130% 100% at 55% 45%, transparent 50%, rgba(8, 9, 10, .5) 100%),
               linear-gradient(90deg, rgba(12, 13, 15, .76) 0%, rgba(12, 13, 15, .3) 36%, transparent 60%),
@@ -115,8 +116,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .route button:hover { color: #fff; }
 .tour-note, .bw-note { position: absolute; right: calc(var(--gutter) + 36px); top: 146px; margin: 0; font: 400 12.5px/1 var(--f); color: rgba(244, 243, 239, .5); }
 .tour-logo { position: absolute; left: 50%; top: 42%; width: min(50vw, 704px); transform: translate(-50%, -50%); pointer-events: none; will-change: opacity, transform; }
-.tour-logo::before { content: ''; position: absolute; inset: -38% -22%; background: radial-gradient(closest-side, rgba(12, 13, 15, .86), rgba(12, 13, 15, .55) 60%, transparent); }
-.tour-logo img { position: relative; display: block; width: 100%; height: auto; filter: drop-shadow(0 1px 1px rgba(0, 0, 0, .6)) drop-shadow(0 0 1px rgba(0, 0, 0, .6)); }
+.tour-logo svg { display: block; width: 100%; height: auto; overflow: visible; filter: drop-shadow(0 2px 3px rgba(0, 0, 0, .35)) drop-shadow(0 8px 30px rgba(0, 0, 0, .35)); }
 .tour-pause { position: absolute; right: calc(var(--gutter) + 36px); bottom: 96px; display: flex; align-items: center; gap: 8px; padding: 9px 14px; border: 1px solid rgba(244, 243, 239, .35); background: rgba(21, 22, 24, .35); color: rgba(244, 243, 239, .9); font: 500 13px/1 var(--f); cursor: pointer; backdrop-filter: blur(6px); transition: border-color .3s, background-color .3s; }
 .tour-pause:hover { border-color: #fff; background: rgba(21, 22, 24, .6); }
 .tour-pause svg { width: 12px; height: 12px; fill: currentColor; }

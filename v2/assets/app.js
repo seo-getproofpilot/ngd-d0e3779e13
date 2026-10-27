@@ -1,5 +1,5 @@
 // Next Gen Drywall v2i.
-// The hero walk plays itself (autoTour). The bid walk is scroll-scrubbed (walk()): a second house, stopping at each
+// The hero walk plays itself as 60fps video (autoTour). The bid walk is scroll-scrubbed (walk()): a second house, stopping at each
 // thing that sets the price. Each is AI-generated footage joined at its keyframes, encoded as video (tools-video.py). Scroll is mapped to how far the picture has moved
 // (motion.json from tools-seq.py), not to clip time, so fast turns get more scroll and the camera walks at one pace.
 const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -8,7 +8,7 @@ const smooth = t => t * t * (3 - 2 * t);
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const small = matchMedia('(max-width: 820px)').matches;
 // stamped by tools-build-preview.py with a hash of the footage, so a new deploy is never served from an old cache
-const ASSET_V = '7b5fc410aa';
+const ASSET_V = '02d922d53b';
 
 /* ---------- the walk player ---------- */
 // The footage plays as real video (hardware-decoded, so it stays smooth on a phone), forward or, when you scroll
@@ -159,93 +159,69 @@ function walk({ section, canvas, seq, stops, HOLD, WALK, vh = 72, eager = false,
 }
 
 /* ---------- the hero: a walkthrough that plays itself ---------- */
-// The hero footage plays on its own as ordinary video: an aerial over the house with the logo, down to the yard sign,
-// up the walk, through the door and room by room. It eases to a stop in each room so its card can be read, then walks
-// on. No scroll needed; the route buttons jump to a room and Pause stops it.
-// stops: frame numbers it halts at. holds: seconds at each (the last stop stays). cardOf: which card each stop shows.
-// rate: playback speed while walking, or one per walk.
-function autoTour({ section, canvas, seq, stops, holds, cardOf, rate = 1.1, drift = 1, cards, onStage, onFrame, onDraw, focus }) {
-  const ctx = canvas.getContext('2d'), dir = small ? 'm' : 'd', FPS = 24;
-  let N = 1, KEY = stops, v = null;
-  const poster = new Image(); poster.src = `assets/${seq}/${dir}/0000.webp?v=${ASSET_V}`;
-  v = document.createElement('video'); v.muted = true; v.playsInline = true; v.setAttribute('playsinline', ''); v.setAttribute('muted', ''); v.preload = 'auto';
+// The hero is one 60fps video (tools-hero.py) with the slow-downs into each room already in the footage, so it only
+// ever plays at normal speed: the page just pauses it at each stop for the card, then plays on. It's a real <video>
+// element, moved by a GPU transform for the handheld drift, which keeps it smooth on phones.
+// holds: seconds at each stop (the last stays). cardOf: which card each stop shows.
+function autoTour({ section, video: v, seq, holds, cardOf, drift = 1, cards, onStage, onFrame, onTime }) {
+  const dir = small ? 'm' : 'd';
+  let STOP = null;
+  v.muted = true; v.playsInline = true; v.preload = 'auto';
+  v.poster = `assets/${seq}/${dir}/0000.webp?v=${ASSET_V}`;
   v.src = `assets/${seq}/${dir}-fwd.mp4?v=${ASSET_V}`;
   onFrame && v.addEventListener('progress', () => { if (v.duration && v.buffered.length) onFrame(v.buffered.end(v.buffered.length - 1) / v.duration); });
-  fetch(`assets/${seq}/motion.json?v=${ASSET_V}`).then(r => r.json()).then(j => { N = j.n; });
-  // once the whole file is in memory, swap to it so a jump to any room is instant whatever the server supports
-  fetch(`assets/${seq}/${dir}-fwd.mp4?v=${ASSET_V}`).then(r => r.blob()).then(b => {
-    const t = v.currentTime, playing = !v.paused, r = v.playbackRate;
-    v.src = URL.createObjectURL(b);
-    v.addEventListener('loadeddata', () => { v.currentTime = t; v.playbackRate = r; if (playing) v.play().catch(() => {}); onFrame && onFrame(1); }, { once: true });
-  });
-
-  let W = 1, H = 1, DPR = 1;
-  const resize = () => { DPR = Math.min(devicePixelRatio || 1, 2); W = canvas.clientWidth; H = canvas.clientHeight; canvas.width = Math.round(W * DPR); canvas.height = Math.round(H * DPR); };
-  addEventListener('resize', resize); resize();
+  fetch(`assets/${seq}/motion.json?v=${ASSET_V}`).then(r => r.json()).then(j => { STOP = j.stops; });
 
   // i: the stop we're at (holding) or just left (walking)
   let i = 0, mode = 'hold', holdEnd = Infinity, paused = reduced, visible = true, stage = -1, amp = drift, prev = performance.now();
-  const t0 = prev, frame = () => v.currentTime * FPS;
-  const startHold = (k, now) => { i = k; mode = 'hold'; holdEnd = k === KEY.length - 1 ? Infinity : now + holds[k] * 1000; if (!v.paused) v.pause(); };
-  const walkOn = () => { mode = 'walk'; v.playbackRate = .3; v.play().catch(() => {}); };
-  const shouldRun = () => visible && !paused && !document.hidden;
+  const t0 = prev;
+  const startHold = (k, now) => { i = k; mode = 'hold'; holdEnd = k === STOP.length - 1 ? Infinity : now + holds[k] * 1000; if (!v.paused) v.pause(); };
+  const shouldRun = () => STOP && visible && !paused && !document.hidden;
 
-  function draw(now) {
+  function tick(now) {
     const dt = Math.min(.05, (now - prev) / 1000); prev = now;
-    // phones load nothing until play() is called, so the walk starts on the clock, not on loaded data
-    if (mode === 'hold' && now >= holdEnd && shouldRun()) walkOn();
-    if (mode === 'walk') {
-      if (!shouldRun()) { if (!v.paused) v.pause(); }
-      else {
-        const F = frame(), a = KEY[i], b = KEY[i + 1];
-        if (F >= b - .6) startHold(i + 1, now);
-        else if (v.paused && v.readyState < 3) v.play().catch(() => {});   // still buffering: keep asking
-        else {
-          // ease out of the room and ease into the next one, like a camera operator stopping to talk
-          const want = (Array.isArray(rate) ? rate[i] : rate) * clamp(Math.min((F - a + 3) / 20, (b - F) / 22), .28, 1);
-          if (Math.abs(want - v.playbackRate) > .02) v.playbackRate = want;
-          if (v.paused && !v.seeking) v.play().catch(() => {});
-        }
+    const t = v.currentTime;
+    if (STOP) {
+      // phones load nothing until play() is called, so the walk starts on the clock, not on loaded data
+      if (mode === 'hold' && now >= holdEnd && shouldRun()) { mode = 'walk'; v.play().catch(() => {}); }
+      if (mode === 'walk') {
+        if (!shouldRun()) { if (!v.paused) v.pause(); }
+        else if (t >= STOP[i + 1] - .008) startHold(i + 1, now);
+        else if (v.paused && !v.seeking) v.play().catch(() => {});
       }
     }
-    const F = frame();
+    // a slow handheld drift, a little livelier while walking
     amp += ((reduced ? 0 : drift * (mode === 'walk' && !v.paused ? 1.4 : 1)) - amp) * (1 - Math.exp(-dt * 2.5));
-    const s = Math.max(W / 16, H / 9) * 1.07, w = 16 * s, h = 9 * s, tt = (now - t0) / 1000;
+    const tt = (now - t0) / 1000;
     const dx = (Math.sin(tt * .53) * 5 + Math.sin(tt * 1.37) * 2) * amp, dy = (Math.sin(tt * .71 + 1) * 3.5 + Math.sin(tt * 2.1) * 1.2) * amp;
-    const rot = (Math.sin(tt * .43) * .0016 + Math.sin(tt * 1.1) * .0006) * amp;
-    const fx = focus ? focus(F) : .5, cx = clamp(W / 2 + (.5 - fx) * w, W - w / 2, w / 2) - W / 2;
-    const src = v.readyState >= 2 ? v : poster.complete && poster.naturalWidth ? poster : null;
-    if (src) {
-      ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-      ctx.fillStyle = '#151618'; ctx.fillRect(0, 0, W, H);
-      ctx.setTransform(DPR, 0, 0, DPR, (W / 2 + dx + cx) * DPR, (H / 2 + dy) * DPR);
-      ctx.rotate(rot); ctx.scale(w / W, h / H);
-      ctx.drawImage(src, -W / 2, -H / 2, W, H);
-    }
-    onDraw && onDraw(F);
+    const rot = (Math.sin(tt * .43) * .09 + Math.sin(tt * 1.1) * .035) * amp;
+    v.style.transform = `translate3d(${dx.toFixed(2)}px, ${dy.toFixed(2)}px, 0) rotate(${rot.toFixed(3)}deg) scale(1.07)`;
+    if (!STOP) return;
+    // the walk's progress within the current leg, 0 at its stop and 1 at the next
+    const leg = mode === 'walk' && i < STOP.length - 1 ? clamp((t - STOP[i]) / (STOP[i + 1] - STOP[i])) : 0;
+    onTime && onTime(i, mode === 'walk' ? leg : 0);
     // which card is up, and how visible: full while holding, crossfading over the ends of a walk between rooms
     let k = cardOf[i], vis = 1;
-    if (mode === 'walk' && i < KEY.length - 1 && cardOf[i] !== cardOf[i + 1]) {
-      const t = clamp((F - KEY[i]) / (KEY[i + 1] - KEY[i]));
-      k = t < .5 ? cardOf[i] : cardOf[i + 1];
-      vis = t < .5 ? 1 - smooth(clamp(t / .18)) : smooth(clamp((t - .82) / .18));
+    if (mode === 'walk' && cardOf[i] !== cardOf[i + 1]) {
+      k = leg < .5 ? cardOf[i] : cardOf[i + 1];
+      vis = leg < .5 ? 1 - smooth(clamp(leg / .18)) : smooth(clamp((leg - .82) / .18));
     }
     cards.forEach((c, n) => {
-      const on = n === k ? vis * (onStage.cardScale ? onStage.cardScale(n, F) : 1) : 0;
+      const on = n === k ? vis * (onStage.cardScale ? onStage.cardScale(n, i, leg) : 1) : 0;
       c.style.opacity = on; c.style.transform = `translateY(${(1 - on) * 20}px)`; c.style.visibility = on > .01 ? 'visible' : 'hidden';
     });
     if (k !== stage) { stage = k; onStage(k); }
-    onStage.vis && onStage.vis(clamp(F / (KEY[KEY.length - 1] || 1)), vis);
+    onStage.vis && onStage.vis(clamp(t / STOP[STOP.length - 1]), vis);
   }
-  section.__tour = { get F() { return frame(); }, get mode() { return mode; }, get i() { return i; }, get rate() { return v.playbackRate; } };   // QC only
+  section.__tour = { get t() { return v.currentTime; }, get mode() { return mode; }, get i() { return i; }, get stops() { return STOP; } };   // QC only
   new IntersectionObserver(([e]) => { visible = e.isIntersecting; }, { threshold: .25 }).observe(section);
-  const loop = now => { draw(now); requestAnimationFrame(loop); };
-  requestAnimationFrame(now => { startHold(0, now); loop(now); });
+  const loop = now => { tick(now); requestAnimationFrame(loop); };
+  requestAnimationFrame(now => { prev = now; const go = () => (STOP ? startHold(0, performance.now()) : setTimeout(go, 50)); go(); loop(now); });
   return {
     // jump to the first stop that shows card c and hold there
     goTo(c) {
-      const k = cardOf.indexOf(c); if (k < 0) return;
-      v.pause(); v.currentTime = KEY[k] / FPS; startHold(k, performance.now());
+      const k = cardOf.indexOf(c); if (k < 0 || !STOP) return;
+      v.pause(); v.currentTime = STOP[k]; startHold(k, performance.now());
     },
     setPaused(p) { paused = p; if (p && !v.paused) v.pause(); },
   };
@@ -263,29 +239,29 @@ function autoTour({ section, canvas, seq, stops, holds, cardOf, rate = 1.1, drif
   ];
   const tourEl = $('.tour'), routeBtns = $$('.route button'), caption = $('.caption'), quote = $('.caption blockquote'), fill = $('.route-line i'), loadBar = $('.tour-load i');
   const logo = $('.tour-logo'), pauseBtn = $('.tour-pause');
-  let capT;
+  let capT, logoO = 1;
   const onStage = k => {
     tourEl.dataset.stage = k;
     routeBtns.forEach((b, i) => { b.classList.toggle('on', i === k); b.classList.toggle('done', i < k); });
     caption.classList.remove('show'); clearTimeout(capT);
     capT = setTimeout(() => { quote.textContent = LINES[k]; caption.classList.add('show'); }, 260);
   };
-  // the big logo rides the aerial and lifts away as the drone comes down
-  const logoAt = F => 1 - smooth(clamp((F - 20) / 100));
-  let logoO = 1;
+  // the big logo rides the aerial and lifts away as the drone comes down (the first leg, i = 0)
+  const logoAt = (i, leg) => (i > 0 ? 0 : 1 - smooth(clamp((leg - .08) / .34)));
   onStage.vis = (p, vis) => { fill.style.transform = `scaleX(${p})`; caption.style.opacity = vis > .6 && logoO < .05 ? '' : 0; };
-  // the aerial belongs to the logo; the headline comes in once it has lifted away
-  onStage.cardScale = (n, F) => (n === 0 ? smooth(clamp(1 - logoAt(F) * 1.4)) : 1);
+  // the aerial belongs to the logo; the headline only starts once the logo is completely gone, so they never overlap
+  onStage.cardScale = (n, i, leg) => (n === 0 && i === 0 ? smooth(clamp((leg - .5) / .22)) : 1);
   if (reduced) { pauseBtn.setAttribute('aria-pressed', 'true'); pauseBtn.querySelector('span').textContent = 'Play'; }
   const hero = autoTour({
-    // clips: aerial → yard sign, yard → door, up to the threshold, the step inside, then one per room
-    section: tourEl, canvas: $('.tour-cv'), seq: 'seq',
-    stops: [0, 240, 534, 690, 882, 1074, 1218], rate: [1, 1.45, 1.15, 1.15, 1.15, 1.15], holds: [2.6, 2.4, 3.2, 3.2, 3.2, 3.2], cardOf: [0, 0, 1, 2, 3, 4, 5],
+    // legs: aerial → yard, yard → foyer (through the front door), then one per room
+    section: tourEl, video: $('.tour-vid'), seq: 'seq',
+    holds: [2.6, 2.2, 3.2, 3.2, 3.2, 3.2], cardOf: [0, 0, 1, 2, 3, 4, 5],
     cards: [$('.tour-intro'), ...$$('.room')], onStage,
-    // phones: open on the yard sign, then ease back to centre as you walk to the door
-    focus: F => .5 + .2 * (1 - smooth(clamp((F - 240 - 12) / 110))) * smooth(clamp((F - 240 + 60) / 60)),
-    onDraw: F => { const o = logoO = logoAt(F); logo.style.opacity = o; logo.style.transform = `translate(-50%, -50%) scale(${1 + (1 - o) * .18})`; logo.style.visibility = o > .01 ? 'visible' : 'hidden'; },
-    onFrame: f => { loadBar.style.transform = `scaleX(${f})`; if (f >= 1) $('.tour-load').classList.add('done'); },
+    onTime: (i, leg) => {
+      const o = logoO = logoAt(i, leg);
+      logo.style.opacity = o; logo.style.transform = `translate(-50%, -50%) scale(${1 + (1 - o) * .12})`; logo.style.visibility = o > .01 ? 'visible' : 'hidden';
+    },
+    onFrame: f => { loadBar.style.transform = `scaleX(${f})`; if (f >= .999) $('.tour-load').classList.add('done'); },
   });
   routeBtns.forEach(b => b.addEventListener('click', () => hero.goTo(+b.dataset.go)));
   pauseBtn.addEventListener('click', () => {
