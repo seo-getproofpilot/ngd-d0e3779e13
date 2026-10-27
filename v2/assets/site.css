@@ -114,6 +114,14 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .route button.on::before { background: var(--chalk); box-shadow: 0 0 0 4px rgba(47, 85, 228, .35), inset 0 0 0 1px #fff; }
 .route button:hover { color: #fff; }
 .tour-note, .bw-note { position: absolute; right: calc(var(--gutter) + 36px); top: 146px; margin: 0; font: 400 12.5px/1 var(--f); color: rgba(244, 243, 239, .5); }
+.tour-logo { position: absolute; left: 50%; top: 42%; width: min(50vw, 704px); transform: translate(-50%, -50%); pointer-events: none; will-change: opacity, transform; }
+.tour-logo::before { content: ''; position: absolute; inset: -38% -22%; background: radial-gradient(closest-side, rgba(12, 13, 15, .86), rgba(12, 13, 15, .55) 60%, transparent); }
+.tour-logo img { position: relative; display: block; width: 100%; height: auto; filter: drop-shadow(0 1px 1px rgba(0, 0, 0, .6)) drop-shadow(0 0 1px rgba(0, 0, 0, .6)); }
+.tour-pause { position: absolute; right: calc(var(--gutter) + 36px); bottom: 96px; display: flex; align-items: center; gap: 8px; padding: 9px 14px; border: 1px solid rgba(244, 243, 239, .35); background: rgba(21, 22, 24, .35); color: rgba(244, 243, 239, .9); font: 500 13px/1 var(--f); cursor: pointer; backdrop-filter: blur(6px); transition: border-color .3s, background-color .3s; }
+.tour-pause:hover { border-color: #fff; background: rgba(21, 22, 24, .6); }
+.tour-pause svg { width: 12px; height: 12px; fill: currentColor; }
+.tour-pause .i-play, .tour-pause[aria-pressed="true"] .i-pause { display: none; }
+.tour-pause[aria-pressed="true"] .i-play { display: inline; }
 .tour-load { position: absolute; left: 0; right: 0; top: 0; height: 2px; transition: opacity .6s; }
 .tour-load i { display: block; height: 100%; background: var(--chalk); transform-origin: left; transform: scaleX(0); }
 .tour-load.done { opacity: 0; }
@@ -428,6 +436,9 @@ button, input, select, textarea { font: inherit; color: inherit; }
   .tour-intro .cta-row { flex-wrap: nowrap; }
   .tour-intro .btn { min-height: 48px; padding: 0 16px; font-size: 15px; }
   .tour[data-stage="0"] .caption { visibility: hidden; }
+  .tour-logo { top: 40%; width: 86vw; }
+  .tour-pause { right: 30px; top: 104px; bottom: auto; padding: 7px; }
+  .tour-pause span { display: none; }
   .h1 { font-size: clamp(34px, 9.6vw, 50px); }
   .h2 { font-size: clamp(30px, 8.4vw, 44px); }
   .lede { font-size: 15.5px; margin-top: 14px; }
