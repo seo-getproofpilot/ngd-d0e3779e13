@@ -8,7 +8,7 @@ const smooth = t => t * t * (3 - 2 * t);
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const small = matchMedia('(max-width: 820px)').matches;
 // stamped by tools-build-preview.py with a hash of the footage, so a new deploy is never served from an old cache
-const ASSET_V = '855de83657';
+const ASSET_V = 'e416dc4b4c';
 
 /* ---------- the walk player ---------- */
 // The footage plays as real video (hardware-decoded, so it stays smooth on a phone), forward or, when you scroll
@@ -173,7 +173,7 @@ function autoTour({ section, video: v, seq, holds, cardOf, drift = 1, cards, onS
   fetch(`assets/${seq}/motion.json?v=${ASSET_V}`).then(r => r.json()).then(j => { STOP = j.stops; });
 
   // i: the stop we're at (holding) or just left (walking)
-  let i = 0, mode = 'hold', holdEnd = Infinity, paused = reduced, visible = true, stage = -1, amp = drift, prev = performance.now();
+  let i = 0, mode = 'hold', holdEnd = Infinity, paused = reduced, visible = true, stage = -1, amp = drift, zoom = 1.07, prev = performance.now();
   const t0 = prev;
   const startHold = (k, now) => { i = k; mode = 'hold'; holdEnd = k === STOP.length - 1 ? Infinity : now + holds[k] * 1000; if (!v.paused) v.pause(); };
   const shouldRun = () => STOP && visible && !paused && !document.hidden;
@@ -195,7 +195,9 @@ function autoTour({ section, video: v, seq, holds, cardOf, drift = 1, cards, onS
     const tt = (now - t0) / 1000;
     const dx = (Math.sin(tt * .53) * 5 + Math.sin(tt * 1.37) * 2) * amp, dy = (Math.sin(tt * .71 + 1) * 3.5 + Math.sin(tt * 2.1) * 1.2) * amp;
     const rot = (Math.sin(tt * .43) * .09 + Math.sin(tt * 1.1) * .035) * amp;
-    v.style.transform = `translate3d(${dx.toFixed(2)}px, ${dy.toFixed(2)}px, 0) rotate(${rot.toFixed(3)}deg) scale(1.07)`;
+    // the last room settles out wide, so you see the whole of it
+    zoom += ((STOP && i === STOP.length - 1 && mode === 'hold' ? 1.015 : 1.07) - zoom) * (1 - Math.exp(-dt * 1.2));
+    v.style.transform = `translate3d(${dx.toFixed(2)}px, ${dy.toFixed(2)}px, 0) rotate(${rot.toFixed(3)}deg) scale(${zoom.toFixed(4)})`;
     if (!STOP) return;
     // the walk's progress within the current leg, 0 at its stop and 1 at the next
     const leg = mode === 'walk' && i < STOP.length - 1 ? clamp((t - STOP[i]) / (STOP[i + 1] - STOP[i])) : 0;
@@ -229,26 +231,52 @@ function autoTour({ section, video: v, seq, holds, cardOf, drift = 1, cards, onS
 
 /* ---------- the hero walk ---------- */
 {
-  const LINES = [
-    'That’s the house. Door’s open, come on in.',
-    'Foyer first. Ceilings go up before the walls.',
-    'Every seam taped, every corner, every screw.',
-    'Each coat goes on a little wider than the last.',
-    'Put a light across it. Not a ridge anywhere.',
-    'And this is the part you keep.',
+  // the job card taped to the wall on the right: one per stage, what the work is and what we check
+  const SPEC = [
+    { t: 'The walkthrough', line: 'One house, start to finish. Come on in.', rows: [
+      ['Stages', 'Five, from bare board to ready for paint'],
+      ['Crew', 'One crew hangs, tapes and finishes every wall'],
+      ['Serving', 'San Tan Valley, Queen Creek, the East Valley'] ] },
+    { t: 'Hanging', line: 'Ceilings go up before the walls.', rows: [
+      ['The work', 'Board screwed to every ceiling and wall'],
+      ['Board', 'Standard, moisture- or fire-rated, matched to the room'],
+      ['We check', 'Screws set just under the paper, none torn through'] ] },
+    { t: 'Taping', line: 'Every seam, every corner.', rows: [
+      ['The work', 'Paper tape bedded in compound over each seam'],
+      ['Corners', 'Inside corners creased, outside corners beaded'],
+      ['We check', 'No bubbles and no loose edges under the tape'] ] },
+    { t: 'Putty & coats', line: 'Each coat a little wider than the last.', rows: [
+      ['The work', 'Compound over the tape and every screw'],
+      ['Coats', 'Two or three, each feathered wider'],
+      ['Between', 'Every coat dries before the next goes on'] ] },
+    { t: 'Finishing', line: 'Put a light across it. Not a ridge anywhere.', rows: [
+      ['The work', 'Sanded flat, then textured or skim coated'],
+      ['Light test', 'A work light raked along the wall finds any ridge'],
+      ['Finishes', 'Smooth Level 5, orange peel, knockdown, skip trowel'] ] },
+    { t: 'Ready for paint', line: 'And this is the part you keep.', rows: [
+      ['The result', 'Seams that never show through paint'],
+      ['Built for', 'Custom homes, builders and repairs'],
+      ['Your job', 'Send plans or photos for an itemized bid'] ] },
   ];
-  const tourEl = $('.tour'), routeBtns = $$('.route button'), caption = $('.caption'), quote = $('.caption blockquote'), fill = $('.route-line i'), loadBar = $('.tour-load i');
+  const tourEl = $('.tour'), routeBtns = $$('.route button'), spec = $('.spec'), fill = $('.route-line i'), loadBar = $('.tour-load i');
   const logo = $('.tour-logo'), pauseBtn = $('.tour-pause');
-  let capT, logoO = 1;
+  let specT, logoO = 1;
   const onStage = k => {
     tourEl.dataset.stage = k;
     routeBtns.forEach((b, i) => { b.classList.toggle('on', i === k); b.classList.toggle('done', i < k); });
-    caption.classList.remove('show'); clearTimeout(capT);
-    capT = setTimeout(() => { quote.textContent = LINES[k]; caption.classList.add('show'); }, 260);
+    spec.classList.remove('show'); clearTimeout(specT);
+    specT = setTimeout(() => {
+      const d = SPEC[k];
+      $('.spec-n', spec).textContent = String(k).padStart(2, '0');
+      $('.spec-t', spec).textContent = d.t;
+      $('.spec-line', spec).textContent = d.line;
+      $('.spec-rows', spec).innerHTML = d.rows.map(([a, b]) => `<div><dt>${a}</dt><dd>${b}</dd></div>`).join('');
+      spec.classList.add('show');
+    }, 320);
   };
   // the big logo rides the aerial and lifts away as the drone comes down (the first leg, i = 0)
   const logoAt = (i, leg) => (i > 0 ? 0 : 1 - smooth(clamp((leg - .08) / .34)));
-  onStage.vis = (p, vis) => { fill.style.transform = `scaleX(${p})`; caption.style.opacity = vis > .6 && logoO < .05 ? '' : 0; };
+  onStage.vis = (p, vis) => { fill.style.transform = `scaleX(${p})`; spec.style.opacity = vis > .6 && logoO < .05 ? '' : 0; };
   // the aerial belongs to the logo; the headline only starts once the logo is completely gone, so they never overlap
   onStage.cardScale = (n, i, leg) => (n === 0 && i === 0 ? smooth(clamp((leg - .5) / .22)) : 1);
   if (reduced) { pauseBtn.setAttribute('aria-pressed', 'true'); pauseBtn.querySelector('span').textContent = 'Play'; }
