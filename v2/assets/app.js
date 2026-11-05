@@ -325,19 +325,20 @@ addEventListener('scroll', navTone, { passive: true }); navTone();
 /* ---------- finish levels ---------- */
 {
   const LV = [
-    ['Level 0, hung', 'Board screwed off, no tape. Temporary walls, or work where the final decorating isn’t decided.'],
-    ['Level 1, fire-taping', 'Tape bedded in compound, ridges left. Above ceilings and in attics, wherever a fire rating is the only job.'],
-    ['Level 2, tile backer & utility', 'One coat over the tape and every screw. Garages, storage and walls that will take tile.'],
-    ['Level 3, textured surfaces', 'Two coats, feathered. The base for orange peel, knockdown and skip trowel.'],
-    ['Level 4, standard painted', 'Three coats, sanded smooth. Right for flat paint in most rooms. Low sun can still find the joints.'],
-    ['Level 5, skim coat', 'A tight skim over the whole face. Nothing flashes through paint, even in 6:40 PM light.'],
+    ['Level 0, hung', 'Temporary or undecided', 'Temporary walls, or work where the final decorating isn’t decided.', 'Board screwed off, no tape.', 'Not meant to be seen.'],
+    ['Level 1, fire-taped', 'Out of sight', 'Above ceilings and in attics, wherever a fire rating is the only job.', 'Tape bedded in compound, ridges left.', 'Not a finish you’d paint.'],
+    ['Level 2, utility', 'Garages and tile', 'Garages, storage and walls that will take tile.', 'One coat over the tape and every screw.', 'Joints will show through paint.'],
+    ['Level 3, textured', 'Under a texture', 'Rooms getting orange peel, knockdown or skip trowel.', 'Two coats, feathered.', 'The texture does the rest of the work.'],
+    ['Level 4, smooth', 'The usual choice', 'Most rooms, with flat paint.', 'Three coats, sanded smooth.', 'Low sun can still find the joints.'],
+    ['Level 5, skim coat', 'Big rooms, low light', 'Great rooms, big windows and gloss paint.', 'A tight skim over the whole face.', 'Nothing flashes through paint, even in 6:40 PM light.'],
   ];
-  const imgs = $$('.lv-fig img'), inp = $('.lv-range input');
-  inp.addEventListener('input', () => {
-    const n = +inp.value;
+  const imgs = $$('.lv-fig img'), tabs = $$('.lv-pick button');
+  tabs.forEach(b => b.addEventListener('click', () => {
+    const n = +b.dataset.lv, [tag, flag, where, what, know] = LV[n];
+    tabs.forEach(t => t.setAttribute('aria-selected', t === b));
     imgs.forEach((im, i) => { im.classList.toggle('on', i === n); im.alt = i === n ? `A drywall wall finished to Level ${n}, lit by low raking light` : ''; });
-    $('.lv-tag').textContent = LV[n][0]; $('.lv-desc').textContent = LV[n][1];
-  });
+    $('.lv-tag').textContent = tag; $('.lv-flag').textContent = flag; $('.lv-where').textContent = where; $('.lv-do').textContent = what; $('.lv-know').textContent = know;
+  }));
 }
 
 /* ---------- the texture wall: bare board, trowel a texture on ---------- */
@@ -446,16 +447,9 @@ addEventListener('scroll', navTone, { passive: true }); navTone();
   }, { threshold: .6 }).observe(ba);
 }
 
-/* ---------- builders: each floor at a different stage ---------- */
-{
-  const fls = $$('.fl'); let i = 0;
-  const tick = () => { fls.forEach((f, k) => f.classList.toggle('on', k === i)); i = (i + 1) % fls.length; };
-  tick(); if (!reduced) setInterval(tick, 2200);
-}
-
 /* ---------- reveal on scroll ---------- */
 const rv = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); rv.unobserve(e.target); } }), { rootMargin: '0px 0px -12% 0px' });
-$$('.svc-card, .sec-head, .steps li, .record, .crew li, .caps li, .faq details').forEach(el => { el.classList.add('rv'); rv.observe(el); });
+$$('.svc-card, .sec-head, .steps li, .us, .crew li, .lic, .how li, .faq details').forEach(el => { el.classList.add('rv'); rv.observe(el); });
 
 /* ---------- bid: the blueprint. Mark rooms, fill in the title block, stamp it ---------- */
 {
