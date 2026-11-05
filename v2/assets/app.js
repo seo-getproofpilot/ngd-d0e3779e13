@@ -322,27 +322,6 @@ const nav = $('.nav'), tour = $('.tour');
 const navTone = () => nav.classList.toggle('solid', tour.getBoundingClientRect().bottom < 80);
 addEventListener('scroll', navTone, { passive: true }); navTone();
 
-/* ---------- services: pinned; the scroll opens each service in turn ---------- */
-{
-  const svc = $('.svc'), panels = $$('.panel'), tabs = $$('.svc-tabs button'), bar = $('.svc-bar i');
-  let cur = -1;
-  const open = i => {
-    if (i === cur) return; cur = i;
-    panels.forEach((x, k) => x.classList.toggle('on', k === i));
-    tabs.forEach((t, k) => t.setAttribute('aria-selected', k === i));
-  };
-  const span = () => svc.offsetHeight - innerHeight;
-  const frame = () => {
-    const p = clamp(-svc.getBoundingClientRect().top / span());
-    bar.style.transform = `scaleX(${p})`;
-    open(Math.min(panels.length - 1, Math.floor(p * panels.length)));
-  };
-  addEventListener('scroll', frame, { passive: true }); addEventListener('resize', frame); frame();
-  const go = i => scrollTo({ top: scrollY + svc.getBoundingClientRect().top + span() * (i + .5) / panels.length, behavior: reduced ? 'auto' : 'smooth' });
-  panels.forEach((p, i) => $('.panel-btn', p).addEventListener('click', () => go(i)));
-  tabs.forEach((t, i) => t.addEventListener('click', () => go(i)));
-}
-
 /* ---------- finish levels ---------- */
 {
   const LV = [
@@ -476,7 +455,7 @@ addEventListener('scroll', navTone, { passive: true }); navTone();
 
 /* ---------- reveal on scroll ---------- */
 const rv = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); rv.unobserve(e.target); } }), { rootMargin: '0px 0px -12% 0px' });
-$$('.sec-head, .steps li, .record, .crew li, .caps li, .faq details').forEach(el => { el.classList.add('rv'); rv.observe(el); });
+$$('.svc-card, .sec-head, .steps li, .record, .crew li, .caps li, .faq details').forEach(el => { el.classList.add('rv'); rv.observe(el); });
 
 /* ---------- bid: the blueprint. Mark rooms, fill in the title block, stamp it ---------- */
 {
