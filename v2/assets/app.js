@@ -1,6 +1,6 @@
-// Next Gen Drywall v2i.
-// The hero walk plays itself as 60fps video (autoTour). The bid walk is scroll-scrubbed (walk()): a second house, stopping at each
-// thing that sets the price. Each is AI-generated footage joined at its keyframes, encoded as video (tools-video.py). Scroll is mapped to how far the picture has moved
+// Next Gen Drywall v2o.
+// The hero walk plays itself as 60fps video (autoTour). walk() is the earlier scroll-scrubbed player, no longer used;
+// the bid walk now plays as plain video beside its list. Each is AI-generated footage joined at its keyframes, encoded as video (tools-video.py). Scroll is mapped to how far the picture has moved
 // (motion.json from tools-seq.py), not to clip time, so fast turns get more scroll and the camera walks at one pace.
 const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
@@ -8,7 +8,7 @@ const smooth = t => t * t * (3 - 2 * t);
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const small = matchMedia('(max-width: 820px)').matches;
 // stamped by tools-build-preview.py with a hash of the footage, so a new deploy is never served from an old cache
-const ASSET_V = 'e416dc4b4c';
+const ASSET_V = '8fae9e64c2';
 
 /* ---------- the walk player ---------- */
 // The footage plays as real video (hardware-decoded, so it stays smooth on a phone), forward or, when you scroll
@@ -292,6 +292,29 @@ function autoTour({ section, video: v, seq, holds, cardOf, drift = 1, cards, onS
     onFrame: f => { loadBar.style.transform = `scaleX(${f})`; if (f >= .999) $('.tour-load').classList.add('done'); },
   });
   routeBtns.forEach(b => b.addEventListener('click', () => hero.goTo(+b.dataset.go)));
+  // The walk is one generated take, and each room's walls were edited to their own stage, so between rooms the walls
+  // you're leaving would change stage on camera. A band of board edged with Next Gen tape sweeps across exactly
+  // there, driven by the video's own clock: in fast, a slow drift while it covers the change, then out.
+  {
+    const CUTS = [[18.96, 19.24], [24.47, 24.8], [28.56, 29.02], [34.4, 34.9]], IN = .24, OUT = .26, PAD_A = .08, PAD_B = .1;
+    const vid = $('.tour-vid'), wipe = $('.tour-wipe'), band = $('.tw-band');
+    const eo = u => 1 - Math.pow(1 - u, 2.2), ei = u => Math.pow(u, 2.2);
+    let shown = false;
+    const step = () => {
+      const t = vid.currentTime; let L = null;
+      for (const [a, b] of CUTS) {
+        const p1 = a - PAD_A, p0 = p1 - IN, p2 = b + PAD_B, p3 = p2 + OUT;
+        if (t < p0 || t > p3) continue;
+        // L: the band's left edge in screen widths; the band covers the whole screen anywhere from -.95 to -.25
+        L = t < p1 ? -2.45 + 1.5 * eo((t - p0) / IN) : t < p2 ? -.95 + .7 * ((t - p1) / (p2 - p1)) : -.25 + 1.5 * ei((t - p2) / OUT);
+        break;
+      }
+      if (L === null) { if (shown) { wipe.style.visibility = 'hidden'; shown = false; } }
+      else { if (!shown) { wipe.style.visibility = 'visible'; shown = true; } band.style.transform = `translateX(${(L / 2.2 * 100).toFixed(2)}%) skewX(-14deg)`; }
+      requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }
   pauseBtn.addEventListener('click', () => {
     const p = pauseBtn.getAttribute('aria-pressed') !== 'true';
     pauseBtn.setAttribute('aria-pressed', p); pauseBtn.querySelector('span').textContent = p ? 'Play' : 'Pause'; hero.setPaused(p);
@@ -301,20 +324,52 @@ function autoTour({ section, video: v, seq, holds, cardOf, drift = 1, cards, onS
   setInterval(() => { const s = Math.floor((performance.now() - t0) / 1000); clock.textContent = `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`; }, 1000);
 }
 
-/* ---------- the bid walk: what sets your number ---------- */
+/* ---------- what sets your number: the second walk plays itself beside the list ---------- */
+// It used to be scroll-driven; now it's an ordinary muted video at 1.6x that plays while it's on screen and stops
+// when it isn't, so scrolling past it is just scrolling. The line for whatever the camera is looking at lights up.
 {
-  const notes = $$('.bidwalk .note, .bidwalk .tag'), sched = $('.sched'), rail = $('.bw-rail i');
-  const onStage = k => {
-    const n = k - 1;   // stage 0 is the intro; the stops start at 1
-    notes.forEach(el => el.classList.toggle('on', +el.dataset.n === n));
-    sched.classList.toggle('on', k === 7);
+  const box = $('.bidwalk'), screen = $('.bw-screen'), v = $('.bw-vid'), items = $$('.bw-list li'), bar = $('.bw-bar i'), btn = $('.bw-pause');
+  const chipN = $('.bw-chip-n'), chipT = $('.bw-chip-t');
+  const KEY = [0, 192, 384, 528, 672, 864, 1056].map(f => f / 24), LEAD = 3, RATE = 1.6, REST = 2200;
+  let on = -1, loaded = false, paused = reduced, visible = false, restT;
+  const load = () => {
+    if (loaded) return; loaded = true;
+    const dir = small ? 'm' : 'd';
+    v.poster = `assets/seq2/${dir}/0000.webp?v=${ASSET_V}`; v.src = `assets/seq2/${dir}-fwd.mp4?v=${ASSET_V}`; v.playbackRate = RATE;
   };
-  onStage.vis = (p, vis) => { rail.style.transform = `scaleX(${p})`; $('.bw-frame').style.opacity = vis > .5 ? 1 : 0; };
-  walk({
-    section: $('.bidwalk'), canvas: $('.bw-cv'), seq: 'seq2', stops: [0, 0, 1, 2, 3, 4, 5, 6],
-    HOLD: [.7, .9, .9, .9, .9, .9, .9, 1.3], WALK: [.4, 1.2, 1.2, 1, 1, 1.2, 1.4], drift: .6,
-    frameEl: $('.bw-frame'), cards: [$('.bw-intro'), ...$$('.stop')], onStage,
+  const setOn = k => {
+    if (k === on) return; on = k;
+    items.forEach((li, i) => li.classList.toggle('on', i === k));
+    chipN.textContent = `${String(k + 1).padStart(2, '0')} / 07`; chipT.textContent = $('b', items[k]).textContent;
+  };
+  setOn(0);
+  const run = () => { if (visible && !paused && !document.hidden) v.play().catch(() => {}); else if (!v.paused) v.pause(); };
+  new IntersectionObserver(([e]) => {
+    if (e.isIntersecting) load();
+    visible = e.intersectionRatio > .35; run();
+  }, { threshold: [0, .35, .6], rootMargin: '200px 0px 200px 0px' }).observe(screen);
+  v.addEventListener('loadedmetadata', () => { v.playbackRate = RATE; });
+  v.addEventListener('timeupdate', () => {
+    const t = v.currentTime;
+    let k = 0; for (let i = 1; i < KEY.length; i++) if (t >= KEY[i] - LEAD) k = i;
+    setOn(k);
+    const a = k ? KEY[k] - LEAD : 0, b = k < KEY.length - 1 ? KEY[k + 1] - LEAD : (v.duration || KEY[6]);
+    items[k].style.setProperty('--p', clamp((t - a) / (b - a)).toFixed(3));
+    if (v.duration) bar.style.transform = `scaleX(${(t / v.duration).toFixed(4)})`;
   });
+  // it rests on the finished house for a moment, then walks it again
+  v.addEventListener('ended', () => { clearTimeout(restT); restT = setTimeout(() => { v.currentTime = 0; run(); }, REST); });
+  items.forEach((li, i) => $('button', li).addEventListener('click', () => {
+    load(); clearTimeout(restT);
+    v.currentTime = i ? KEY[i] - LEAD + .05 : 0; v.playbackRate = RATE; setOn(i); run();
+  }));
+  if (reduced) { btn.setAttribute('aria-pressed', 'true'); btn.setAttribute('aria-label', 'Play the video'); }
+  btn.addEventListener('click', () => {
+    paused = btn.getAttribute('aria-pressed') !== 'true';
+    btn.setAttribute('aria-pressed', paused); btn.setAttribute('aria-label', paused ? 'Play the video' : 'Pause the video'); run();
+  });
+  document.addEventListener('visibilitychange', run);
+  box.__bw = { get t() { return v.currentTime; }, get on() { return on; }, get paused() { return v.paused; } };   // QC only
 }
 
 /* ---------- nav goes solid once you leave the house ---------- */
@@ -324,20 +379,24 @@ addEventListener('scroll', navTone, { passive: true }); navTone();
 
 /* ---------- finish levels ---------- */
 {
+  // [name, flag, in plain words, passes of compound (of 5), where it goes, good to know]
   const LV = [
-    ['Level 0, hung', 'Temporary or undecided', 'Temporary walls, or work where the final decorating isn’t decided.', 'Board screwed off, no tape.', 'Not meant to be seen.'],
-    ['Level 1, fire-taped', 'Out of sight', 'Above ceilings and in attics, wherever a fire rating is the only job.', 'Tape bedded in compound, ridges left.', 'Not a finish you’d paint.'],
-    ['Level 2, utility', 'Garages and tile', 'Garages, storage and walls that will take tile.', 'One coat over the tape and every screw.', 'Joints will show through paint.'],
-    ['Level 3, textured', 'Under a texture', 'Rooms getting orange peel, knockdown or skip trowel.', 'Two coats, feathered.', 'The texture does the rest of the work.'],
-    ['Level 4, smooth', 'The usual choice', 'Most rooms, with flat paint.', 'Three coats, sanded smooth.', 'Low sun can still find the joints.'],
-    ['Level 5, skim coat', 'Big rooms, low light', 'Great rooms, big windows and gloss paint.', 'A tight skim over the whole face.', 'Nothing flashes through paint, even in 6:40 PM light.'],
+    ['Hung', '', 'Board screwed off. No tape and no compound yet.', 0, 'Temporary walls, or work where the final finish isn’t decided.', 'Not meant to be seen.'],
+    ['Fire-taped', 'Out of sight', 'Tape bedded in compound. Ridges and tool marks are left.', 1, 'Above ceilings, in attics and service areas, where a fire rating is the only job.', 'Not a finish you’d paint.'],
+    ['Utility', 'Garages and tile', 'Tape bedded, then one coat over the tape and every screw.', 2, 'Garages, storage, and walls that will get tile.', 'Joints will show through paint.'],
+    ['Textured', 'Under a texture', 'Tape plus two coats, feathered out and ready for texture.', 3, 'Rooms getting orange peel, knockdown or skip trowel.', 'The texture does the rest of the hiding.'],
+    ['Smooth', 'The usual choice', 'Tape plus three coats, sanded smooth for flat paint.', 4, 'Most rooms in a home, with flat paint.', 'Low sun can still find the joints.'],
+    ['Skim coat', 'Big rooms, low light', 'Level 4, then a thin skim coat over the whole wall.', 5, 'Great rooms, big windows, and gloss or satin paint.', 'Nothing flashes through the paint, even in evening light.'],
   ];
-  const imgs = $$('.lv-fig img'), tabs = $$('.lv-pick button');
+  const imgs = $$('.lv-fig img'), tabs = $$('.lv-pick button'), meter = $$('.lv-meter i');
   tabs.forEach(b => b.addEventListener('click', () => {
-    const n = +b.dataset.lv, [tag, flag, where, what, know] = LV[n];
+    const n = +b.dataset.lv, [name, flag, plain, coats, where, know] = LV[n];
     tabs.forEach(t => t.setAttribute('aria-selected', t === b));
-    imgs.forEach((im, i) => { im.classList.toggle('on', i === n); im.alt = i === n ? `A drywall wall finished to Level ${n}, lit by low raking light` : ''; });
-    $('.lv-tag').textContent = tag; $('.lv-flag').textContent = flag; $('.lv-where').textContent = where; $('.lv-do').textContent = what; $('.lv-know').textContent = know;
+    imgs.forEach((im, i) => { im.classList.toggle('on', i === n); im.alt = i === n ? `A drywall seam finished to Level ${n}, shown up close` : ''; });
+    $('.lv-num b').textContent = n; $('.lv-tag').textContent = name;
+    const fl = $('.lv-flag'); fl.textContent = flag; fl.hidden = !flag;
+    $('.lv-plain').textContent = plain; $('.lv-where').textContent = where; $('.lv-know').textContent = know;
+    meter.forEach((m, i) => m.classList.toggle('on', i < coats));
   }));
 }
 
@@ -449,7 +508,16 @@ addEventListener('scroll', navTone, { passive: true }); navTone();
 
 /* ---------- reveal on scroll ---------- */
 const rv = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); rv.unobserve(e.target); } }), { rootMargin: '0px 0px -12% 0px' });
-$$('.svc-card, .sec-head, .steps li, .us, .crew li, .lic, .how li, .faq details').forEach(el => { el.classList.add('rv'); rv.observe(el); });
+$$('.steps li, .us, .crew li, .lic, .how li, .faq details').forEach(el => { el.classList.add('rv'); rv.observe(el); });
+
+// the service sheets stand up off the floor when they come into view
+{
+  const sh = $('.sheets');
+  if (sh && !reduced) {
+    sh.classList.add('wait');
+    new IntersectionObserver(([e], io) => { if (e.isIntersecting) { sh.classList.remove('wait'); io.disconnect(); } }, { rootMargin: '0px 0px -18% 0px' }).observe(sh);
+  }
+}
 
 /* ---------- bid: the blueprint. Mark rooms, fill in the title block, stamp it ---------- */
 {
