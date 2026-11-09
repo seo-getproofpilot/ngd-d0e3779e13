@@ -8,7 +8,7 @@ const smooth = t => t * t * (3 - 2 * t);
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const small = matchMedia('(max-width: 820px)').matches;
 // stamped by tools-build-preview.py with a hash of the footage, so a new deploy is never served from an old cache
-const ASSET_V = '458a50f94c';
+const ASSET_V = '3447c964eb';
 
 /* ---------- the walk player ---------- */
 // The footage plays as real video (hardware-decoded, so it stays smooth on a phone), forward or, when you scroll
@@ -291,7 +291,8 @@ function autoTour({ section, video: v, seq, cardOf, drift = 1, cards, onStage, o
   const hero = autoTour({
     // legs: aerial → yard, yard → foyer (through the front door), then one per room
     section: tourEl, video: $('.tour-vid'), seq: 'seq',
-    cardOf: [0, 0, 1, 2, 3, 4, 5],
+    // stops: aerial, yard, then each room twice (where you arrive, and where its pan returns you)
+    cardOf: [0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5],
     cards: [$('.tour-intro'), ...$$('.room')], onStage,
     onTime: (i, leg) => {
       const o = logoO = logoAt(i, leg);
