@@ -8,7 +8,7 @@ const smooth = t => t * t * (3 - 2 * t);
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const small = matchMedia('(max-width: 820px)').matches;
 // stamped by tools-build-preview.py with a hash of the footage, so a new deploy is never served from an old cache
-const ASSET_V = '7f53eee81c';
+const ASSET_V = 'c3f9e38654';
 
 /* ---------- the walk player ---------- */
 // The footage plays as real video (hardware-decoded, so it stays smooth on a phone), forward or, when you scroll
@@ -256,7 +256,7 @@ function autoTour({ section, video: v, seq, cardOf, handAt = {}, drift = 1, card
   // the job card taped to the wall on the right: one per stage, what the work is and what we check
   const SPEC = [
     { t: 'The walkthrough', line: 'One house, start to finish. Come on in.', rows: [
-      ['Stages', 'Five, from bare board to ready for paint'],
+      ['Stages', 'Four, from bare board to sanded smooth'],
       ['Crew', 'One crew hangs, tapes and finishes every wall'],
       ['Serving', 'San Tan Valley, Queen Creek, the East Valley'] ] },
     { t: 'Hanging', line: 'Ceilings go up before the walls.', rows: [
@@ -305,10 +305,10 @@ function autoTour({ section, video: v, seq, cardOf, handAt = {}, drift = 1, card
   const hero = autoTour({
     // legs: aerial → yard, yard → foyer (through the front door), then one per room
     section: tourEl, video: $('.tour-vid'), seq: 'seq',
-    // stops: aerial, yard, then each room; the great room (taping) also has its look-around, so it appears twice
-    cardOf: [0, 0, 1, 2, 2, 3, 4, 5],
-    // where each walk crosses into the next room (share of the walk), read off the footage
-    handAt: { 1: .72, 2: .68, 4: .47, 5: .66, 6: .27 },
+    // stops: aerial start, yard (the walk-up), then one shot per room: hanging, taping, putty, finishing (gen6)
+    cardOf: [0, 0, 1, 2, 3, 4, 4],
+    // the card changes as you step through the front door, then right at each door-frame cut between rooms
+    handAt: { 1: .62, 2: .985, 3: .985, 4: .985 },
     cards: [$('.tour-intro'), ...$$('.room')], onStage,
     onOutro: p => { outroO = p > 0 ? smooth(clamp((p - .08) / .25)) : 0; },
     onTime: (i, leg) => {
