@@ -8,7 +8,7 @@ const smooth = t => t * t * (3 - 2 * t);
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const small = matchMedia('(max-width: 820px)').matches;
 // stamped by tools-build-preview.py with a hash of the footage, so a new deploy is never served from an old cache
-const ASSET_V = '8fae9e64c2';
+const ASSET_V = '719aebe70b';
 
 /* ---------- the walk player ---------- */
 // The footage plays as real video (hardware-decoded, so it stays smooth on a phone), forward or, when you scroll
@@ -296,7 +296,7 @@ function autoTour({ section, video: v, seq, holds, cardOf, drift = 1, cards, onS
   // you're leaving would change stage on camera. A band of board edged with Next Gen tape sweeps across exactly
   // there, driven by the video's own clock: in fast, a slow drift while it covers the change, then out.
   {
-    const CUTS = [[18.96, 19.24], [24.47, 24.8], [28.56, 29.02], [34.4, 34.9]], IN = .24, OUT = .26, PAD_A = .08, PAD_B = .1;
+    const CUTS = [[11.86, 11.98], [18.96, 19.24], [24.47, 24.8], [28.56, 29.02], [34.4, 34.9]], IN = .24, OUT = .26, PAD_A = .08, PAD_B = .1;
     const vid = $('.tour-vid'), wipe = $('.tour-wipe'), band = $('.tw-band');
     const eo = u => 1 - Math.pow(1 - u, 2.2), ei = u => Math.pow(u, 2.2);
     let shown = false;
