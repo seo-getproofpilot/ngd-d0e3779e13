@@ -8,7 +8,7 @@ const smooth = t => t * t * (3 - 2 * t);
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const small = matchMedia('(max-width: 820px)').matches;
 // stamped by tools-build-preview.py with a hash of the footage, so a new deploy is never served from an old cache
-const ASSET_V = '719aebe70b';
+const ASSET_V = 'b42c8703af';
 
 /* ---------- the walk player ---------- */
 // The footage plays as real video (hardware-decoded, so it stays smooth on a phone), forward or, when you scroll
@@ -292,29 +292,6 @@ function autoTour({ section, video: v, seq, holds, cardOf, drift = 1, cards, onS
     onFrame: f => { loadBar.style.transform = `scaleX(${f})`; if (f >= .999) $('.tour-load').classList.add('done'); },
   });
   routeBtns.forEach(b => b.addEventListener('click', () => hero.goTo(+b.dataset.go)));
-  // The walk is one generated take, and each room's walls were edited to their own stage, so between rooms the walls
-  // you're leaving would change stage on camera. A band of board edged with Next Gen tape sweeps across exactly
-  // there, driven by the video's own clock: in fast, a slow drift while it covers the change, then out.
-  {
-    const CUTS = [[11.86, 11.98], [18.96, 19.24], [24.47, 24.8], [28.56, 29.02], [34.4, 34.9]], IN = .24, OUT = .26, PAD_A = .08, PAD_B = .1;
-    const vid = $('.tour-vid'), wipe = $('.tour-wipe'), band = $('.tw-band');
-    const eo = u => 1 - Math.pow(1 - u, 2.2), ei = u => Math.pow(u, 2.2);
-    let shown = false;
-    const step = () => {
-      const t = vid.currentTime; let L = null;
-      for (const [a, b] of CUTS) {
-        const p1 = a - PAD_A, p0 = p1 - IN, p2 = b + PAD_B, p3 = p2 + OUT;
-        if (t < p0 || t > p3) continue;
-        // L: the band's left edge in screen widths; the band covers the whole screen anywhere from -.95 to -.25
-        L = t < p1 ? -2.45 + 1.5 * eo((t - p0) / IN) : t < p2 ? -.95 + .7 * ((t - p1) / (p2 - p1)) : -.25 + 1.5 * ei((t - p2) / OUT);
-        break;
-      }
-      if (L === null) { if (shown) { wipe.style.visibility = 'hidden'; shown = false; } }
-      else { if (!shown) { wipe.style.visibility = 'visible'; shown = true; } band.style.transform = `translateX(${(L / 2.2 * 100).toFixed(2)}%) skewX(-14deg)`; }
-      requestAnimationFrame(step);
-    };
-    requestAnimationFrame(step);
-  }
   pauseBtn.addEventListener('click', () => {
     const p = pauseBtn.getAttribute('aria-pressed') !== 'true';
     pauseBtn.setAttribute('aria-pressed', p); pauseBtn.querySelector('span').textContent = p ? 'Play' : 'Pause'; hero.setPaused(p);

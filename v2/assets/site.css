@@ -146,17 +146,6 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .tour-load { position: absolute; left: 0; right: 0; top: 0; height: 2px; transition: opacity .6s; }
 .tour-load i { display: block; height: 100%; background: var(--chalk); transform-origin: left; transform: scaleX(0); }
 .tour-load.done { opacity: 0; }
-/* the tape wipe: between rooms a band of board sweeps across, edged with Next Gen tape, so you never watch one room's
-   walls change into the next stage */
-.tour-wipe { position: absolute; inset: 0; overflow: hidden; pointer-events: none; visibility: hidden; }
-.tw-band { position: absolute; top: -30%; bottom: -30%; left: 0; width: 220%; will-change: transform; transform: translateX(-120%) skewX(-14deg);
-  background: repeating-linear-gradient(0deg, rgba(120, 110, 90, .035) 0 1px, transparent 1px 3px), linear-gradient(90deg, #d3cdc0, #e3dfd5 30%, #dcd7cc 70%, #cfc9bb);
-  box-shadow: 0 0 80px rgba(0, 0, 0, .55); }
-.tw-tape { position: absolute; top: 0; bottom: 0; left: 0; width: 52px; overflow: hidden;
-  background: repeating-linear-gradient(0deg, rgba(120, 100, 70, .06) 0 2px, transparent 2px 5px), linear-gradient(90deg, #ece4d1, #f5efe2 50%, #e6dcc6);
-  box-shadow: 0 0 0 1px rgba(150, 130, 100, .25), 4px 0 12px rgba(0, 0, 0, .12); }
-.tw-tape.tw-b { left: auto; right: 0; }
-.tw-tape span { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%) rotate(90deg); white-space: nowrap; font: 400 13px/1 'Michroma', var(--f); letter-spacing: .2em; color: var(--chalk); opacity: .8; }
 
 /* ================= SERVICES: four sheets of board, standing in the walkthrough's great room ================= */
 .svc { position: relative; overflow: hidden; padding: clamp(90px, 10vw, 140px) 0 clamp(80px, 8vw, 120px); background: var(--graphite); color: var(--gypsum); }
@@ -631,7 +620,6 @@ button, input, select, textarea { font: inherit; color: inherit; }
   .tour-intro .btn { min-height: 48px; padding: 0 14px; font-size: 12px; letter-spacing: .06em; }
   .tour-intro .btn:has(svg) { padding-right: 0; }
   .tour-intro .btn svg { margin-left: 12px; padding: 0 12px; }
-  .tw-tape { width: 36px; } .tw-tape span { font-size: 10px; }
 }
 
 /* preview build */
