@@ -8,7 +8,7 @@ const smooth = t => t * t * (3 - 2 * t);
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const small = matchMedia('(max-width: 820px)').matches;
 // stamped by tools-build-preview.py with a hash of the footage, so a new deploy is never served from an old cache
-const ASSET_V = 'c3f9e38654';
+const ASSET_V = '8541aae50c';
 
 /* ---------- the walk player ---------- */
 // The footage plays as real video (hardware-decoded, so it stays smooth on a phone), forward or, when you scroll
@@ -283,8 +283,15 @@ function autoTour({ section, video: v, seq, cardOf, handAt = {}, drift = 1, card
   const tourEl = $('.tour'), routeBtns = $$('.route button'), spec = $('.spec'), fill = $('.route-line i'), loadBar = $('.tour-load i');
   const logo = $('.tour-logo'), pauseBtn = $('.tour-pause');
   let specT, logoO = 1, outroO = 0;
+  // the branded tape: filled with copies of the real logo (the hero's own SVG), shown in the taping room
+  const tapeRun = $('.tape-run'), track = $('.tape-track');
+  if (tapeRun) {
+    const svg = $('.tour-logo svg').outerHTML;
+    track.innerHTML = Array.from({ length: 16 }, () => svg + '<i></i>').join('');
+  }
   const onStage = k => {
     tourEl.dataset.stage = k;
+    if (tapeRun) tapeRun.classList.toggle('on', k === 2);
     routeBtns.forEach((b, i) => { b.classList.toggle('on', i === k); b.classList.toggle('done', i < k); });
     spec.classList.remove('show'); clearTimeout(specT);
     specT = setTimeout(() => {
