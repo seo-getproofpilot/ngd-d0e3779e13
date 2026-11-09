@@ -8,7 +8,7 @@ const smooth = t => t * t * (3 - 2 * t);
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const small = matchMedia('(max-width: 820px)').matches;
 // stamped by tools-build-preview.py with a hash of the footage, so a new deploy is never served from an old cache
-const ASSET_V = '9cc33125ae';
+const ASSET_V = 'b748f90319';
 
 /* ---------- the walk player ---------- */
 // The footage plays as real video (hardware-decoded, so it stays smooth on a phone), forward or, when you scroll
@@ -163,7 +163,7 @@ function walk({ section, canvas, seq, stops, HOLD, WALK, vh = 72, eager = false,
 // ever plays at normal speed: the page just pauses it at each stop for the card, then plays on. It's a real <video>
 // element, moved by a GPU transform for the handheld drift, which keeps it smooth on phones.
 // cardOf: which card each stop shows.
-function autoTour({ section, video: v, seq, cardOf, drift = 1, cards, onStage, onFrame, onTime }) {
+function autoTour({ section, video: v, seq, cardOf, handAt = {}, drift = 1, cards, onStage, onFrame, onTime }) {
   // It never stops: the slow-downs into each room are baked into the footage, so the camera lingers in a room and walks
   // on without a pause or a frozen frame. Each room's card comes up as you near it and hands off halfway down the next
   // hall. At the end the last room dissolves back to the street and it walks again.
@@ -177,10 +177,12 @@ function autoTour({ section, video: v, seq, cardOf, drift = 1, cards, onStage, o
   // the loop's dissolve: the last frame, held on a canvas over the video while it fades
   const fade = document.createElement('canvas'); fade.className = 'tour-fade'; fade.setAttribute('aria-hidden', 'true');
   v.after(fade);
-  let fadeT = -1;
+  let fadeT = -1, holdUntil = -1;
+  // the opening rests on the aerial and the logo for a moment before the drone comes down, every time round
+  const OPEN = 2600;
   const restart = now => {
     try { fade.width = v.videoWidth; fade.height = v.videoHeight; fade.getContext('2d').drawImage(v, 0, 0); fade.style.transform = v.style.transform; fadeT = now; fade.style.opacity = 1; } catch (e) {}
-    v.currentTime = 0; v.play().catch(() => {});
+    v.currentTime = 0; v.pause(); holdUntil = now + OPEN;
   };
 
   let i = 0, paused = reduced, visible = true, stage = -1, amp = drift, zoom = 1.07, prev = performance.now();
@@ -192,7 +194,8 @@ function autoTour({ section, video: v, seq, cardOf, drift = 1, cards, onStage, o
     const t = v.currentTime;
     if (STOP) {
       // phones load nothing until play() is called, so the walk starts on the clock, not on loaded data
-      if (!shouldRun()) { if (!v.paused) v.pause(); }
+      if (holdUntil < 0) holdUntil = now + OPEN;
+      if (!shouldRun() || now < holdUntil) { if (!v.paused) v.pause(); }
       else if (t >= STOP[STOP.length - 1] - .03 || v.ended) restart(now);
       else if (v.paused && !v.seeking) v.play().catch(() => {});
       i = 0; for (let k = 1; k < STOP.length - 1; k++) if (t >= STOP[k] - .01) i = k;
@@ -203,18 +206,24 @@ function autoTour({ section, video: v, seq, cardOf, drift = 1, cards, onStage, o
     const tt = (now - t0) / 1000;
     const dx = (Math.sin(tt * .53) * 5 + Math.sin(tt * 1.37) * 2) * amp, dy = (Math.sin(tt * .71 + 1) * 3.5 + Math.sin(tt * 2.1) * 1.2) * amp;
     const rot = (Math.sin(tt * .43) * .09 + Math.sin(tt * 1.1) * .035) * amp;
+    // while it rests on the aerial, a slow push-in keeps the picture alive
+    const rest = holdUntil > 0 && now < holdUntil ? 1 - (holdUntil - now) / OPEN : 1;
     if (!STOP) { v.style.transform = `translate3d(${dx.toFixed(2)}px, ${dy.toFixed(2)}px, 0) rotate(${rot.toFixed(3)}deg) scale(${zoom.toFixed(4)})`; return; }
     // the walk's progress within the current leg, 0 at its room and 1 at the next
     const leg = clamp((t - STOP[i]) / (STOP[i + 1] - STOP[i]));
     // the last room opens out wide as you settle into it
     zoom += ((i === STOP.length - 2 && leg > .55 ? 1.02 : 1.07) - zoom) * (1 - Math.exp(-dt * 1.2));
-    v.style.transform = `translate3d(${dx.toFixed(2)}px, ${dy.toFixed(2)}px, 0) rotate(${rot.toFixed(3)}deg) scale(${zoom.toFixed(4)})`;
+    const push = i === 0 && t < .05 ? 1 + .025 * smooth(rest) : 1 + .025 * (1 - smooth(clamp(t / 1.2)));
+    v.style.transform = `translate3d(${dx.toFixed(2)}px, ${dy.toFixed(2)}px, 0) rotate(${rot.toFixed(3)}deg) scale(${(zoom * (i === 0 ? push : 1)).toFixed(4)})`;
     onTime && onTime(i, leg);
     // the card for the room you're in, handing off to the next one halfway down the hall
+    // it hands over where that walk actually crosses into the next room (handAt, per leg), not halfway, so a card is
+    // never up over a room at another stage
     let k = cardOf[i], vis = 1;
     if (cardOf[i] !== cardOf[i + 1]) {
-      k = leg < .5 ? cardOf[i] : cardOf[i + 1];
-      vis = leg < .5 ? 1 - smooth(clamp((leg - .36) / .14)) : smooth(clamp((leg - .5) / .14));
+      const h = handAt[i] ?? .5;
+      k = leg < h ? cardOf[i] : cardOf[i + 1];
+      vis = leg < h ? 1 - smooth(clamp((leg - (h - .1)) / .1)) : smooth(clamp((leg - h) / .1));
     }
     cards.forEach((c, n) => {
       const on = n === k ? vis * (onStage.cardScale ? onStage.cardScale(n, i, leg) : 1) : 0;
@@ -293,6 +302,8 @@ function autoTour({ section, video: v, seq, cardOf, drift = 1, cards, onStage, o
     section: tourEl, video: $('.tour-vid'), seq: 'seq',
     // stops: aerial, yard, then each room twice (where you arrive, and where its pan returns you)
     cardOf: [0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5],
+    // where each walk crosses into the next room (share of the walk), read off the footage
+    handAt: { 1: .72, 3: .66, 5: .46, 7: .66, 9: .27 },
     cards: [$('.tour-intro'), ...$$('.room')], onStage,
     onTime: (i, leg) => {
       const o = logoO = logoAt(i, leg);
