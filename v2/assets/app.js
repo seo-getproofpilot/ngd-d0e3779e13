@@ -8,7 +8,7 @@ const smooth = t => t * t * (3 - 2 * t);
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const small = matchMedia('(max-width: 820px)').matches;
 // stamped by tools-build-preview.py with a hash of the footage, so a new deploy is never served from an old cache
-const ASSET_V = 'f8c1e23c22';
+const ASSET_V = '458a50f94c';
 
 /* ---------- the walk player ---------- */
 // The footage plays as real video (hardware-decoded, so it stays smooth on a phone), forward or, when you scroll
@@ -162,8 +162,11 @@ function walk({ section, canvas, seq, stops, HOLD, WALK, vh = 72, eager = false,
 // The hero is one 60fps video (tools-hero.py) with the slow-downs into each room already in the footage, so it only
 // ever plays at normal speed: the page just pauses it at each stop for the card, then plays on. It's a real <video>
 // element, moved by a GPU transform for the handheld drift, which keeps it smooth on phones.
-// holds: seconds at each stop (the last stays). cardOf: which card each stop shows.
-function autoTour({ section, video: v, seq, holds, cardOf, drift = 1, cards, onStage, onFrame, onTime }) {
+// cardOf: which card each stop shows.
+function autoTour({ section, video: v, seq, cardOf, drift = 1, cards, onStage, onFrame, onTime }) {
+  // It never stops: the slow-downs into each room are baked into the footage, so the camera lingers in a room and walks
+  // on without a pause or a frozen frame. Each room's card comes up as you near it and hands off halfway down the next
+  // hall. At the end the last room dissolves back to the street and it walks again.
   const dir = small ? 'm' : 'd';
   let STOP = null;
   v.muted = true; v.playsInline = true; v.preload = 'auto';
@@ -171,11 +174,17 @@ function autoTour({ section, video: v, seq, holds, cardOf, drift = 1, cards, onS
   v.src = `assets/${seq}/${dir}-fwd.mp4?v=${ASSET_V}`;
   onFrame && v.addEventListener('progress', () => { if (v.duration && v.buffered.length) onFrame(v.buffered.end(v.buffered.length - 1) / v.duration); });
   fetch(`assets/${seq}/motion.json?v=${ASSET_V}`).then(r => r.json()).then(j => { STOP = j.stops; });
+  // the loop's dissolve: the last frame, held on a canvas over the video while it fades
+  const fade = document.createElement('canvas'); fade.className = 'tour-fade'; fade.setAttribute('aria-hidden', 'true');
+  v.after(fade);
+  let fadeT = -1;
+  const restart = now => {
+    try { fade.width = v.videoWidth; fade.height = v.videoHeight; fade.getContext('2d').drawImage(v, 0, 0); fade.style.transform = v.style.transform; fadeT = now; fade.style.opacity = 1; } catch (e) {}
+    v.currentTime = 0; v.play().catch(() => {});
+  };
 
-  // i: the stop we're at (holding) or just left (walking)
-  let i = 0, mode = 'hold', holdEnd = Infinity, paused = reduced, visible = true, stage = -1, amp = drift, zoom = 1.07, prev = performance.now();
+  let i = 0, paused = reduced, visible = true, stage = -1, amp = drift, zoom = 1.07, prev = performance.now();
   const t0 = prev;
-  const startHold = (k, now) => { i = k; mode = 'hold'; holdEnd = k === STOP.length - 1 ? Infinity : now + holds[k] * 1000; if (!v.paused) v.pause(); };
   const shouldRun = () => STOP && visible && !paused && !document.hidden;
 
   function tick(now) {
@@ -183,30 +192,29 @@ function autoTour({ section, video: v, seq, holds, cardOf, drift = 1, cards, onS
     const t = v.currentTime;
     if (STOP) {
       // phones load nothing until play() is called, so the walk starts on the clock, not on loaded data
-      if (mode === 'hold' && now >= holdEnd && shouldRun()) { mode = 'walk'; v.play().catch(() => {}); }
-      if (mode === 'walk') {
-        if (!shouldRun()) { if (!v.paused) v.pause(); }
-        else if (t >= STOP[i + 1] - .008) startHold(i + 1, now);
-        else if (v.paused && !v.seeking) v.play().catch(() => {});
-      }
+      if (!shouldRun()) { if (!v.paused) v.pause(); }
+      else if (t >= STOP[STOP.length - 1] - .03 || v.ended) restart(now);
+      else if (v.paused && !v.seeking) v.play().catch(() => {});
+      i = 0; for (let k = 1; k < STOP.length - 1; k++) if (t >= STOP[k] - .01) i = k;
     }
-    // a slow handheld drift, a little livelier while walking
-    amp += ((reduced ? 0 : drift * (mode === 'walk' && !v.paused ? 1.4 : 1)) - amp) * (1 - Math.exp(-dt * 2.5));
+    if (fadeT >= 0) { const f = clamp((now - fadeT) / 1400); fade.style.opacity = 1 - smooth(f); if (f >= 1) fadeT = -1; }
+    // a slow handheld drift
+    amp += ((reduced ? 0 : drift * (v.paused ? 1 : 1.4)) - amp) * (1 - Math.exp(-dt * 2.5));
     const tt = (now - t0) / 1000;
     const dx = (Math.sin(tt * .53) * 5 + Math.sin(tt * 1.37) * 2) * amp, dy = (Math.sin(tt * .71 + 1) * 3.5 + Math.sin(tt * 2.1) * 1.2) * amp;
     const rot = (Math.sin(tt * .43) * .09 + Math.sin(tt * 1.1) * .035) * amp;
-    // the last room settles out wide, so you see the whole of it
-    zoom += ((STOP && i === STOP.length - 1 && mode === 'hold' ? 1.015 : 1.07) - zoom) * (1 - Math.exp(-dt * 1.2));
+    if (!STOP) { v.style.transform = `translate3d(${dx.toFixed(2)}px, ${dy.toFixed(2)}px, 0) rotate(${rot.toFixed(3)}deg) scale(${zoom.toFixed(4)})`; return; }
+    // the walk's progress within the current leg, 0 at its room and 1 at the next
+    const leg = clamp((t - STOP[i]) / (STOP[i + 1] - STOP[i]));
+    // the last room opens out wide as you settle into it
+    zoom += ((i === STOP.length - 2 && leg > .55 ? 1.02 : 1.07) - zoom) * (1 - Math.exp(-dt * 1.2));
     v.style.transform = `translate3d(${dx.toFixed(2)}px, ${dy.toFixed(2)}px, 0) rotate(${rot.toFixed(3)}deg) scale(${zoom.toFixed(4)})`;
-    if (!STOP) return;
-    // the walk's progress within the current leg, 0 at its stop and 1 at the next
-    const leg = mode === 'walk' && i < STOP.length - 1 ? clamp((t - STOP[i]) / (STOP[i + 1] - STOP[i])) : 0;
-    onTime && onTime(i, mode === 'walk' ? leg : 0);
-    // which card is up, and how visible: full while holding, crossfading over the ends of a walk between rooms
+    onTime && onTime(i, leg);
+    // the card for the room you're in, handing off to the next one halfway down the hall
     let k = cardOf[i], vis = 1;
-    if (mode === 'walk' && cardOf[i] !== cardOf[i + 1]) {
+    if (cardOf[i] !== cardOf[i + 1]) {
       k = leg < .5 ? cardOf[i] : cardOf[i + 1];
-      vis = leg < .5 ? 1 - smooth(clamp(leg / .18)) : smooth(clamp((leg - .82) / .18));
+      vis = leg < .5 ? 1 - smooth(clamp((leg - .36) / .14)) : smooth(clamp((leg - .5) / .14));
     }
     cards.forEach((c, n) => {
       const on = n === k ? vis * (onStage.cardScale ? onStage.cardScale(n, i, leg) : 1) : 0;
@@ -215,15 +223,15 @@ function autoTour({ section, video: v, seq, holds, cardOf, drift = 1, cards, onS
     if (k !== stage) { stage = k; onStage(k); }
     onStage.vis && onStage.vis(clamp(t / STOP[STOP.length - 1]), vis);
   }
-  section.__tour = { get t() { return v.currentTime; }, get mode() { return mode; }, get i() { return i; }, get stops() { return STOP; } };   // QC only
+  section.__tour = { get t() { return v.currentTime; }, get mode() { return v.paused ? 'paused' : 'walk'; }, get i() { return i; }, get stops() { return STOP; } };   // QC only
   new IntersectionObserver(([e]) => { visible = e.isIntersecting; }, { threshold: .25 }).observe(section);
   const loop = now => { tick(now); requestAnimationFrame(loop); };
-  requestAnimationFrame(now => { prev = now; const go = () => (STOP ? startHold(0, performance.now()) : setTimeout(go, 50)); go(); loop(now); });
+  requestAnimationFrame(now => { prev = now; loop(now); });
   return {
-    // jump to the first stop that shows card c and hold there
+    // jump to the room that shows card c and walk on from there
     goTo(c) {
       const k = cardOf.indexOf(c); if (k < 0 || !STOP) return;
-      v.pause(); v.currentTime = STOP[k]; startHold(k, performance.now());
+      v.currentTime = STOP[k]; if (shouldRun()) v.play().catch(() => {});
     },
     setPaused(p) { paused = p; if (p && !v.paused) v.pause(); },
   };
@@ -283,7 +291,7 @@ function autoTour({ section, video: v, seq, holds, cardOf, drift = 1, cards, onS
   const hero = autoTour({
     // legs: aerial → yard, yard → foyer (through the front door), then one per room
     section: tourEl, video: $('.tour-vid'), seq: 'seq',
-    holds: [2, 1.6, 2.6, 2.6, 2.6, 2.6], cardOf: [0, 0, 1, 2, 3, 4, 5],
+    cardOf: [0, 0, 1, 2, 3, 4, 5],
     cards: [$('.tour-intro'), ...$$('.room')], onStage,
     onTime: (i, leg) => {
       const o = logoO = logoAt(i, leg);
