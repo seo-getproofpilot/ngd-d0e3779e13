@@ -531,7 +531,7 @@ addEventListener('scroll', navTone, { passive: true }); navTone();
 
 /* ---------- repair: drag between before and after ---------- */
 {
-  const ba = $('.ba'), inp = $('.ba-in'), HOME = innerWidth > 820 ? 66 : 50;   // on a wide screen it rests clear of the repair ticket
+  const ba = $('.ba'), inp = $('.ba-in'), HOME = 50;
   ba.style.setProperty('--x', `${HOME}%`); inp.value = HOME;
   inp.addEventListener('input', () => ba.style.setProperty('--x', `${inp.value}%`));
   // it sweeps once on arrival so the after is obvious
@@ -543,9 +543,15 @@ addEventListener('scroll', navTone, { passive: true }); navTone();
   }, { threshold: .6 }).observe(ba);
 }
 
+/* ---------- the raking light: each finished-wall headline is lit by a sweep as it comes into view ---------- */
+{
+  const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { rootMargin: '0px 0px -18% 0px' });
+  $$('.lit').forEach(el => io.observe(el));
+}
+
 /* ---------- reveal on scroll ---------- */
 const rv = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); rv.unobserve(e.target); } }), { rootMargin: '0px 0px -12% 0px' });
-$$('.steps li, .us, .crew li, .lic, .how li, .faq details, .tape-blade').forEach(el => { el.classList.add('rv'); rv.observe(el); });
+$$('.seq li, .us, .crew li, .lic, .how li, .faq details').forEach(el => { el.classList.add('rv'); rv.observe(el); });
 
 // the service sheets stand up off the floor when they come into view
 {
