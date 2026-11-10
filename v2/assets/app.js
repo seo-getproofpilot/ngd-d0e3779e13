@@ -8,7 +8,7 @@ const smooth = t => t * t * (3 - 2 * t);
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const small = matchMedia('(max-width: 820px)').matches;
 // stamped by tools-build-preview.py with a hash of the footage, so a new deploy is never served from an old cache
-const ASSET_V = '2964f796bc';
+const ASSET_V = '2b4bb463eb';
 
 /* ---------- the walk player ---------- */
 // The footage plays as real video (hardware-decoded, so it stays smooth on a phone), forward or, when you scroll
@@ -411,6 +411,31 @@ addEventListener('scroll', navTone, { passive: true }); navTone();
   }));
 }
 
+/* ---------- services: the index on the left drives the photo frame on the right ---------- */
+{
+  const items = $$('.svx-list > li'), frames = [...$$('.svx-fig > img'), $('.svx-split')], capN = $('.svx-cap-n'), capT = $('.svx-cap-t');
+  if (items.length) {
+    let cur = 0, timer = 0, held = false;
+    const set = i => {
+      cur = i;
+      items.forEach((li, k) => { li.classList.toggle('on', k === i); $('button', li).setAttribute('aria-selected', k === i); });
+      frames.forEach((f, k) => f && f.classList.toggle('on', k === i));
+      capN.textContent = String(i + 1).padStart(2, '0');
+      capT.textContent = i === 3 ? 'Illustration of a typical repair' : 'Next Gen job site';
+    };
+    items.forEach((li, i) => {
+      const b = $('button', li);
+      b.addEventListener('click', () => { held = true; clearInterval(timer); set(i); });
+      b.addEventListener('mouseenter', () => { if (matchMedia('(hover: hover) and (min-width: 821px)').matches) { held = true; clearInterval(timer); set(i); } });
+    });
+    // on a wide screen it steps through on its own until someone picks one
+    if (!reduced) new IntersectionObserver(([e]) => {
+      clearInterval(timer);
+      if (e.isIntersecting && !held && innerWidth > 820) timer = setInterval(() => set((cur + 1) % items.length), 5200);
+    }, { threshold: .45 }).observe($('.svx'));
+  }
+}
+
 /* ---------- the texture wall: bare board, trowel a texture on ---------- */
 {
   const wall = $('.wall'), cv = $('.wall-cv'), c = cv.getContext('2d'), knife = $('.knife');
@@ -506,20 +531,21 @@ addEventListener('scroll', navTone, { passive: true }); navTone();
 
 /* ---------- repair: drag between before and after ---------- */
 {
-  const ba = $('.ba'), inp = $('.ba-in');
+  const ba = $('.ba'), inp = $('.ba-in'), HOME = innerWidth > 820 ? 66 : 50;   // on a wide screen it rests clear of the repair ticket
+  ba.style.setProperty('--x', `${HOME}%`); inp.value = HOME;
   inp.addEventListener('input', () => ba.style.setProperty('--x', `${inp.value}%`));
   // it sweeps once on arrival so the after is obvious
   new IntersectionObserver(([e], io) => {
     if (!e.isIntersecting || reduced) return; io.disconnect();
     const t0 = performance.now();
-    const step = now => { const t = clamp((now - t0) / 1800), v = 50 + Math.sin(t * Math.PI * 2) * 32 * (1 - t); ba.style.setProperty('--x', `${v}%`); inp.value = v; if (t < 1) requestAnimationFrame(step); };
+    const step = now => { const t = clamp((now - t0) / 1800), v = HOME + Math.sin(t * Math.PI * 2) * 22 * (1 - t); ba.style.setProperty('--x', `${v}%`); inp.value = v; if (t < 1) requestAnimationFrame(step); };
     requestAnimationFrame(step);
   }, { threshold: .6 }).observe(ba);
 }
 
 /* ---------- reveal on scroll ---------- */
 const rv = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); rv.unobserve(e.target); } }), { rootMargin: '0px 0px -12% 0px' });
-$$('.steps li, .us, .crew li, .lic, .how li, .faq details').forEach(el => { el.classList.add('rv'); rv.observe(el); });
+$$('.steps li, .us, .crew li, .lic, .how li, .faq details, .tape-blade').forEach(el => { el.classList.add('rv'); rv.observe(el); });
 
 // the service sheets stand up off the floor when they come into view
 {
