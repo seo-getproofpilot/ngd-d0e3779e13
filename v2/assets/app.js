@@ -8,7 +8,7 @@ const smooth = t => t * t * (3 - 2 * t);
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const small = matchMedia('(max-width: 820px)').matches;
 // stamped by tools-build-preview.py with a hash of the footage, so a new deploy is never served from an old cache
-const ASSET_V = '1757f50fbf';
+const ASSET_V = 'b326f3e52b';
 
 /* ---------- the walk player ---------- */
 // The footage plays as real video (hardware-decoded, so it stays smooth on a phone), forward or, when you scroll
