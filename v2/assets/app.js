@@ -341,7 +341,7 @@ function autoTour({ section, video: v, seq, cardOf, handAt = {}, drift = 1, card
 {
   const box = $('.bidwalk'), screen = $('.bw-screen'), v = $('.bw-vid'), items = $$('.bw-list li'), bar = $('.bw-bar i'), btn = $('.bw-pause');
   const chipN = $('.bw-chip-n'), chipT = $('.bw-chip-t');
-  const KEY = [0, 192, 384, 528, 672, 864, 1056].map(f => f / 24), LEAD = 3, RATE = 1.6, REST = 2200;
+  const KEY = [0, 192, 384, 528, 672, 864, 1056].map(f => f / 24), LEAD = 3, RATE = 1.3, REST = 2200;
   let on = -1, loaded = false, paused = reduced, visible = false, restT;
   const load = () => {
     if (loaded) return; loaded = true;
@@ -409,6 +409,15 @@ addEventListener('scroll', navTone, { passive: true }); navTone();
     $('.lv-plain').textContent = plain; $('.lv-where').textContent = where; $('.lv-know').textContent = know;
     meter.forEach((m, i) => m.classList.toggle('on', i < coats));
   }));
+  if (!reduced) {
+    let lv = -1, t = 0, wait = 0;
+    const step = () => { if (Date.now() < wait) return; lv = (lv + 1) % 6; tabs[lv].click(); wait = 0; };
+    tabs.forEach(b => b.addEventListener('pointerdown', () => { wait = Date.now() + 9000; lv = +b.dataset.lv; }));
+    new IntersectionObserver(([e]) => {
+      if (e.isIntersecting && !t) { if (lv < 0) step(); t = setInterval(step, 3000); }
+      else if (!e.isIntersecting && t) { clearInterval(t); t = 0; }
+    }, { threshold: .4 }).observe($('.lv-show'));
+  }
 }
 
 /* ---------- services: the index on the left drives the photo frame on the right ---------- */
@@ -436,8 +445,9 @@ addEventListener('scroll', navTone, { passive: true }); navTone();
   }
 }
 
-/* ---------- the texture wall: bare board, trowel a texture on ---------- */
+/* ---------- the texture wall: the whole wall behind is bare board; trowel a texture on ---------- */
 {
+  const DPR = () => Math.min(devicePixelRatio || 1, 1.25);
   const wall = $('.wall'), cv = $('.wall-cv'), c = cv.getContext('2d'), knife = $('.knife');
   const SRC = { 'orange-peel': 'tex-orange-peel', knockdown: 'tex-knockdown', 'skip-trowel': 'tex-skip-trowel', smooth: 'level-5' };
   const load = src => new Promise(r => { const i = new Image(); i.onload = () => r(i); i.onerror = () => r(null); i.src = src; });
@@ -449,7 +459,7 @@ addEventListener('scroll', navTone, { passive: true }); navTone();
   const tmp = document.createElement('canvas'), tc = tmp.getContext('2d');
   let W = 0, H = 0;
   const size = () => {
-    const r = wall.getBoundingClientRect(), d = Math.min(devicePixelRatio || 1, 2);
+    const r = wall.getBoundingClientRect(), d = DPR();
     const nw = Math.round(r.width * d), nh = Math.round(r.height * d);
     if (nw === W && nh === H) return;
     const keep = W ? document.createElement('canvas') : null;
@@ -459,11 +469,61 @@ addEventListener('scroll', navTone, { passive: true }); navTone();
     paint();
   };
   const cover = (ctx, im) => { if (!im) return; const s = Math.max(W / im.width, H / im.height), w = im.width * s, h = im.height * s; ctx.drawImage(im, (W - w) / 2, (H - h) / 2, w, h); };
+  // the bare wall: board, hung in staggered 4x8 sheets with their joints taped, cached per light and size
+  const baseCache = {};
+  const baseOf = lt => {
+    const key = `${lt}-${W}x${H}`;
+    if (baseCache[key]) return baseCache[key];
+    const b = document.createElement('canvas'); b.width = W; b.height = H; const g = b.getContext('2d');
+    const d = DPR(), sw = Math.max(W / 2.3, 560 * d), sh = sw / 2, tw = 11 * d, rake = lt === 'rake';
+    g.fillStyle = rake ? '#cfccc3' : '#d9d7d0'; g.fillRect(0, 0, W, H);
+    // the paper face: fine fibre, a little mottling
+    const nz = document.createElement('canvas'); nz.width = nz.height = 180; const nc = nz.getContext('2d'), id = nc.createImageData(180, 180);
+    for (let i = 0; i < id.data.length; i += 4) { const v = Math.random(); id.data[i] = id.data[i + 1] = id.data[i + 2] = v > .5 ? 255 : 40; id.data[i + 3] = Math.random() * (rake ? 26 : 14); }
+    nc.putImageData(id, 0, 0); g.fillStyle = g.createPattern(nz, 'repeat'); g.fillRect(0, 0, W, H);
+    if (rake) { const lg = g.createLinearGradient(0, 0, W, 0); lg.addColorStop(0, 'rgba(255, 236, 205, .18)'); lg.addColorStop(.55, 'rgba(0, 0, 0, 0)'); lg.addColorStop(1, 'rgba(20, 18, 14, .14)'); g.fillStyle = lg; g.fillRect(0, 0, W, H); }
+    // screws every 16 inches down each stud, 12 inches apart
+    const ft = sw / 8;
+    for (let x = ft * 1.33 * .5; x < W; x += ft * 1.333) for (let y = ft * .5; y < H; y += ft) {
+      g.fillStyle = 'rgba(60, 54, 44, .45)'; g.beginPath(); g.arc(x, y, 1.6 * d, 0, 6.3); g.fill();
+      g.fillStyle = 'rgba(255, 255, 255, .35)'; g.beginPath(); g.arc(x + .8 * d, y + .8 * d, 1.4 * d, 0, 6.3); g.fill();
+    }
+    for (let row = 0, y = -sh * .35; y < H; row++, y += sh) {
+      g.fillStyle = 'rgba(248, 245, 238, .42)'; g.fillRect(0, y - tw / 2, W, tw);
+      g.fillStyle = 'rgba(70, 62, 50, .16)'; g.fillRect(0, y, W, Math.max(1, d * .8));
+      for (let x = (row % 2 ? -sw / 2 : 0) + sw * .62; x < W; x += sw) {
+        g.fillStyle = 'rgba(248, 245, 238, .42)'; g.fillRect(x - tw / 2, y, tw, sh);
+        g.fillStyle = 'rgba(70, 62, 50, .16)'; g.fillRect(x, y, Math.max(1, d * .8), sh);
+      }
+    }
+    return (baseCache[key] = b);
+  };
+  const tiles = {};
+  const tileOf = key => {
+    const im = pics[key]; if (!im) return null;
+    const tw = Math.round(620 * DPR()), th = Math.round(tw * im.height / im.width), k = `${key}-${tw}`;
+    if (tiles[k]) return tiles[k];
+    // a seamless tile without mirroring: the image rolled by half (its edges now meet in the middle) under the image
+    // itself, which is feathered out toward its own edges, so every edge of the tile is continuous
+    const t = document.createElement('canvas'); t.width = tw; t.height = th; const g = t.getContext('2d');
+    const hw = tw / 2, hh = th / 2;
+    g.drawImage(im, 0, 0, tw, th, -hw, -hh, tw, th); g.drawImage(im, 0, 0, tw, th, hw, -hh, tw, th);
+    g.drawImage(im, 0, 0, tw, th, -hw, hh, tw, th); g.drawImage(im, 0, 0, tw, th, hw, hh, tw, th);
+    const o = document.createElement('canvas'); o.width = tw; o.height = th; const og = o.getContext('2d');
+    og.drawImage(im, 0, 0, tw, th); og.globalCompositeOperation = 'destination-in';
+    const fx = og.createLinearGradient(0, 0, tw, 0); fx.addColorStop(0, 'rgba(0,0,0,0)'); fx.addColorStop(.22, '#000'); fx.addColorStop(.78, '#000'); fx.addColorStop(1, 'rgba(0,0,0,0)');
+    og.fillStyle = fx; og.fillRect(0, 0, tw, th);
+    const fy = og.createLinearGradient(0, 0, 0, th); fy.addColorStop(0, 'rgba(0,0,0,0)'); fy.addColorStop(.22, '#000'); fy.addColorStop(.78, '#000'); fy.addColorStop(1, 'rgba(0,0,0,0)');
+    og.fillStyle = fy; og.fillRect(0, 0, tw, th);
+    g.drawImage(o, 0, 0);
+    return (tiles[k] = t);
+  };
   function paint() {
     if (!W) return;
-    cover(c, pics[`base-${light}`]);
+    c.drawImage(baseOf(light), 0, 0);
     tc.globalCompositeOperation = 'source-over'; tc.clearRect(0, 0, W, H);
-    cover(tc, pics[`${tex}-${light}`]);
+    const tl = tileOf(`${tex}-${light}`);
+    if (tl) { tc.fillStyle = tc.createPattern(tl, 'repeat'); tc.fillRect(0, 0, W, H); } else cover(tc, pics[`${tex}-${light}`]);
     tc.globalCompositeOperation = 'destination-in'; tc.drawImage(mask, 0, 0);
     c.drawImage(tmp, 0, 0);
   }
@@ -477,7 +537,7 @@ addEventListener('scroll', navTone, { passive: true }); navTone();
   };
   let last = null;
   const stroke = (x, y) => {
-    const d = Math.min(devicePixelRatio || 1, 2); x *= d; y *= d;
+    const d = DPR(); x *= d; y *= d;
     if (last) {
       const dx = x - last.x, dy = y - last.y, dist = Math.hypot(dx, dy), ang = Math.atan2(dy, dx) + Math.PI / 2;
       const n = Math.max(1, Math.ceil(dist / (W * .01)));
@@ -510,7 +570,8 @@ addEventListener('scroll', navTone, { passive: true }); navTone();
   function demo() {
     if (reduced) { mc.fillRect(0, 0, W, H); paint(); return; }
     demoing = true; wall.classList.add('live');
-    const r = wall.getBoundingClientRect(), passes = [.1, .26, .42, .58, .74, .9], t0 = performance.now(), per = 640;
+    const r = wall.getBoundingClientRect(), band = Math.max(W, H) * .075 * .55 * 1.7 / DPR(), n = Math.max(4, Math.ceil(r.height / band));
+    const passes = Array.from({ length: n }, (_, i) => .04 + .92 * (i + .5) / n), t0 = performance.now(), per = Math.max(380, 3600 / n);
     const step = now => {
       const t = (now - t0) / per, k = Math.floor(t), f = t - k;
       if (k >= passes.length) { demoing = false; last = null; if (!wall.matches(':hover')) wall.classList.remove('live'); return; }
@@ -587,20 +648,20 @@ addEventListener('scroll', navTone, { passive: true }); navTone();
       bars.forEach((b, k) => { b.classList.toggle('done', k < i); b.classList.remove('on'); });
       if (bars[i]) { void bars[i].offsetWidth; bars[i].classList.add('on'); }
     };
-    const hold = i => { clearInterval(timer); deck.classList.add('held'); set(i); };
+    let paused = false, seen = false;
+    const run = () => { clearInterval(timer); timer = setInterval(() => { if (!paused) set((cur + 1) % cards.length); }, T); };
     cards.forEach((c, i) => {
-      c.addEventListener('mouseenter', () => { if (matchMedia('(hover: hover) and (min-width: 821px)').matches) hold(i); });
-      c.addEventListener('click', e => { if (!e.target.closest('a')) hold(i); });
+      c.addEventListener('mouseenter', () => { if (matchMedia('(hover: hover) and (min-width: 821px)').matches) { paused = true; if (i !== cur) set(i); } });
+      c.addEventListener('click', e => { if (!e.target.closest('a')) { set(i); run(); } });
     });
+    deck.addEventListener('mouseleave', () => { paused = false; run(); });
     set(0);
     if (!reduced && innerWidth > 820) {
       deck.classList.add('wait');
       new IntersectionObserver(([e]) => {
-        if (e.isIntersecting) {
-          deck.classList.remove('wait');
-          if (!deck.classList.contains('held') && !timer) { set(0); timer = setInterval(() => set((cur + 1) % cards.length), T); }
-        } else if (timer) { clearInterval(timer); timer = 0; }
-      }, { threshold: .4 }).observe(deck);
+        if (e.isIntersecting) { deck.classList.remove('wait'); if (!seen) { seen = true; set(0); } run(); }
+        else { clearInterval(timer); timer = 0; }
+      }, { threshold: .35 }).observe(deck);
     }
   }
 }
@@ -616,6 +677,74 @@ addEventListener('scroll', navTone, { passive: true }); navTone();
       if (e.isIntersecting && !t) t = setInterval(() => set(k = (k + 1) % items.length), 2600);
       else if (!e.isIntersecting && t) { clearInterval(t); t = 0; }
     }, { threshold: .4 }).observe($('.flow'));
+  }
+}
+
+/* ---------- process: told like the walkthrough. Each step is a room; the route along the bottom fills ---------- */
+{
+  const sx = $('.sx');
+  if (sx) {
+    const bgs = $$('.sx-bgs img', sx), cards = $$('.sx-card', sx), btns = $$('.sx-route button', sx), line = $('.sx-line i', sx), T = 4200;
+    let cur = 0, t = 0;
+    const set = i => {
+      cur = i;
+      [bgs, cards].forEach(list => list.forEach((el, k) => el.classList.toggle('on', k === i)));
+      btns.forEach((b, k) => { b.classList.toggle('on', k === i); b.classList.toggle('done', k < i); });
+      line.style.transform = `scaleX(${(i / (btns.length - 1)).toFixed(3)})`;
+    };
+    const run = () => { clearInterval(t); t = setInterval(() => set((cur + 1) % cards.length), T); };
+    btns.forEach((b, i) => b.addEventListener('click', () => { set(i); run(); }));
+    set(0);
+    if (!reduced) new IntersectionObserver(([e]) => { if (e.isIntersecting) run(); else { clearInterval(t); t = 0; } }, { threshold: .4 }).observe(sx);
+  }
+}
+
+/* ---------- repair: the trowel wipes the stain off, step by step, then rests on the finished ceiling ---------- */
+{
+  const rw = $('.rw-stage');
+  if (rw) {
+    const steps = $$('.rw-steps li'), X0 = innerWidth > 820 ? 34 : 0, RUN = 6500, REST = 2600;
+    let t0 = 0, raf = 0, live = false;
+    const frame = now => {
+      if (!t0) t0 = now;
+      const t = now - t0;
+      let f = Math.min(1, t / RUN); f = f < .5 ? 2 * f * f : 1 - Math.pow(-2 * f + 2, 2) / 2;
+      const x = X0 + (100 - X0) * f;
+      rw.style.setProperty('--x', `${x.toFixed(2)}%`);
+      const k = t >= RUN ? 5 : Math.min(4, Math.floor(f * 5));
+      steps.forEach((li, i) => { li.classList.toggle('on', i === k && t < RUN); li.classList.toggle('done', i < k || t >= RUN); });
+      if (t > RUN + REST) t0 = now;                   // and again
+      raf = live ? requestAnimationFrame(frame) : 0;
+    };
+    if (reduced) { rw.style.setProperty('--x', '100%'); steps.forEach(li => li.classList.add('done')); }
+    else new IntersectionObserver(([e]) => {
+      live = e.isIntersecting;
+      if (live && !raf) { t0 = 0; raf = requestAnimationFrame(frame); }
+    }, { threshold: .35 }).observe(rw);
+  }
+}
+
+/* ---------- builders: the building. Each floor's tag shows which trade is on it; they move up a floor at a time ---------- */
+{
+  const fig = $('.bld-fig');
+  if (fig) {
+    const floors = $$('.bld-fl', fig), wk = $('.bld-w', fig), NAMES = ['Framed', 'Hanging', 'Taping', 'Finishing', 'Paint-ready'], WEEKS = 12;
+    let w = 0, t = 0;
+    const tick = () => {
+      w = w % (WEEKS + 2) + 1;
+      const week = Math.min(w, WEEKS); wk.textContent = week;
+      floors.forEach(fl => {
+        const f = +fl.dataset.f, start = 1 + (f - 1) * 2;
+        const st = week < start ? 0 : Math.min(4, 1 + Math.floor((week - start) / 2));
+        fl.dataset.s = st; $('.bld-st', fl).textContent = NAMES[st];
+      });
+    };
+    tick();
+    if (!reduced) new IntersectionObserver(([e]) => {
+      if (e.isIntersecting && !t) t = setInterval(tick, 1600);
+      else if (!e.isIntersecting && t) { clearInterval(t); t = 0; }
+    }, { threshold: .3 }).observe(fig);
+    else { w = 7; tick(); }
   }
 }
 
