@@ -510,7 +510,7 @@ addEventListener('scroll', navTone, { passive: true }); navTone();
   function demo() {
     if (reduced) { mc.fillRect(0, 0, W, H); paint(); return; }
     demoing = true; wall.classList.add('live');
-    const r = wall.getBoundingClientRect(), passes = [.3, .52, .74], t0 = performance.now(), per = 900;
+    const r = wall.getBoundingClientRect(), passes = [.1, .26, .42, .58, .74, .9], t0 = performance.now(), per = 640;
     const step = now => {
       const t = (now - t0) / per, k = Math.floor(t), f = t - k;
       if (k >= passes.length) { demoing = false; last = null; if (!wall.matches(':hover')) wall.classList.remove('live'); return; }
@@ -529,18 +529,118 @@ addEventListener('scroll', navTone, { passive: true }); navTone();
   });
 }
 
-/* ---------- repair: drag between before and after ---------- */
+/* ---------- repair: a piece of wall you turn and swipe through the stages ---------- */
 {
-  const ba = $('.ba'), inp = $('.ba-in'), HOME = 50;
-  ba.style.setProperty('--x', `${HOME}%`); inp.value = HOME;
-  inp.addEventListener('input', () => ba.style.setProperty('--x', `${inp.value}%`));
-  // it sweeps once on arrival so the after is obvious
-  new IntersectionObserver(([e], io) => {
-    if (!e.isIntersecting || reduced) return; io.disconnect();
-    const t0 = performance.now();
-    const step = now => { const t = clamp((now - t0) / 1800), v = HOME + Math.sin(t * Math.PI * 2) * 22 * (1 - t); ba.style.setProperty('--x', `${v}%`); inp.value = v; if (t < 1) requestAnimationFrame(step); };
-    requestAnimationFrame(step);
-  }, { threshold: .6 }).observe(ba);
+  const box = $('.rpm');
+  if (box) {
+    const scene = $('.rpm-scene', box), slab = $('.slab', box), inp = $('.rpm-scrub input', box), steps = $$('.rp-steps li');
+    const chipN = $('.rpm-n', box), chipT = $('.rpm-t', box);
+    const NAMES = $$('.rp-steps button').map(b => b.textContent.replace(/^\d+/, '').trim());
+    let p = 0, target = 0, tilt = 0, raf = 0, auto = 0, touched = false;
+    const draw = () => {
+      p += (target - p) * .12; tilt *= .9;
+      if (Math.abs(target - p) < .002) p = target;
+      box.style.setProperty('--p', p.toFixed(3));
+      slab.style.setProperty('--ry', `${(-18 + (p - 2.5) * 4 + tilt).toFixed(2)}deg`);
+      slab.style.setProperty('--rx', `${(7 - Math.abs(tilt) * .15).toFixed(2)}deg`);
+      const k = Math.min(5, Math.round(p));
+      chipN.textContent = `${String(k + 1).padStart(2, '0')} / 06`; chipT.textContent = NAMES[k];
+      steps.forEach((li, i) => li.classList.toggle('on', i === k));
+      if (document.activeElement !== inp) inp.value = p.toFixed(2);
+      raf = (Math.abs(target - p) > .001 || Math.abs(tilt) > .05) ? requestAnimationFrame(draw) : 0;
+    };
+    const go = v => { target = Math.max(0, Math.min(5, v)); if (!raf) raf = requestAnimationFrame(draw); };
+    const stopAuto = () => { touched = true; clearInterval(auto); };
+    // swipe: a full width of drag runs the whole repair; the slab leans with the drag
+    let sx = null, sp = 0;
+    scene.addEventListener('pointerdown', e => { stopAuto(); sx = e.clientX; sp = target; scene.setPointerCapture(e.pointerId); });
+    scene.addEventListener('pointermove', e => {
+      if (sx === null) return;
+      const dx = e.clientX - sx, w = scene.getBoundingClientRect().width;
+      tilt = Math.max(-14, Math.min(14, dx / w * 30)); go(sp + dx / w * 6);
+    });
+    const end = () => { if (sx === null) return; sx = null; go(Math.round(target)); };
+    scene.addEventListener('pointerup', end); scene.addEventListener('pointercancel', end);
+    inp.addEventListener('input', () => { stopAuto(); go(+inp.value); });
+    inp.addEventListener('change', () => go(Math.round(+inp.value)));
+    $$('.rp-steps button').forEach(b => b.addEventListener('click', () => { stopAuto(); go(+b.dataset.s); }));
+    // on arrival it repairs itself once, a stage at a time
+    new IntersectionObserver(([e], io) => {
+      if (!e.isIntersecting || touched) return; io.disconnect();
+      if (reduced) { go(5); return; }
+      let k = 0; auto = setInterval(() => { if (++k > 5) { clearInterval(auto); return; } go(k); }, 1500);
+    }, { threshold: .5 }).observe(scene);
+    draw();
+  }
+}
+
+/* ---------- services: the deck. One sheet at a time comes to the front ---------- */
+{
+  const deck = $('.deck');
+  if (deck) {
+    const cards = $$('.dk', deck), bars = $$('.deck-nav i'), T = 3400;
+    cards.forEach((c, i) => { const sp = document.createElement('div'); sp.className = 'dk-spine'; sp.setAttribute('aria-hidden', 'true'); sp.innerHTML = `<b>${String(i + 1).padStart(2, '0')}</b><span>${$('h3', c).textContent}</span>`; c.appendChild(sp); });
+    let cur = 0, timer = 0;
+    const set = i => {
+      cur = i;
+      cards.forEach((c, k) => { c.classList.toggle('on', k === i); c.style.setProperty('--z', k === i ? 10 : k + 1); });
+      bars.forEach((b, k) => { b.classList.toggle('done', k < i); b.classList.remove('on'); });
+      if (bars[i]) { void bars[i].offsetWidth; bars[i].classList.add('on'); }
+    };
+    const hold = i => { clearInterval(timer); deck.classList.add('held'); set(i); };
+    cards.forEach((c, i) => {
+      c.addEventListener('mouseenter', () => { if (matchMedia('(hover: hover) and (min-width: 821px)').matches) hold(i); });
+      c.addEventListener('click', e => { if (!e.target.closest('a')) hold(i); });
+    });
+    set(0);
+    if (!reduced && innerWidth > 820) {
+      deck.classList.add('wait');
+      new IntersectionObserver(([e]) => {
+        if (e.isIntersecting) {
+          deck.classList.remove('wait');
+          if (!deck.classList.contains('held') && !timer) { set(0); timer = setInterval(() => set((cur + 1) % cards.length), T); }
+        } else if (timer) { clearInterval(timer); timer = 0; }
+      }, { threshold: .4 }).observe(deck);
+    }
+  }
+}
+
+/* ---------- process: a light walks through the four steps ---------- */
+{
+  const items = $$('.flow li');
+  if (items.length && !reduced) {
+    let k = 0, t = 0;
+    const set = i => items.forEach((li, j) => li.classList.toggle('on', j === i));
+    items.forEach((li, i) => li.addEventListener('mouseenter', () => { clearInterval(t); t = 0; set(i); }));
+    new IntersectionObserver(([e]) => {
+      if (e.isIntersecting && !t) t = setInterval(() => set(k = (k + 1) % items.length), 2600);
+      else if (!e.isIntersecting && t) { clearInterval(t); t = 0; }
+    }, { threshold: .4 }).observe($('.flow'));
+  }
+}
+
+/* ---------- builders: the phase board. Floors move through the trades, one behind the other ---------- */
+{
+  const pb = $('.pb');
+  if (pb) {
+    const floors = $$('.pb-fl', pb), wk = $('.pb-w', pb), NAMES = ['Framed', 'Hung', 'Taped', 'Finished', 'Paint-ready'], WEEKS = 12;
+    let w = 0, t = 0;
+    const tick = () => {
+      w = w % (WEEKS + 2) + 1;                      // two weeks resting on the finished building, then again
+      const week = Math.min(w, WEEKS); wk.textContent = week;
+      floors.forEach(fl => {
+        const f = +fl.dataset.f, start = 1 + (f - 1) * 2;
+        const s = week < start ? 0 : Math.min(4, 1 + Math.floor((week - start) / 2));
+        fl.dataset.s = s; $('.pb-st', fl).textContent = NAMES[s];
+      });
+    };
+    tick();
+    if (!reduced) new IntersectionObserver(([e]) => {
+      if (e.isIntersecting && !t) t = setInterval(tick, 1100);
+      else if (!e.isIntersecting && t) { clearInterval(t); t = 0; }
+    }, { threshold: .3 }).observe(pb);
+    else { w = WEEKS - 1; tick(); }
+  }
 }
 
 /* ---------- the raking light: each finished-wall headline is lit by a sweep as it comes into view ---------- */
@@ -551,7 +651,7 @@ addEventListener('scroll', navTone, { passive: true }); navTone();
 
 /* ---------- reveal on scroll ---------- */
 const rv = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); rv.unobserve(e.target); } }), { rootMargin: '0px 0px -12% 0px' });
-$$('.seq li, .us, .crew li, .lic, .how li, .faq details').forEach(el => { el.classList.add('rv'); rv.observe(el); });
+$$('.us, .lic, .how li, .faq details').forEach(el => { el.classList.add('rv'); rv.observe(el); });
 
 // the service sheets stand up off the floor when they come into view
 {
