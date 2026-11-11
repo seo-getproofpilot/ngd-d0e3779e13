@@ -981,6 +981,42 @@ $$('.us, .lic, .how li, .faq details').forEach(el => { el.classList.add('rv'); r
   }
 }
 
+/* ---------- repairs: a Next Gen knife wipes each repair in, then the next ticket comes up; drag or tap to take over ---------- */
+{
+  const sec = $('.rx3');
+  if (sec) {
+    const stage = $('.rx3-stage', sec), A = $('.rx3-a', stage), B = $('.rx3-b', stage), inp = $('.rx3-in', stage), tks = $$('.tk', sec);
+    const SET = JSON.parse(stage.dataset.set);
+    SET.forEach(([b, a]) => { new Image().src = b; new Image().src = a; });
+    const RUN = 6200;
+    let cur = 0, raf = 0, t0 = 0, live = false, held = false;
+    const setX = x => { stage.style.setProperty('--x', `${x.toFixed(2)}%`); inp.value = x; stage.classList.toggle('kdone', x > 97); };
+    const show = i => {
+      cur = i; const [b, a, ab, aa] = SET[i];
+      stage.classList.add('swap');
+      setTimeout(() => { B.src = b; B.alt = ab; A.src = a; A.alt = aa; stage.classList.remove('swap'); }, 300);
+      tks.forEach((t, k) => { t.classList.remove('on'); if (k === i) { void t.offsetWidth; t.classList.add('on'); } });
+      t0 = 0;
+    };
+    const ease = k => k < .5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
+    const frame = now => {
+      if (held) { raf = 0; return; }
+      if (!t0) t0 = now;
+      const t = (now - t0) / RUN;
+      // rest on the damage, one slow pass of the knife, rest on the repair
+      const k = t < .16 ? 0 : t < .72 ? ease((t - .16) / .56) : 1;
+      setX(100 * k);
+      if (t >= 1) show((cur + 1) % SET.length);
+      raf = live ? requestAnimationFrame(frame) : 0;
+    };
+    const go = () => { if (!raf && live && !held) raf = requestAnimationFrame(frame); };
+    const hold = () => { held = true; sec.classList.add('held'); };
+    tks.forEach((b, i) => b.addEventListener('click', () => { hold(); show(i); setX(0); requestAnimationFrame(() => { let s0 = 0; const run = n => { if (!s0) s0 = n; const k = Math.min(1, (n - s0) / 2200); setX(100 * ease(k)); if (k < 1) requestAnimationFrame(run); }; requestAnimationFrame(run); }); }));
+    inp.addEventListener('input', () => { hold(); stage.style.setProperty('--x', `${inp.value}%`); });
+    new IntersectionObserver(([e]) => { live = e.isIntersecting; go(); }, { threshold: .35 }).observe(stage);
+  }
+}
+
 /* preview build: calls, email and the bid form are off */
 (function () {
   const t = document.createElement('div'); t.className = 'pv-toast'; document.body.appendChild(t); let k;
