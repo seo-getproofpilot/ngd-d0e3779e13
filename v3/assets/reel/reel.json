@@ -1,0 +1,41 @@
+{
+ "duration": 22.62,
+ "chapters": [
+  {
+   "t": 0.0,
+   "label": "Taping"
+  },
+  {
+   "t": 1.92,
+   "label": "Hanging"
+  },
+  {
+   "t": 4.8,
+   "label": "Finishing"
+  },
+  {
+   "t": 7.01,
+   "label": "Hanging"
+  },
+  {
+   "t": 8.64,
+   "label": "Taping"
+  },
+  {
+   "t": 11.52,
+   "label": "Hanging"
+  },
+  {
+   "t": 12.98,
+   "label": "Finishing"
+  },
+  {
+   "t": 15.86,
+   "label": "Hanging"
+  },
+  {
+   "t": 19.19,
+   "label": "On the job"
+  }
+ ]
+}
