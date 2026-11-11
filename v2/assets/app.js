@@ -8,7 +8,7 @@ const smooth = t => t * t * (3 - 2 * t);
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const small = matchMedia('(max-width: 820px)').matches;
 // stamped by tools-build-preview.py with a hash of the footage, so a new deploy is never served from an old cache
-const ASSET_V = '2b4bb463eb';
+const ASSET_V = 'e6fb57e5e5';
 
 /* ---------- the walk player ---------- */
 // The footage plays as real video (hardware-decoded, so it stays smooth on a phone), forward or, when you scroll
@@ -1191,7 +1191,8 @@ function lvNotes(n) {
 {
   const sec = $('.bld3');
   if (sec) {
-    const floors = $$('.fl', sec), items = $$('.fm-list > li', sec), rows = $$('.fm-dt tr[data-w]', sec);
+    const floors = $$('.fl', sec), stat = [], items = $$('.fm-list > li', sec), rows = $$('.fm-dt tr[data-w]', sec);
+    $$('.fm-status li', sec).forEach(li => { stat[+li.dataset.l] = li; });
     const wkEl = $('.fm-wk', sec), dateEl = $('.fm-date', sec), track = $('.fm-track', sec);
     const D = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'], M = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
     const START = new Date(2026, 2, 9), RANGE = [[0, 2.8], [2.8, 5.6], [5.6, 8.4], [8.4, 12.01]];
@@ -1205,6 +1206,7 @@ function lvNotes(n) {
         f.classList.toggle('inspect', w >= s + 2 && w < s + 2.3);
         const st = paint > 0 ? ['paint', 'PAINT MOVES IN'] : fin >= 1 ? ['us', 'READY FOR PAINT'] : fin > 0 ? ['us', 'NEXT GEN · FINISHING'] : tape > 0 ? ['us', 'NEXT GEN · TAPING'] : w >= s + 2 ? ['us', 'INSPECTED ✓'] : hang > 0 ? ['us', 'NEXT GEN · HANGING'] : ['wait', 'FRAMED, WAITING'];
         f.dataset.st = st[0]; const t = $('.fl-chip text', f); if (t.textContent !== st[1]) t.textContent = st[1];
+        const row = stat[i]; if (row) { row.dataset.st = st[0]; const sp = $('span', row); if (sp.textContent !== st[1]) sp.textContent = st[1]; }
       });
       const wk = Math.min(12, Math.floor(w) + 1), d = new Date(START); d.setDate(d.getDate() + Math.min(Math.floor(w * 7), 82));
       if (d.getDay() === 0) d.setDate(d.getDate() + 1); if (d.getDay() === 6) d.setDate(d.getDate() - 1);
