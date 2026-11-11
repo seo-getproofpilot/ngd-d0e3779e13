@@ -8,7 +8,7 @@ const smooth = t => t * t * (3 - 2 * t);
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const small = matchMedia('(max-width: 820px)').matches;
 // stamped by tools-build-preview.py with a hash of the footage, so a new deploy is never served from an old cache
-const ASSET_V = 'f8b0eb0eac';
+const ASSET_V = 'c4d7032dbf';
 
 /* ---------- the walk player ---------- */
 // The footage plays as real video (hardware-decoded, so it stays smooth on a phone), forward or, when you scroll
@@ -316,7 +316,7 @@ function autoTour({ section, video: v, seq, cardOf, handAt = {}, drift = 1, card
     // bedroom (Finishing): one continuous walk (gen7)
     cardOf: [0, 0, 1, 2, 3, 4, 4],
     // each card changes where the walk crosses into that room: through the front door, then each doorway
-    handAt: { 1: .7, 2: .69, 3: .6, 4: .63 },
+    handAt: { 1: .7, 2: .77, 3: .6, 4: .63 },
     cards: [$('.tour-intro'), ...$$('.room')], onStage,
     onOutro: p => { outroO = p > 0 ? smooth(clamp((p - .08) / .25)) : 0; },
     onTime: (i, leg) => {
