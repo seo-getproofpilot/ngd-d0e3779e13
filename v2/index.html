@@ -14,8 +14,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900;1,62..125,100..900&family=Architects+Daughter&family=Michroma&display=swap" rel="stylesheet">
 <link rel="preload" as="image" href="assets/seq/d/0000.webp" media="(min-width: 821px)">
 <link rel="preload" as="image" href="assets/seq/m/0000.webp" media="(max-width: 820px)">
-<script type="importmap">{"imports":{"three":"./assets/vendor/three.module.min.js"}}</script>
-<link rel="stylesheet" href="assets/site.css?v=pcd2f4fd3">
+<link rel="stylesheet" href="assets/site.css?v=p861175a2">
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -290,26 +289,66 @@
   </div>
 </section>
 
-<!-- ================= PROCESS: the great room from the hero, boarded as you scroll ================= -->
-<section class="hroom" id="process" aria-labelledby="hang-h">
+<!-- ================= PROCESS: the great room from the hero; bid on bare studs, then the crew boards it ================= -->
+<section class="hroom" id="process" aria-labelledby="hang-h" data-step="0">
   <div class="hroom-pin">
     <canvas class="hroom-cv" aria-hidden="true"></canvas>
+    <svg class="hroom-dims" viewBox="0 0 1280 720" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><g class="dm" data-k="0"><path class="dm-l" pathLength="1" d="M1104 18L1104 414"/><path d="M1095 18H1113M1095 414H1113"/><g class="dm-t" transform="translate(1104 216)"><rect x="-44.0" y="-15" width="88" height="30" rx="2"/><text text-anchor="middle" y="6">18′ 0″</text></g></g><g class="dm" data-k="1"><path class="dm-l" pathLength="1" d="M572 440L1126 440"/><path d="M572 431V449M1126 431V449"/><g class="dm-t" transform="translate(849 440)"><rect x="-44.0" y="-15" width="88" height="30" rx="2"/><text text-anchor="middle" y="6">24′ 6″</text></g></g><g class="dm" data-k="2"><path class="dm-l" pathLength="1" d="M10 588L452 588"/><path d="M10 579V597M452 579V597"/><g class="dm-t" transform="translate(231 588)"><rect x="-44.0" y="-15" width="88" height="30" rx="2"/><text text-anchor="middle" y="6">16′ 0″</text></g></g><g class="dm" data-k="3"><path class="dm-l" pathLength="1" d="M630 46L702 46"/><path d="M630 37V55M702 37V55"/><g class="dm-t" transform="translate(666 46)"><rect x="-49.5" y="-15" width="99" height="30" rx="2"/><text text-anchor="middle" y="6">3′ × 5′</text></g></g></svg>
     <div class="hroom-shade" aria-hidden="true"></div>
     <div class="wrap hroom-wrap">
-      <header class="hroom-head">
-        <p class="kicker">How it works</p>
-        <h2 class="h2" id="hang-h">From the first call to <em>the last coat.</em></h2>
-        <p class="sub">Back in the great room from the walkthrough. Keep scrolling and the board goes up while you read the four steps.</p>
-      </header>
-      <p class="hroom-stage" aria-hidden="true"><i></i><span>Open studs</span></p>
-      <ol class="hroom-steps">
-        <li class="hr-step"><p class="hr-n">01</p><div><p class="hr-when">Today</p><h3>You call or send photos</h3><p class="hr-p">480-799-8173, Monday to Friday, 8 to 4. Or send plans and photos through the bid form below.</p></div></li>
-        <li class="hr-step"><p class="hr-n">02</p><div><p class="hr-when">Usually same day</p><h3>A ballpark number</h3><p class="hr-p">Send photos with your request and we can usually give you a ballpark read the same day.</p></div></li>
-        <li class="hr-step"><p class="hr-n">03</p><div><p class="hr-when">On site, free</p><h3>Walkthrough &amp; itemized bid</h3><p class="hr-p">We walk the job, confirm the number and hand you a clear bid, line by line.</p></div></li>
-        <li class="hr-step"><p class="hr-n">04</p><div><p class="hr-when">Your start date</p><h3>Crew on the date we gave</h3><p class="hr-p">An honest date at bid time. Then we hang, tape, finish and clean up.</p></div></li>
-      </ol>
+      <div class="hroom-left">
+        <header class="hroom-head">
+          <p class="kicker">How it works</p>
+          <h2 class="h2" id="hang-h">From the first call to <em>the last coat.</em></h2>
+        </header>
+        <ol class="hroom-steps">
+          <li class="hr-step"><p class="hr-n">01</p><div><p class="hr-when">Today</p><h3>You call or send photos</h3><p class="hr-p">480-799-8173, Monday to Friday, 8 to 4. Or text photos and plans, or use the bid form below.</p></div></li>
+          <li class="hr-step"><p class="hr-n">02</p><div><p class="hr-when">Usually same day</p><h3>A ballpark number</h3><p class="hr-p">From your photos and plans we can usually send a ballpark the same day, and set up the walkthrough.</p></div></li>
+          <li class="hr-step"><p class="hr-n">03</p><div><p class="hr-when">On site, free</p><h3>Walkthrough &amp; itemized bid</h3><p class="hr-p">We measure every wall and ceiling in person, then hand you the bid line by line.</p></div></li>
+          <li class="hr-step"><p class="hr-n">04</p><div><p class="hr-when">Your start date</p><h3>Crew on the date we gave</h3><p class="hr-p">The date on the bid is the day the crew shows up. Then we hang, tape, finish and clean up.</p></div></li>
+        </ol>
+      </div>
+      <div class="hroom-art" aria-hidden="true">
+        <div class="art art-phone">
+          <div class="ph-top"><i class="ph-island"></i><div class="ph-who"><span class="ph-av"><svg viewBox="0 0 704 342" aria-hidden="true"><use href="#ng-house"/></svg></span><b>Next Gen Drywall</b><em>480-799-8173</em></div></div>
+          <div class="ph-feed">
+            <p class="ph-day">Today 9:41 AM</p>
+            <p class="msg me" data-m="0">Hi! We’re building a custom home in San Tan Valley. Can you bid the drywall?</p>
+            <div class="msg me pics" data-m="1"><i style="background-position:2% 40%"></i><i style="background-position:62% 30%"></i><i style="background-position:98% 50%"></i></div>
+            <p class="msg me file" data-m="2"><b>great-room-plans.pdf</b><span>4 pages</span></p>
+            <p class="msg ng typing" data-m="3"><i></i><i></i><i></i></p>
+            <p class="msg ng" data-m="4">Got the photos and plans, thanks. The great room has 18-foot walls, so we’ll plan on scaffold.</p>
+            <p class="msg ng" data-m="5">Your ballpark is in your email now. It’s a range until we measure it in person.</p>
+            <p class="msg ng" data-m="6">Free walkthrough Thursday at 9?</p>
+            <p class="msg me" data-m="7">Thursday works 👍</p>
+          </div>
+          <div class="ph-bar"><span>Text Message</span><i></i></div>
+        </div>
+        <div class="art art-bid">
+          <div class="bid-top"><svg viewBox="0 0 704 342" aria-hidden="true"><use href="#ng-house"/></svg><div><b>Itemized bid</b><span>Walkthrough Thursday, 9:00 AM</span></div></div>
+          <ol class="bid-lines">
+            <li data-l="0"><b>Walls &amp; ceilings</b><span>6,200 sq ft, measured on site</span></li>
+            <li data-l="1"><b>Ceiling height</b><span>18 ft great room, scaffold</span></li>
+            <li data-l="2"><b>Finish level</b><span>Level 4, smooth for flat paint</span></li>
+            <li data-l="3"><b>Texture</b><span>Light orange peel, bedrooms</span></li>
+            <li data-l="4"><b>Board</b><span>5/8″ Type X garage, moisture-resistant baths</span></li>
+            <li data-l="5"><b>Start date</b><span>Monday, March 9, 7:00 AM</span></li>
+          </ol>
+          <p class="bid-sign"><span>Line by line, no surprise extras.</span><em>J. Becerra</em></p>
+        </div>
+        <div class="art art-crew">
+          <p class="cw-date"><span>Mon</span><b>9</b><em>March</em></p>
+          <div class="cw-body">
+            <p class="cw-k">Crew on site, 7:00 AM</p>
+            <p class="cw-ok"><i></i>On the date we gave at bid time</p>
+            <ul class="cw-faces"><li><img src="assets/img/crew-jose.webp" alt="" loading="lazy"></li><li><img src="assets/img/crew-luis.webp" alt="" loading="lazy"></li><li><img src="assets/img/crew-jorge.webp" alt="" loading="lazy"></li><li><img src="assets/img/crew-daniel.webp" alt="" loading="lazy"></li></ul>
+            <div class="cw-meter"><span>Board hung</span><b class="cw-pct">0%</b><i><s></s></i></div>
+          </div>
+        </div>
+      </div>
     </div>
-    <p class="hroom-note">The great room from the walkthrough, shown as an illustration.</p>
+    <p class="hroom-stage" aria-hidden="true"><i></i><span>Open studs</span></p>
+    <p class="hroom-note">A sample job in the great room from the walkthrough, shown as an illustration.</p>
   </div>
 </section>
 
@@ -440,26 +479,60 @@
 </section>
 
 <!-- ================= BUILDERS: a real-looking building, one trade per floor ================= -->
-<section class="bld" id="builders" aria-labelledby="bld-h">
+<section class="bld bld2" id="builders" aria-labelledby="bld-h">
   <div class="wrap">
     <header class="bld-head">
       <p class="kicker">For builders and GCs</p>
       <h2 class="h2" id="bld-h">Every floor moving. <em>Every date held.</em></h2>
-      <p class="sub">On a multifamily or commercial build, drywall is where schedules slip. We phase the work floor by floor, so the trade behind us always has somewhere to go.</p>
+      <p class="sub">On a multifamily or commercial build, drywall is where schedules slip. Here’s how we keep it from slipping: the right fastener in every sheet, a phase plan the next trade can count on, and one person who answers for all of it.</p>
     </header>
-    <figure class="b3" aria-label="A 3D model of a four-story build, each floor at a different drywall stage, moving up one floor at a time">
-      <canvas class="b3-cv"></canvas>
-      <img class="b3-fallback" src="assets/img/site-multifamily.webp" alt="" loading="lazy">
-      <div class="b3-tags" aria-hidden="true"></div>
-      <div class="b3-wk"><span>Week</span><b class="b3-w">1</b><em>of 12</em></div>
-      <ul class="b3-key" aria-hidden="true"><li data-s="0">Framing</li><li data-s="1">Hanging</li><li data-s="2">Taping</li><li data-s="3">Finishing</li><li data-s="4">Painted</li></ul>
-      <figcaption>A model of a four-story build with a sample schedule. Drag to turn it.</figcaption>
-    </figure>
-    <ol class="bld-how">
-      <li><span>01</span><b>Crews sized for the job</b>One room or a whole building. The crew follows your schedule.</li>
-      <li><span>02</span><b>Phased so trades can follow</b>Floors and units are hung, taped and finished in sequence, so the next trade always knows when it’s their turn.</li>
-      <li><span>03</span><b>One point of contact</b>The owner is on the job site, so questions get answered there.</li>
-    </ol>
+    <div class="b2-grid">
+      <article class="b2-card b2-sched">
+        <i class="ngtape" aria-hidden="true"><span>NEXT GEN DRYWALL &#9632; PHASE PLAN</span></i>
+        <p class="b2-k"><span>01</span>Phased floor by floor</p>
+        <h3>The trade behind us always has a floor to walk onto.</h3>
+        <div class="gantt" aria-label="A sample 12-week schedule: each floor is hung, inspected, taped and finished, then handed to paint, one floor after another">
+          <div class="g-weeks" aria-hidden="true"><b>Week</b><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span><span>11</span><span>12</span></div>
+          <ol class="g-rows"><li><b>Level 1</b><div class="gr"><i class="gs gs-hang" style="--s:1;--w:2"><span>Hang</span></i><i class="gs gs-tape" style="--s:3;--w:1.5"><span>Tape</span></i><i class="gs gs-fin" style="--s:4.5;--w:1.5"><span>Finish</span></i><i class="gs gs-paint" style="--s:6;--w:7"><span>Paint moves in</span></i><em class="gi" style="--s:3" title="Screw inspection"></em></div></li><li><b>Level 2</b><div class="gr"><i class="gs gs-hang" style="--s:3;--w:2"><span>Hang</span></i><i class="gs gs-tape" style="--s:5;--w:1.5"><span>Tape</span></i><i class="gs gs-fin" style="--s:6.5;--w:1.5"><span>Finish</span></i><i class="gs gs-paint" style="--s:8;--w:5"><span>Paint moves in</span></i><em class="gi" style="--s:5" title="Screw inspection"></em></div></li><li><b>Level 3</b><div class="gr"><i class="gs gs-hang" style="--s:5;--w:2"><span>Hang</span></i><i class="gs gs-tape" style="--s:7;--w:1.5"><span>Tape</span></i><i class="gs gs-fin" style="--s:8.5;--w:1.5"><span>Finish</span></i><i class="gs gs-paint" style="--s:10;--w:3"><span>Paint moves in</span></i><em class="gi" style="--s:7" title="Screw inspection"></em></div></li><li><b>Level 4</b><div class="gr"><i class="gs gs-hang" style="--s:7;--w:2"><span>Hang</span></i><i class="gs gs-tape" style="--s:9;--w:1.5"><span>Tape</span></i><i class="gs gs-fin" style="--s:10.5;--w:1.5"><span>Finish</span></i><i class="gs gs-paint" style="--s:12;--w:1"><span>Paint moves in</span></i><em class="gi" style="--s:9" title="Screw inspection"></em></div></li></ol>
+          <i class="g-now" aria-hidden="true"><span>Today</span></i>
+        </div>
+        <ul class="g-key" aria-hidden="true"><li class="k-hang">Hang</li><li class="k-tape">Tape</li><li class="k-fin">Finish</li><li class="k-paint">Paint moves in</li><li class="k-insp">Screw inspection</li></ul>
+        <p class="g-foot">Your superintendent gets this plan in writing before we start, and an update every Friday until the last floor goes to paint.</p>
+      </article>
+      <article class="b2-card b2-screws">
+        <p class="b2-k"><span>02</span>The right screw for the board</p>
+        <h3>Wrong fastener, failed inspection. We don’t guess.</h3>
+        <ul class="sc-list"><li><div class="sc-draw"><svg class="sc" viewBox="0 18 115 32" style="width:115px" aria-hidden="true"><rect class="sc-shank" x="18" y="30" width="83.0" height="8"/><g class="sc-th"><path d="M24.0 27.5 L28.5 40.5"/><path d="M33.0 27.5 L37.5 40.5"/><path d="M42.0 27.5 L46.5 40.5"/><path d="M51.0 27.5 L55.5 40.5"/><path d="M60.0 27.5 L64.5 40.5"/><path d="M69.0 27.5 L73.5 40.5"/><path d="M78.0 27.5 L82.5 40.5"/><path d="M87.0 27.5 L91.5 40.5"/></g><path class="sc-tip" d="M101.0 30 L115.0 34 L101.0 38Z"/><path class="sc-head" d="M0 21 L0 47 Q6 47 18 38 L18 30 Q6 21 0 21Z"/></svg></div><b>1-1/4″ coarse thread</b><span>1/2″ board on wood studs</span></li>
+<li><div class="sc-draw"><svg class="sc" viewBox="0 18 150 32" style="width:150px" aria-hidden="true"><rect class="sc-shank" x="18" y="30" width="117.5" height="8"/><g class="sc-th"><path d="M24.0 27.5 L28.5 40.5"/><path d="M33.0 27.5 L37.5 40.5"/><path d="M42.0 27.5 L46.5 40.5"/><path d="M51.0 27.5 L55.5 40.5"/><path d="M60.0 27.5 L64.5 40.5"/><path d="M69.0 27.5 L73.5 40.5"/><path d="M78.0 27.5 L82.5 40.5"/><path d="M87.0 27.5 L91.5 40.5"/><path d="M96.0 27.5 L100.5 40.5"/><path d="M105.0 27.5 L109.5 40.5"/><path d="M114.0 27.5 L118.5 40.5"/><path d="M123.0 27.5 L127.5 40.5"/></g><path class="sc-tip" d="M135.5 30 L149.5 34 L135.5 38Z"/><path class="sc-head" d="M0 21 L0 47 Q6 47 18 38 L18 30 Q6 21 0 21Z"/></svg></div><b>1-5/8″ coarse thread</b><span>5/8″ Type X on wood: garages, ceilings, rated walls</span></li>
+<li><div class="sc-draw"><svg class="sc" viewBox="0 18 115 32" style="width:115px" aria-hidden="true"><rect class="sc-shank" x="18" y="30" width="83.0" height="8"/><g class="sc-th"><path d="M24.0 27.5 L26.3 40.5"/><path d="M28.6 27.5 L30.9 40.5"/><path d="M33.2 27.5 L35.5 40.5"/><path d="M37.8 27.5 L40.1 40.5"/><path d="M42.4 27.5 L44.7 40.5"/><path d="M47.0 27.5 L49.3 40.5"/><path d="M51.6 27.5 L53.9 40.5"/><path d="M56.2 27.5 L58.5 40.5"/><path d="M60.8 27.5 L63.1 40.5"/><path d="M65.4 27.5 L67.7 40.5"/><path d="M70.0 27.5 L72.3 40.5"/><path d="M74.6 27.5 L76.9 40.5"/><path d="M79.2 27.5 L81.5 40.5"/><path d="M83.8 27.5 L86.1 40.5"/><path d="M88.4 27.5 L90.7 40.5"/><path d="M93.0 27.5 L95.3 40.5"/></g><path class="sc-tip" d="M101.0 30 L115.0 34 L101.0 38Z"/><path class="sc-head" d="M0 21 L0 47 Q6 47 18 38 L18 30 Q6 21 0 21Z"/></svg></div><b>1-1/4″ fine thread</b><span>1/2″ or 5/8″ on light steel studs, commercial</span></li>
+<li><div class="sc-draw"><svg class="sc" viewBox="0 18 115 32" style="width:115px" aria-hidden="true"><rect class="sc-shank" x="18" y="30" width="83.0" height="8"/><g class="sc-th"><path d="M24.0 27.5 L26.3 40.5"/><path d="M28.6 27.5 L30.9 40.5"/><path d="M33.2 27.5 L35.5 40.5"/><path d="M37.8 27.5 L40.1 40.5"/><path d="M42.4 27.5 L44.7 40.5"/><path d="M47.0 27.5 L49.3 40.5"/><path d="M51.6 27.5 L53.9 40.5"/><path d="M56.2 27.5 L58.5 40.5"/><path d="M60.8 27.5 L63.1 40.5"/><path d="M65.4 27.5 L67.7 40.5"/><path d="M70.0 27.5 L72.3 40.5"/><path d="M74.6 27.5 L76.9 40.5"/><path d="M79.2 27.5 L81.5 40.5"/><path d="M83.8 27.5 L86.1 40.5"/><path d="M88.4 27.5 L90.7 40.5"/><path d="M93.0 27.5 L95.3 40.5"/></g><path class="sc-tip" d="M99.0 30 L115.0 32.6 L115.0 35.4 L99.0 38Z"/><path class="sc-flute" d="M99.0 31 L111.0 35"/><path class="sc-head" d="M0 21 L0 47 Q6 47 18 38 L18 30 Q6 21 0 21Z"/></svg></div><b>1-1/4″ self-drilling</b><span>Heavy-gauge steel, the point drills its own hole</span></li>
+<li><div class="sc-draw"><svg class="sc" viewBox="0 18 184 32" style="width:184px" aria-hidden="true"><rect class="sc-shank" x="18" y="30" width="152" height="8"/><g class="sc-th"><path d="M24.0 27.5 L28.5 40.5"/><path d="M33.0 27.5 L37.5 40.5"/><path d="M42.0 27.5 L46.5 40.5"/><path d="M51.0 27.5 L55.5 40.5"/><path d="M60.0 27.5 L64.5 40.5"/><path d="M69.0 27.5 L73.5 40.5"/><path d="M78.0 27.5 L82.5 40.5"/><path d="M87.0 27.5 L91.5 40.5"/><path d="M96.0 27.5 L100.5 40.5"/><path d="M105.0 27.5 L109.5 40.5"/><path d="M114.0 27.5 L118.5 40.5"/><path d="M123.0 27.5 L127.5 40.5"/><path d="M132.0 27.5 L136.5 40.5"/><path d="M141.0 27.5 L145.5 40.5"/><path d="M150.0 27.5 L154.5 40.5"/><path d="M159.0 27.5 L163.5 40.5"/></g><path class="sc-tip" d="M170 30 L184 34 L170 38Z"/><path class="sc-head" d="M0 21 L0 47 Q6 47 18 38 L18 30 Q6 21 0 21Z"/></svg></div><b>2″ coarse thread</b><span>Second layer of 5/8″ on rated assemblies</span></li></ul>
+        <p class="sc-foot">Drawn to scale. Screws every 12″ on ceilings and 16″ on walls, set just under the paper, never through it.</p>
+      </article>
+      <article class="b2-card b2-owner">
+        <img src="assets/img/crew-johnathan.webp" alt="Johnathan Becerra, owner of Next Gen Drywall" loading="lazy">
+        <div>
+          <p class="b2-k"><span>03</span>One point of contact</p>
+          <h3>The person who bids it runs it.</h3>
+          <p>Johnathan walks the job, writes the bid and is on site while we work. One number from walkthrough to final.</p>
+          <p class="b2-sig"><em>Johnathan Becerra</em><span>Owner &middot; 480-799-8173</span></p>
+        </div>
+      </article>
+      <article class="b2-card b2-dates">
+        <p class="b2-k"><span>04</span>Done when we said</p>
+        <h3>The dates on the bid are the dates on the job.</h3>
+        <table class="dt">
+          <thead><tr><th>Milestone</th><th>Promised at bid</th><th>Done</th></tr></thead>
+          <tbody>
+            <tr><td>Crew on site</td><td>Mon, Mar 9</td><td><i></i>Mon, Mar 9</td></tr>
+            <tr><td>Level 1 hung, ready for inspection</td><td>Fri, Mar 20</td><td><i></i>Fri, Mar 20</td></tr>
+            <tr><td>Level 1 to paint</td><td>Fri, Apr 10</td><td><i></i>Thu, Apr 9</td></tr>
+            <tr><td>Last floor to paint</td><td>Fri, May 29</td><td><i></i>Fri, May 29</td></tr>
+          </tbody>
+        </table>
+        <p class="dt-note">A sample schedule, to show how we report it.</p>
+      </article>
+    </div>
     <a class="btn bld-cta" href="#bid">Send us the plans <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 10h13M11 5l5 5-5 5"/></svg></a>
   </div>
 </section>
@@ -681,7 +754,6 @@
 
 <div class="dock" aria-label="Quick contact"><a href="#" data-preview-off="1">Call</a><a href="#bid">Request a bid</a></div>
 
-<script type="module" src="assets/bld3d.js?v=pcd2f4fd3"></script>
-<script type="module" src="assets/app.js?v=pcd2f4fd3"></script>
+<script type="module" src="assets/app.js?v=p861175a2"></script>
 </body>
 </html>

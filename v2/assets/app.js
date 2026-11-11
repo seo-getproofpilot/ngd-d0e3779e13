@@ -783,16 +783,17 @@ addEventListener('scroll', navTone, { passive: true }); navTone();
   }
 }
 
-/* ---------- process: the hero's great room, boarded as you scroll; the steps come up one at a time ---------- */
+/* ---------- process: the hero's great room. Steps 1-3 happen on bare studs (texts, ballpark, walkthrough and bid);
+   in step 4 the crew shows up and the board goes up as you scroll ---------- */
 {
   const sec = $('.hroom');
   if (sec) {
     const cv = $('.hroom-cv', sec), ctx = cv.getContext('2d'), steps = $$('.hr-step', sec), stage = $('.hroom-stage', sec);
+    const msgs = $$('.msg', sec), lines = $$('.bid-lines li', sec), dims = $$('.dm', sec), pct = $('.cw-pct', sec), meter = $('.cw-meter', sec);
     const N = 73, frames = new Array(N);
     let want = 0, drawn = -1, started = false;
     const STAGES = ['Open studs', 'Board going up', 'Hung and screwed'];
-    const size = () => { const d = Math.min(devicePixelRatio || 1, 1.5); cv.width = Math.round(cv.clientWidth * d); cv.height = Math.round(cv.clientHeight * d); drawn = -1; draw(); };
-    const nearest = i => { for (let k = 0; k < N; k++) { if (frames[i - k] && frames[i - k].complete && frames[i - k].naturalWidth) return frames[i - k]; if (frames[i + k] && frames[i + k].complete && frames[i + k].naturalWidth) return frames[i + k]; } return null; };
+    const nearest = i => { for (let k = 0; k < N; k++) { for (const j of [i - k, i + k]) { const im = frames[j]; if (im && im.complete && im.naturalWidth) return im; } } return null; };
     function draw() {
       if (want === drawn) return;
       const im = nearest(want); if (!im) return;
@@ -801,20 +802,34 @@ addEventListener('scroll', navTone, { passive: true }); navTone();
       ctx.drawImage(im, (W - w) / 2, (H - h2) / 2, w, h2);
       if (im === frames[want]) drawn = want;
     }
+    const size = () => { const d = Math.min(devicePixelRatio || 1, 1.5); cv.width = Math.round(cv.clientWidth * d); cv.height = Math.round(cv.clientHeight * d); drawn = -1; draw(); };
     const load = () => {
       if (started) return; started = true;
       for (let i = 0; i < N; i++) { const im = new Image(); im.decoding = 'async'; im.onload = () => { if (Math.abs(i - want) < 3) { drawn = -1; draw(); } }; im.src = `assets/hang/${String(i).padStart(4, '0')}.webp`; frames[i] = im; }
     };
     new IntersectionObserver(([e]) => { if (e.isIntersecting) load(); }, { rootMargin: '150% 0px' }).observe(sec);
+    // where each step starts in the scroll, and which messages show by when
+    const START = [.03, .22, .40, .62];
+    const MSG_AT = [.06, .11, .16, .25, .28, .32, .35, .37];
+    const sub = (p, a, b) => Math.min(1, Math.max(0, (p - a) / (b - a)));
     const onScroll = () => {
       const r = sec.getBoundingClientRect(), span = r.height - innerHeight;
       const p = Math.min(1, Math.max(0, -r.top / Math.max(span, 1)));
-      // the board goes up between 12% and 90% of the scroll; the steps land at even stops
-      const f = Math.min(1, Math.max(0, (p - .12) / .78));
-      want = Math.round(f * (N - 1)); draw();
-      const k = Math.min(3, Math.floor(p * 4.4));
+      let k = -1; START.forEach((s0, i) => { if (p >= s0) k = i; });
+      sec.dataset.step = k + 1;
       steps.forEach((el, i) => { el.classList.toggle('in', i <= k); el.classList.toggle('now', i === k); el.classList.toggle('past', i < k); });
-      const st = f < .04 ? 0 : f < .97 ? 1 : 2;
+      // 1-2: the text thread fills in; the dots give way to the reply
+      msgs.forEach((m, i) => m.classList.toggle('show', p >= MSG_AT[i] && !(m.classList.contains('typing') && p >= MSG_AT[i + 1])));
+      // 3: the tape goes on each wall, then the bid lines come in
+      const t3 = sub(p, .41, .52), fadeDims = 1 - sub(p, .64, .70);
+      dims.forEach((d, i) => { d.style.setProperty('--d', sub(t3, i * .2, i * .2 + .4).toFixed(3)); d.style.setProperty('--o', (k >= 2 ? fadeDims : 0).toFixed(2)); });
+      const t3b = sub(p, .47, .6);
+      lines.forEach((l, i) => l.classList.toggle('show', t3b > i / lines.length));
+      // 4: the crew hangs the board
+      const f = sub(p, .66, .95);
+      want = Math.round(f * (N - 1)); draw();
+      pct.textContent = Math.round(f * 100) + '%'; meter.style.setProperty('--hp', (f * 100).toFixed(1) + '%');
+      const st = f < .02 ? 0 : f < .98 ? 1 : 2;
       if (stage.dataset.s !== String(st)) { stage.dataset.s = st; $('span', stage).textContent = STAGES[st]; }
     };
     addEventListener('scroll', onScroll, { passive: true }); addEventListener('resize', size);
@@ -953,6 +968,17 @@ $$('.us, .lic, .how li, .faq details').forEach(el => { el.classList.add('rv'); r
     void body;
     msg.textContent = 'Stamped. Preview only: on the live site this goes straight to Next Gen Drywall.';
   });
+}
+
+/* ---------- builders: the phase plan draws in and "today" walks across the weeks while it's on screen ---------- */
+{
+  const g = $('.gantt');
+  if (g) {
+    const now = $('.g-now', g);
+    let raf = 0, live = false, t0 = 0;
+    const frame = t => { if (!t0) t0 = t; const k = ((t - t0) / 14000) % 1; now.style.setProperty('--t', (.04 + k * .92).toFixed(4)); raf = live ? requestAnimationFrame(frame) : 0; };
+    new IntersectionObserver(([e]) => { live = e.isIntersecting; if (live) { g.classList.add('in'); if (!raf && !reduced) raf = requestAnimationFrame(frame); } }, { threshold: .3 }).observe(g);
+  }
 }
 
 /* preview build: calls, email and the bid form are off */
