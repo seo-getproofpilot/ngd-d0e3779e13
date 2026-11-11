@@ -2309,6 +2309,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 @media (max-width: 1024px) { .bid-row { grid-template-columns: 1fr; } }
 @media (max-width: 720px) { .bid-steps { grid-template-columns: 1fr; } .bid-head2 .h2 { font-size: clamp(36px, 10vw, 48px); } }
 .print-k b { white-space: nowrap; }
+.bld3 + .faq { border-top: 1px solid rgba(12, 12, 11, .1); padding-top: clamp(80px, 8vw, 120px); }
 
 /* preview build */
 .pv-toast{position:fixed;left:50%;bottom:90px;z-index:200;transform:translate(-50%,20px);opacity:0;pointer-events:none;padding:12px 18px;border-radius:2px;background:#151618;box-shadow:inset 0 0 0 1.5px #2f55e4;
