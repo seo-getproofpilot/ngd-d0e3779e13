@@ -783,6 +783,79 @@ addEventListener('scroll', navTone, { passive: true }); navTone();
   }
 }
 
+/* ---------- process: the hero's great room, boarded as you scroll; the steps come up one at a time ---------- */
+{
+  const sec = $('.hroom');
+  if (sec) {
+    const cv = $('.hroom-cv', sec), ctx = cv.getContext('2d'), steps = $$('.hr-step', sec), stage = $('.hroom-stage', sec);
+    const N = 73, frames = new Array(N);
+    let want = 0, drawn = -1, started = false;
+    const STAGES = ['Open studs', 'Board going up', 'Hung and screwed'];
+    const size = () => { const d = Math.min(devicePixelRatio || 1, 1.5); cv.width = Math.round(cv.clientWidth * d); cv.height = Math.round(cv.clientHeight * d); drawn = -1; draw(); };
+    const nearest = i => { for (let k = 0; k < N; k++) { if (frames[i - k] && frames[i - k].complete && frames[i - k].naturalWidth) return frames[i - k]; if (frames[i + k] && frames[i + k].complete && frames[i + k].naturalWidth) return frames[i + k]; } return null; };
+    function draw() {
+      if (want === drawn) return;
+      const im = nearest(want); if (!im) return;
+      const W = cv.width, H = cv.height, s = Math.max(W / im.naturalWidth, H / im.naturalHeight);
+      const w = im.naturalWidth * s, h2 = im.naturalHeight * s;
+      ctx.drawImage(im, (W - w) / 2, (H - h2) / 2, w, h2);
+      if (im === frames[want]) drawn = want;
+    }
+    const load = () => {
+      if (started) return; started = true;
+      for (let i = 0; i < N; i++) { const im = new Image(); im.decoding = 'async'; im.onload = () => { if (Math.abs(i - want) < 3) { drawn = -1; draw(); } }; im.src = `assets/hang/${String(i).padStart(4, '0')}.webp`; frames[i] = im; }
+    };
+    new IntersectionObserver(([e]) => { if (e.isIntersecting) load(); }, { rootMargin: '150% 0px' }).observe(sec);
+    const onScroll = () => {
+      const r = sec.getBoundingClientRect(), span = r.height - innerHeight;
+      const p = Math.min(1, Math.max(0, -r.top / Math.max(span, 1)));
+      // the board goes up between 12% and 90% of the scroll; the steps land at even stops
+      const f = Math.min(1, Math.max(0, (p - .12) / .78));
+      want = Math.round(f * (N - 1)); draw();
+      const k = Math.min(3, Math.floor(p * 4.4));
+      steps.forEach((el, i) => { el.classList.toggle('in', i <= k); el.classList.toggle('now', i === k); el.classList.toggle('past', i < k); });
+      const st = f < .04 ? 0 : f < .97 ? 1 : 2;
+      if (stage.dataset.s !== String(st)) { stage.dataset.s = st; $('span', stage).textContent = STAGES[st]; }
+    };
+    addEventListener('scroll', onScroll, { passive: true }); addEventListener('resize', size);
+    size(); onScroll();
+  }
+}
+
+/* ---------- repairs: four before/afters; each sweeps across on its own, staggered, until someone drags it ---------- */
+{
+  const cards = $$('.rxc');
+  if (cards.length) {
+    const st = cards.map((el, i) => ({ el, inp: $('.rxc-in', el), held: false, off: i * 900 }));
+    const setX = (c, x) => { c.el.style.setProperty('--x', `${x.toFixed(2)}%`); c.inp.value = x; };
+    st.forEach(c => c.inp.addEventListener('input', () => { c.held = true; c.el.style.setProperty('--x', `${c.inp.value}%`); }));
+    const CYCLE = 7200;
+    let raf = 0, live = false, t0 = 0;
+    const ease = k => k < .5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
+    const frame = now => {
+      if (!t0) t0 = now;
+      st.forEach(c => {
+        if (c.held) return;
+        const t = (((now - t0 - c.off) % CYCLE) + CYCLE) % CYCLE / CYCLE;
+        // rest on before, sweep to after, rest on after, sweep back
+        const k = t < .14 ? 0 : t < .44 ? ease((t - .14) / .3) : t < .72 ? 1 : t < .92 ? 1 - ease((t - .72) / .2) : 0;
+        setX(c, now - t0 < c.off ? 96 : 96 - 92 * k);
+      });
+      raf = live ? requestAnimationFrame(frame) : 0;
+    };
+    new IntersectionObserver(([e]) => { live = e.isIntersecting; if (live && !raf) raf = requestAnimationFrame(frame); }, { threshold: .2 }).observe($('.rx2-grid'));
+  }
+}
+
+/* ---------- services: the tape on the wall carries the real logo, from the hero's own SVG ---------- */
+{
+  const tracks = $$('.svt-track'), src = $('.tour-logo svg');
+  if (tracks.length && src) {
+    const svg = src.outerHTML;
+    tracks.forEach(t => { t.innerHTML = Array.from({ length: 12 }, () => svg + '<i></i>').join(''); });
+  }
+}
+
 /* ---------- builders: the building. Each floor's tag shows which trade is on it; they move up a floor at a time ---------- */
 {
   const fig = $('.bld-fig');
