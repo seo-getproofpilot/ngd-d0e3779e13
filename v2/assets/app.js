@@ -349,6 +349,7 @@ function autoTour({ section, video: v, seq, cardOf, handAt = {}, drift = 1, card
     v.poster = `assets/seq2/${dir}/0000.webp?v=${ASSET_V}`; v.src = `assets/seq2/${dir}-fwd.mp4?v=${ASSET_V}`; v.playbackRate = RATE;
   };
   const setOn = k => {
+    items.forEach((li, j) => { if (j < k) li.classList.add('done'); });
     if (k === on) return; on = k;
     items.forEach((li, i) => li.classList.toggle('on', i === k));
     chipN.textContent = `${String(k + 1).padStart(2, '0')} / 07`; chipT.textContent = $('b', items[k]).textContent;
@@ -1085,6 +1086,105 @@ function lvNotes(n) {
     return `<g class="lvn" style="--i:${i}"><text x="${x}" y="${y}">${t}</text><path pathLength="1" d="M${ex} ${sy} Q${(ex + tx) / 2 + (i ? -40 : 40)} ${(sy + ty) / 2 - (i ? -30 : 50)} ${tx} ${ty}M${h1[0]} ${h1[1]}L${tx} ${ty}L${h2[0]} ${h2[1]}"/></g>`;
   }).join('') + (n === 1 ? `<text class="lv-tape" transform="translate(946 -40) rotate(90)">${'\u25A0 NEXT GEN DRYWALL '.repeat(4)}</text>` : '');
   if (stamp) { stamp.hidden = !(n === 4 || n === 5); $('b', stamp).textContent = n === 4 ? 'Most homes' : 'Big light, satin paint'; }
+}
+
+/* ---------- services: the tape goes on the three real joints in the wall photo, wherever cover-fit puts them ---------- */
+{
+  const wall = $('.svc-wall');
+  if (wall) {
+    // the photo is 2400 x 1018, drawn at background-position 30% 40%; joints measured in photo pixels
+    const IW = 2400, IH = 1018, PX = .3, PY = .4, TAPE = 40;
+    const J = { h: [0, 310, IW, 310], v1: [710, 310, 710, IH], v2: [1658, 0, 1658, 310] };
+    const seams = $$('.seam', wall);
+    const place = () => {
+      const W = wall.clientWidth, H = wall.clientHeight; if (!W) return;
+      const s = Math.max(W / IW, H / IH), ox = (W - IW * s) * PX, oy = (H - IH * s) * PY, tw = Math.max(26, TAPE * s);
+      seams.forEach(el => {
+        const [x0, y0, x1, y1] = J[el.dataset.seam], X0 = ox + x0 * s, Y0 = oy + y0 * s, Y1 = oy + y1 * s;
+        const vert = x0 === x1;
+        if (vert) {
+          const top = y0 === 0 ? -20 : Y0 + tw / 2, bot = y1 === IH ? H + 20 : Y1 - tw / 2;
+          el.style.cssText = `left:${X0 + tw / 2}px;top:${top}px;width:${bot - top}px;height:${tw}px;transform:rotate(90deg);transform-origin:0 0`;
+        } else el.style.cssText = `left:-20px;top:${Y0 - tw / 2}px;width:${W + 40}px;height:${tw}px`;
+        el.style.setProperty('--tw', tw + 'px');
+      });
+    };
+    new ResizeObserver(place).observe(wall); place();
+  }
+}
+
+/* ---------- repairs: four real stages per repair, with the crew's blue crayon marks drawn on as each one comes up ---------- */
+{
+  const sec = $('.rfix');
+  if (sec) {
+    const stage = $('.rf-stage', sec), SET = JSON.parse(stage.dataset.set), picks = $$('.rf-pick', sec), sts = $$('.rf-st', sec);
+    const imgs = $$('.rf-img', sec), marks = $('.rf-marks', sec), job = $('.rf-job', sec), count = $('.rf-count b', sec);
+    // where the damage sits in each photo (1600 x 893): centre and half-size, and the crew's notes for each step
+    const GEO = [[790, 400, 320, 215], [818, 397, 100, 100], [811, 373, 170, 232], [793, 268, 200, 205]];
+    const NOTE = [
+      ['wet board, comes out', 'cut back to dry framing', 'tape + 3 coats', 'knockdown matched'],
+      ['no backing here', 'cut square, backer in', 'tape + 3 coats, feathered', 'orange peel matched'],
+      ['open to the studs', 'squared up, backer in', 'patched around the box', 'plate on, matched'],
+      ['settling crack', 'mesh tape, pops reset', 'coated 14″ wide', 'blended, gone']];
+    const STEP = 2800; let r = 0, k = 0, timer = 0, held = false, live = false;
+    sec.style.setProperty('--step', STEP / 1000 + 's');
+    const wob = (cx, cy, rx, ry) => { let d = ''; for (let i = 0; i < 24; i++) { const a = -2.2 + i / 24 * Math.PI * 2, j = 1 + Math.sin(i * 1.7) * .04; d += (i ? 'L' : 'M') + (cx + Math.cos(a) * rx * j).toFixed(0) + ' ' + (cy + Math.sin(a) * ry * j).toFixed(0); } return d; };
+    // step 3: the coated patch, half-width and bottom edge, so the crew's dimension line spans the real patch
+    const PATCH = [[858, 436, 670], [820, 256, 647], [809, 253, 692], [869, 202, 446]];
+    const draw = () => {
+      const [cx, cy, rx, ry] = GEO[r], t = NOTE[r][k];
+      let g = '', tx = cx, ty = Math.min(cy + ry * 1.18 + 82, 860);
+      if (k === 0) g = `<path pathLength="1" d="${wob(cx, cy, rx * 1.18, ry * 1.18)}Z"/>`;
+      if (k === 1) g = `<rect pathLength="1" x="${cx - rx * 1.1}" y="${cy - ry * 1.1}" width="${rx * 2.2}" height="${ry * 2.2}" rx="6"/>`;
+      if (k === 2) { const [px, pw, pb] = PATCH[r], y = pb + 34; tx = px; ty = Math.min(y + 82, 860); g = `<path pathLength="1" d="M${px - pw} ${y}H${px + pw}M${px - pw} ${y - 18}V${y + 18}M${px + pw} ${y - 18}V${y + 18}"/>`; }
+      if (k === 3) g = `<ellipse class="dash ghost" cx="${cx}" cy="${cy}" rx="${rx * 1.18}" ry="${ry * 1.18}"/>`;
+      const label = k === 3 ? `${t} \u2713 <tspan class="ng">NG</tspan>` : t;
+      marks.innerHTML = `<g>${g}<text x="${tx}" y="${ty}" text-anchor="middle">${label}</text></g>`;
+    };
+    const show = () => {
+      imgs.forEach((im, j) => { im.classList.toggle('on', j === k); im.alt = j === k ? `${SET[r][1]}, step ${k + 1}: ${SET[r][2][k]}` : ''; });
+      sts.forEach((b, j) => { b.classList.toggle('on', j === k); void b.offsetWidth; });
+      count.textContent = k + 1; draw();
+    };
+    const setRepair = n => {
+      r = n; job.textContent = SET[r][1];
+      picks.forEach((p, j) => { p.classList.toggle('on', j === r); p.setAttribute('aria-pressed', j === r); });
+      imgs.forEach((im, j) => { im.src = `assets/img/rxs-${SET[r][0]}-${j + 1}.webp`; });
+      sts.forEach((b, j) => { $('img', b).src = `assets/img/rxs-${SET[r][0]}-${j + 1}.webp`; $('b', b).textContent = SET[r][2][j]; });
+    };
+    const tick = () => { clearTimeout(timer); if (held || !live || reduced) return; timer = setTimeout(() => { k++; if (k > 3) { k = 0; setRepair((r + 1) % 4); } show(); tick(); }, STEP); };
+    picks.forEach((p, j) => p.addEventListener('click', () => { held = false; stage.classList.remove('held'); setRepair(j); k = 0; show(); tick(); }));
+    sts.forEach((b, j) => b.addEventListener('click', () => { held = true; stage.classList.add('held'); clearTimeout(timer); k = j; show(); }));
+    new IntersectionObserver(([e]) => { live = e.isIntersecting; if (live) { show(); tick(); } else clearTimeout(timer); }, { threshold: .35 }).observe(stage);
+    show();
+  }
+}
+
+/* ---------- the work: the house draws itself, the windows light up, one at a time; tap a window to look inside ---------- */
+{
+  const house = $('.wk-house');
+  if (house) {
+    const wins = $$('.hw', house), n = $('.wk-n'), cap = $('.wk-cap'), box = $('.wk-box');
+    const CAPS = wins.map(w => w.getAttribute('aria-label').replace('Look inside: ', ''));
+    let cur = 0, timer = 0, live = false, open = -1;
+    const lite = i => { cur = i; wins.forEach((w, j) => w.classList.toggle('lit', j === i)); n.textContent = `${String(i + 1).padStart(2, '0')} / ${wins.length}`; cap.textContent = CAPS[i]; };
+    const cycle = () => { clearTimeout(timer); if (!live || reduced || open > -1) return; timer = setTimeout(() => { lite((cur + 1) % wins.length); cycle(); }, 2600); };
+    new IntersectionObserver(([e]) => { live = e.isIntersecting; if (live) { house.classList.add('in'); setTimeout(() => { lite(cur); cycle(); }, reduced ? 0 : 1800); } else clearTimeout(timer); }, { threshold: .3 }).observe(house);
+    const show = i => {
+      open = (i + wins.length) % wins.length; const im = $('img', wins[open]);
+      $('img', box).src = im.currentSrc || im.src; $('img', box).alt = im.alt;
+      $('.wk-bn', box).textContent = `${String(open + 1).padStart(2, '0')} / ${wins.length}`; $('figcaption b', box).textContent = CAPS[open];
+      lite(open);
+    };
+    wins.forEach((w, i) => { w.addEventListener('mouseenter', () => { clearTimeout(timer); lite(i); }); w.addEventListener('mouseleave', cycle);
+      w.addEventListener('click', () => { show(i); if (box.showModal) box.showModal(); clearTimeout(timer); }); });
+    $('.wk-x', box).addEventListener('click', () => box.close());
+    $('.wk-prev', box).addEventListener('click', () => show(open - 1));
+    $('.wk-next', box).addEventListener('click', () => show(open + 1));
+    box.addEventListener('click', e => { if (e.target === box) box.close(); });
+    box.addEventListener('keydown', e => { if (e.key === 'ArrowLeft') show(open - 1); if (e.key === 'ArrowRight') show(open + 1); });
+    box.addEventListener('close', () => { open = -1; cycle(); });
+  }
 }
 
 /* preview build: calls, email and the bid form are off */
