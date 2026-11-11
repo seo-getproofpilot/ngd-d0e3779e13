@@ -14,7 +14,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900;1,62..125,100..900&family=Architects+Daughter&family=Michroma&display=swap" rel="stylesheet">
 <link rel="preload" as="image" href="assets/seq/d/0000.webp" media="(min-width: 821px)">
 <link rel="preload" as="image" href="assets/seq/m/0000.webp" media="(max-width: 820px)">
-<link rel="stylesheet" href="assets/site.css?v=p0bd36684">
+<link rel="stylesheet" href="assets/site.css?v=p68b6579b">
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -206,7 +206,7 @@
         <button type="button" role="tab" aria-selected="true" data-lv="4"><b>4</b><span>Smooth</span></button>
         <button type="button" role="tab" aria-selected="false" data-lv="5"><b>5</b><span>Skim coat</span></button>
       </div>
-      <figure class="lv-fig"><img src="assets/img/lvp-0.webp" alt="" loading="lazy"><img src="assets/img/lvp-1.webp" alt="" loading="lazy"><img src="assets/img/lvp-2.webp" alt="" loading="lazy"><img src="assets/img/lvp-3.webp" alt="" loading="lazy"><img class="on" src="assets/img/lvp-4.webp" alt="A drywall seam finished to Level 4, shown up close" loading="lazy"><img src="assets/img/lvp-5.webp" alt="" loading="lazy"><div class="finder" aria-hidden="true"><i></i><i></i><i></i><i></i></div><figcaption>One seam between two sheets, under a work light</figcaption></figure>
+      <figure class="lv-fig"><img src="assets/img/lvp-0.webp" alt="" loading="lazy"><img src="assets/img/lvp-1.webp" alt="" loading="lazy"><img src="assets/img/lvp-2.webp" alt="" loading="lazy"><img src="assets/img/lvp-3.webp" alt="" loading="lazy"><img class="on" src="assets/img/lvp-4.webp" alt="A drywall seam finished to Level 4, shown up close" loading="lazy"><img src="assets/img/lvp-5.webp" alt="" loading="lazy"><svg class="lv-notes" viewBox="0 0 1920 1200" preserveAspectRatio="xMidYMid slice" aria-hidden="true"></svg><p class="lv-stamp" aria-hidden="true"><svg viewBox="0 0 704 342" aria-hidden="true"><use href="#ng-house"/></svg><span>Next Gen pick</span><b>Most homes</b></p><div class="finder" aria-hidden="true"><i></i><i></i><i></i><i></i></div><figcaption>One seam between two sheets, under a work light</figcaption></figure>
       <div class="lv-read" aria-live="polite">
         <div class="ngtape" aria-hidden="true"><span>&#9632; NEXT GEN DRYWALL &#9632; NEXT GEN DRYWALL &#9632;</span></div>
         <p class="lv-num"><span>Level</span><b>4</b></p>
@@ -220,7 +220,15 @@
         </dl>
       </div>
     </div>
-    <p class="lv-note">Close-ups are illustrations of one seam under a work light.</p>
+    <div class="lv-pickhow">
+      <p class="lv-ph-k">How we pick your level</p>
+      <ul>
+        <li><b>The light</b>Big windows and low Arizona sun rake across walls and find every joint. More light, higher level.</li>
+        <li><b>The paint</b>Flat paint hides more. Eggshell, satin and gloss show everything, so they usually mean Level 5.</li>
+        <li><b>The texture</b>Under orange peel or knockdown, Level 3 is enough. The texture does the rest of the hiding.</li>
+      </ul>
+    </div>
+    <p class="lv-note">Close-ups are illustrations of one seam under a work light. The notes are how our crew marks a wall.</p>
   </div>
 </section>
 
@@ -267,18 +275,21 @@
       <h2 class="h2" id="bw-h">Every wall is different. <em>Here’s what sets your number.</em></h2>
       <p class="sub">We don’t post a menu, because drywall pricing swings with the job. These are the seven things we measure on the walkthrough. Each one is its own line on your itemized bid.</p>
       <ol class="bw-list">
-        <li data-k="0"><button type="button"><b>Square footage</b><span>Every wall and ceiling, measured from your plans or on site. The biggest line on any bid.<i>On your bid: walls and ceilings, room by room.</i></span></button></li>
-        <li data-k="1"><button type="button"><b>Ceiling height</b><span>8-foot rooms move fastest. Vaults and stairwells need stilts, lifts or scaffold.<i>On your bid: lift and scaffold time, on its own line.</i></span></button></li>
-        <li data-k="2"><button type="button"><b>Finish level</b><span>Each level adds coats and sanding. Level 5 is a full skim.<i>On your bid: the level for each room, written next to it.</i></span></button></li>
-        <li data-k="3"><button type="button"><b>Texture</b><span>New smooth walls, or a match for the orange peel, knockdown or skip trowel you have.<i>On your bid: the texture, named and matched to a sample.</i></span></button></li>
-        <li data-k="4"><button type="button"><b>Board type</b><span>Standard, moisture-, mold- or fire-rated, set by code and the room.<i>On your bid: each board type and where it goes.</i></span></button></li>
-        <li data-k="5"><button type="button"><b>Occupied home</b><span>Furniture wrapped, floors papered, dust walls up.<i>On your bid: protection and cleanup, listed.</i></span></button></li>
-        <li data-k="6"><button type="button"><b>Schedule &amp; repairs</b><span>The crew is sized to your dates. Repairs are priced by the damage.<i>On your bid: start date, crew size and each repair.</i></span></button></li>
+        <li data-k="0" data-fact="Longer sheets mean fewer butt joints, and butt joints are the seams most likely to show." data-stat="12′"><button type="button"><b>Square footage</b><span>Every wall and ceiling, measured from your plans or on site. The biggest line on any bid.<em class="bw-why"><strong>Why it matters</strong>It’s the base of every other number, so it gets measured, not guessed. Plan takeoffs miss soffits, returns and closet ceilings.</em><i>On your bid: walls and ceilings, room by room.</i></span></button></li>
+        <li data-k="1" data-fact="A great-room wall like the one in this walkthrough is a scaffold job, with a lift for the high sheets." data-stat="18′"><button type="button"><b>Ceiling height</b><span>8-foot rooms move fastest. Vaults and stairwells need stilts, lifts or scaffold.<em class="bw-why"><strong>Why it matters</strong>Above about 10 feet, every sheet takes more hands and more setup. That time is real, so it gets its own line.</em><i>On your bid: lift and scaffold time, on its own line.</i></span></button></li>
+        <li data-k="2" data-fact="Most rooms in a home are Level 4. Big windows, low sun or satin paint usually call for Level 5." data-stat="L4"><button type="button"><b>Finish level</b><span>Each level adds coats and sanding. Level 5 is a full skim.<em class="bw-why"><strong>Why it matters</strong>The level decides how many coats and how much sanding go into every joint, and whether those joints show once light hits them.</em><i>On your bid: the level for each room, written next to it.</i></span></button></li>
+        <li data-k="3" data-fact="The four you’ll see in the East Valley: smooth, orange peel, knockdown and skip trowel." data-stat="4"><button type="button"><b>Texture</b><span>New smooth walls, or a match for the orange peel, knockdown or skip trowel you have.<em class="bw-why"><strong>Why it matters</strong>A texture that doesn’t match is the first thing people notice. Matching what you already have takes a test patch, not a guess.</em><i>On your bid: the texture, named and matched to a sample.</i></span></button></li>
+        <li data-k="4" data-fact="A garage ceiling with a bedroom above it needs 5/8″ Type X fire-rated board under the code most AZ cities use." data-stat="5/8″"><button type="button"><b>Board type</b><span>Standard, moisture-, mold- or fire-rated, set by code and the room.<em class="bw-why"><strong>Why it matters</strong>Some rooms aren’t a choice. Code sets the board, and the wrong one fails inspection and comes back down.</em><i>On your bid: each board type and where it goes.</i></span></button></li>
+        <li data-k="5" data-fact="Dust walls, floor paper and covered air returns: the three things that keep a repair from becoming a whole-house clean." data-stat="3"><button type="button"><b>Occupied home</b><span>Furniture wrapped, floors papered, dust walls up.<em class="bw-why"><strong>Why it matters</strong>Drywall dust travels through a whole house. Protecting the rooms you live in is real labor, so it’s listed, not buried.</em><i>On your bid: protection and cleanup, listed.</i></span></button></li>
+        <li data-k="6" data-fact="The start date on your bid is the day the crew shows up. Repairs we find on the walkthrough get their own lines." data-stat="Day 1"><button type="button"><b>Schedule &amp; repairs</b><span>The crew is sized to your dates. Repairs are priced by the damage.<em class="bw-why"><strong>Why it matters</strong>Your painter, cabinets and flooring are booked off our dates. If we slip, they slip.</em><i>On your bid: start date, crew size and each repair.</i></span></button></li>
       </ol>
     </div>
-    <div class="bw-now" aria-hidden="true">
-      <p class="bw-chip"><span class="bw-chip-n">01 / 07</span><b class="bw-chip-t">Square footage</b></p>
-      <p class="bw-scribble">measured on the walkthrough</p>
+    <div class="bw-now" aria-live="polite">
+      <div class="bw-fact">
+        <div class="ngtape" aria-hidden="true"><span>&#9632; NEXT GEN DRYWALL &#9632; GOOD TO KNOW &#9632;</span></div>
+        <p class="bw-chip"><span class="bw-chip-n">01 / 07</span><b class="bw-chip-t">Square footage</b></p>
+        <div class="bw-fact-row"><b class="bw-stat">12′</b><p class="bw-fact-t">Longer sheets mean fewer butt joints, and butt joints are the seams most likely to show.</p></div>
+      </div>
     </div>
     <div class="bw-foot">
       <p>Rendered walkthrough of a sample home. Tap a line to jump to it.<br><b>The walkthrough and bid are free.</b></p>
@@ -352,58 +363,34 @@
   </div>
 </section>
 
-<!-- ================= REPAIRS: one big frame, a Next Gen knife wipes the repair in; tickets pick the job ================= -->
-<section class="rx3" id="repair" aria-labelledby="rx-h">
+<!-- ================= REPAIRS: the Next Gen repair log, four real steps per repair ================= -->
+<section class="rlog" id="repair" aria-labelledby="rx-h">
   <div class="wrap">
-    <header class="rx3-head">
+    <header class="rlog-head">
       <div>
         <p class="kicker">Repairs</p>
         <h2 class="h2" id="rx-h">Holes, leaks and cracks, <em>matched so nobody finds them.</em></h2>
       </div>
-      <div class="rx3-side">
-        <p class="sub">Most repairs are done in a day. Pick a ticket and watch the knife pass over it, or drag the knife yourself.</p>
-        <a class="btn" href="#" data-preview-off="1">Call the repair line <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 10h13M11 5l5 5-5 5"/></svg></a>
-      </div>
+      <p class="sub">There’s no trick to a repair you can’t find. It’s the same four steps every time, done in order. Here’s what each one looks like.</p>
     </header>
-    <figure class="rx3-stage" style="--x:0%" data-set='[["assets/img/rxp-leak-before.webp","assets/img/rxp-leak-after.webp","A living room ceiling with a large brown water stain","The same ceiling, repaired and matched"],["assets/img/rxp-doorknob-before.webp","assets/img/rxp-doorknob-after.webp","A doorknob hole punched through a hallway wall","The same wall, patched and textured"],["assets/img/rxp-cutout-before.webp","assets/img/rxp-cutout-after.webp","An access hole cut in a wall for new wiring","The same wall, closed up with a new switch plate"],["assets/img/rxp-crack-before.webp","assets/img/rxp-crack-after.webp","A settling crack running up from a door corner","The same wall, re-taped and blended"]]'>
-      <img class="rx3-a" src="assets/img/rxp-leak-after.webp" alt="The same ceiling, repaired and matched" loading="lazy">
-      <img class="rx3-b" src="assets/img/rxp-leak-before.webp" alt="A living room ceiling with a large brown water stain" loading="lazy">
-      <i class="rx3-mud" aria-hidden="true"></i>
-      <div class="rx3-knife" aria-hidden="true"><img class="kn" src="assets/img/knife.webp" alt="" loading="lazy"></div>
-      <span class="rx3-l">After</span><span class="rx3-r">Before</span>
-      <input class="rx3-in" type="range" min="0" max="100" value="0" aria-label="Drag the knife to compare before and after">
-      <figcaption>Illustrations of typical repairs</figcaption>
-    </figure>
-    <ol class="rx3-tickets">
-        <li><button type="button" class="tk on" data-r="0">
-          <span class="tk-top"><b>01</b><em>Repair ticket</em></span>
-          <span class="tk-t">Ceiling leak</span>
-          <span class="tk-d">Stained board out, new board in</span>
-          <span class="tk-steps"><i>Stained board cut out</i><i>New board, screwed off</i><i>Taped, three coats</i><i>Knockdown matched, primed</i></span>
-          <span class="tk-bar"></span>
-        </button></li>
-        <li><button type="button" class="tk" data-r="1">
-          <span class="tk-top"><b>02</b><em>Repair ticket</em></span>
-          <span class="tk-t">Doorknob hole</span>
-          <span class="tk-d">Patched behind the door</span>
-          <span class="tk-steps"><i>Cut square</i><i>Wood backer behind it</i><i>Patched, taped, coated</i><i>Orange peel matched, primed</i></span>
-          <span class="tk-bar"></span>
-        </button></li>
-        <li><button type="button" class="tk" data-r="2">
-          <span class="tk-top"><b>03</b><em>Repair ticket</em></span>
-          <span class="tk-t">Electrician’s cut-out</span>
-          <span class="tk-d">Closed up around the new switch</span>
-          <span class="tk-steps"><i>Opening squared up</i><i>Backer and patch</i><i>Coated around the box</i><i>Texture matched, primed</i></span>
-          <span class="tk-bar"></span>
-        </button></li>
-        <li><button type="button" class="tk" data-r="3">
-          <span class="tk-top"><b>04</b><em>Repair ticket</em></span>
-          <span class="tk-t">Settling crack</span>
-          <span class="tk-d">Opened, re-taped, blended</span>
-          <span class="tk-steps"><i>Crack opened up</i><i>Mesh tape bedded</i><i>Coats feathered wide</i><i>Texture blended, primed</i></span>
-          <span class="tk-bar"></span>
-        </button></li>
-    </ol>
+    <div class="rlog-grid">
+      <ol class="rl-picks">
+        <li><button type="button" class="rl-pick on" data-r="0"><span class="rl-n">01</span><span class="rl-t">Ceiling leak</span><span class="rl-why"><b>Why we do it this way</b>Painting over a water stain doesn’t hold. If the board got wet, it comes out, or the stain bleeds back through the new paint.</span><i class="rl-bar"></i></button></li>
+        <li><button type="button" class="rl-pick" data-r="1"><span class="rl-n">02</span><span class="rl-t">Doorknob hole</span><span class="rl-why"><b>Why we do it this way</b>A patch with nothing behind it cracks the next time the door hits it. Backer goes in first, and we’ll point out where a door stop belongs.</span><i class="rl-bar"></i></button></li>
+        <li><button type="button" class="rl-pick" data-r="2"><span class="rl-n">03</span><span class="rl-t">Electrician’s cut-out</span><span class="rl-why"><b>Why we do it this way</b>Electricians cut what they need to get the wire through. We close it so the patch never shows beside the new switch.</span><i class="rl-bar"></i></button></li>
+        <li><button type="button" class="rl-pick" data-r="3"><span class="rl-n">04</span><span class="rl-t">Settling crack</span><span class="rl-why"><b>Why we do it this way</b>Caulk and paint crack again within a season. Mesh tape and wide, feathered coats move with the house instead.</span><i class="rl-bar"></i></button></li>
+        <li class="rl-cta"><a class="btn" href="#" data-preview-off="1">Call the repair line <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 10h13M11 5l5 5-5 5"/></svg></a></li>
+      </ol>
+      <figure class="rl-card" data-set='[[&quot;leak&quot;, [&quot;The stain&quot;, &quot;Cut out to dry framing&quot;, &quot;New board, taped, three coats&quot;, &quot;Knockdown matched, painted&quot;], [&quot;A living room ceiling with a brown water stain&quot;, &quot;The stained section cut out, framing showing&quot;, &quot;New board taped and coated, not yet textured&quot;, &quot;The same ceiling, textured and painted&quot;]], [&quot;doorknob&quot;, [&quot;The hole&quot;, &quot;Cut square, wood backer in&quot;, &quot;Patched, taped, coated&quot;, &quot;Orange peel matched, painted&quot;], [&quot;A doorknob hole in a hallway wall&quot;, &quot;The hole cut square with wood backer inside&quot;, &quot;The patch taped and coated, not yet textured&quot;, &quot;The same wall, textured and painted&quot;]], [&quot;cutout&quot;, [&quot;The access hole&quot;, &quot;Squared up, backer in&quot;, &quot;Patched around the box&quot;, &quot;Textured, painted, plate on&quot;], [&quot;An access hole cut for new wiring&quot;, &quot;The opening squared up with backer and a patch cut to fit&quot;, &quot;The patch fitted around the box and coated&quot;, &quot;The same wall with a new switch plate&quot;]], [&quot;crack&quot;, [&quot;The crack&quot;, &quot;Opened, mesh-taped, pops reset&quot;, &quot;Coated and feathered wide&quot;, &quot;Texture blended, painted&quot;], [&quot;A settling crack above a door&quot;, &quot;Mesh tape over the crack, nail pops reset&quot;, &quot;The crack coated and feathered, not yet textured&quot;, &quot;The same wall, textured and painted&quot;]]]'>
+        <div class="rl-top"><svg viewBox="0 0 704 342" aria-hidden="true"><use href="#ng-house"/></svg><p><b>Repair log</b><span class="rl-job">Ceiling leak</span></p><span class="rl-step-n">Step <b>1</b> of 4</span></div>
+        <div class="rl-photo"><img class="rl-img on" src="assets/img/rxs-leak-1.webp" alt="A living room ceiling with a brown water stain" loading="lazy"><img class="rl-img" src="assets/img/rxs-leak-2.webp" alt="The stained section cut out, framing showing" loading="lazy"><img class="rl-img" src="assets/img/rxs-leak-3.webp" alt="New board taped and coated, not yet textured" loading="lazy"><img class="rl-img" src="assets/img/rxs-leak-4.webp" alt="The same ceiling, textured and painted" loading="lazy">
+          <div class="finder" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+          <p class="rl-tape" aria-hidden="true"><span>Step 1</span><b>The stain</b></p>
+        </div>
+        <ol class="rl-stages"><li class="rl-st on"><span>Step 1</span><b>The stain</b></li><li class="rl-st"><span>Step 2</span><b>Cut out to dry framing</b></li><li class="rl-st"><span>Step 3</span><b>New board, taped, three coats</b></li><li class="rl-st"><span>Step 4</span><b>Knockdown matched, painted</b></li></ol>
+        <figcaption>Photos are illustrations of typical repairs.</figcaption>
+      </figure>
+    </div>
   </div>
 </section>
 
@@ -488,13 +475,17 @@
     <header class="bld-head">
       <p class="kicker">For builders and GCs</p>
       <h2 class="h2" id="bld-h">Every floor moving. <em>Every date held.</em></h2>
-      <p class="sub">On a multifamily or commercial build, drywall is where schedules slip. Here’s how we keep it from slipping: the right fastener in every sheet, a phase plan the next trade can count on, and one person who answers for all of it.</p>
+      <p class="sub">Drywall sits in the middle of every build. Paint, cabinets, trim and flooring are all booked off our dates, so when drywall slips, everyone behind us slips. Everything below is how we keep that from happening.</p>
     </header>
-    <div class="b2-grid">
+    <ol class="b2-chain" aria-label="The order of trades on a build">
+      <li>Framing</li><li>Rough-in inspections</li><li class="us"><span>Drywall</span><em>Next Gen</em></li><li>Paint</li><li>Cabinets &amp; trim</li><li>Flooring</li>
+    </ol>
+    <p class="b2-chain-note">Every trade to the right of us is waiting on our dates.</p>
+        <div class="b2-grid">
       <article class="b2-card b2-sched">
         <i class="ngtape" aria-hidden="true"><span>NEXT GEN DRYWALL &#9632; PHASE PLAN</span></i>
         <p class="b2-k"><span>01</span>Phased floor by floor</p>
-        <h3>The trade behind us always has a floor to walk onto.</h3>
+        <h3>Paint walks onto a finished floor the day we planned.</h3>
         <div class="gantt" aria-label="A sample 12-week schedule: each floor is hung, inspected, taped and finished, then handed to paint, one floor after another">
           <div class="g-weeks" aria-hidden="true"><b>Week</b><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span><span>11</span><span>12</span></div>
           <ol class="g-rows"><li><b>Level 1</b><div class="gr"><i class="gs gs-hang" style="--s:1;--w:2"><span>Hang</span></i><i class="gs gs-tape" style="--s:3;--w:1.5"><span>Tape</span></i><i class="gs gs-fin" style="--s:4.5;--w:1.5"><span>Finish</span></i><i class="gs gs-paint" style="--s:6;--w:7"><span>Paint moves in</span></i><em class="gi" style="--s:3" title="Screw inspection"></em></div></li><li><b>Level 2</b><div class="gr"><i class="gs gs-hang" style="--s:3;--w:2"><span>Hang</span></i><i class="gs gs-tape" style="--s:5;--w:1.5"><span>Tape</span></i><i class="gs gs-fin" style="--s:6.5;--w:1.5"><span>Finish</span></i><i class="gs gs-paint" style="--s:8;--w:5"><span>Paint moves in</span></i><em class="gi" style="--s:5" title="Screw inspection"></em></div></li><li><b>Level 3</b><div class="gr"><i class="gs gs-hang" style="--s:5;--w:2"><span>Hang</span></i><i class="gs gs-tape" style="--s:7;--w:1.5"><span>Tape</span></i><i class="gs gs-fin" style="--s:8.5;--w:1.5"><span>Finish</span></i><i class="gs gs-paint" style="--s:10;--w:3"><span>Paint moves in</span></i><em class="gi" style="--s:7" title="Screw inspection"></em></div></li><li><b>Level 4</b><div class="gr"><i class="gs gs-hang" style="--s:7;--w:2"><span>Hang</span></i><i class="gs gs-tape" style="--s:9;--w:1.5"><span>Tape</span></i><i class="gs gs-fin" style="--s:10.5;--w:1.5"><span>Finish</span></i><i class="gs gs-paint" style="--s:12;--w:1"><span>Paint moves in</span></i><em class="gi" style="--s:9" title="Screw inspection"></em></div></li></ol>
@@ -502,29 +493,32 @@
         </div>
         <ul class="g-key" aria-hidden="true"><li class="k-hang">Hang</li><li class="k-tape">Tape</li><li class="k-fin">Finish</li><li class="k-paint">Paint moves in</li><li class="k-insp">Screw inspection</li></ul>
         <p class="g-foot">Your superintendent gets this plan in writing before we start, and an update every Friday until the last floor goes to paint.</p>
+      <p class="b2-why">Why it matters: your painter is booked by floor, not by guess.</p>
       </article>
       <article class="b2-card b2-screws">
-        <p class="b2-k"><span>02</span>The right screw for the board</p>
-        <h3>Wrong fastener, failed inspection. We don’t guess.</h3>
+        <p class="b2-k"><span>02</span>Passes inspection the first time</p>
+        <h3>A failed screw inspection stops every trade behind us. So every sheet gets the right fastener.</h3>
         <ul class="sc-list"><li><div class="sc-draw"><svg class="sc" viewBox="0 18 115 32" style="width:115px" aria-hidden="true"><rect class="sc-shank" x="18" y="30" width="83.0" height="8"/><g class="sc-th"><path d="M24.0 27.5 L28.5 40.5"/><path d="M33.0 27.5 L37.5 40.5"/><path d="M42.0 27.5 L46.5 40.5"/><path d="M51.0 27.5 L55.5 40.5"/><path d="M60.0 27.5 L64.5 40.5"/><path d="M69.0 27.5 L73.5 40.5"/><path d="M78.0 27.5 L82.5 40.5"/><path d="M87.0 27.5 L91.5 40.5"/></g><path class="sc-tip" d="M101.0 30 L115.0 34 L101.0 38Z"/><path class="sc-head" d="M0 21 L0 47 Q6 47 18 38 L18 30 Q6 21 0 21Z"/></svg></div><b>1-1/4″ coarse thread</b><span>1/2″ board on wood studs</span></li>
 <li><div class="sc-draw"><svg class="sc" viewBox="0 18 150 32" style="width:150px" aria-hidden="true"><rect class="sc-shank" x="18" y="30" width="117.5" height="8"/><g class="sc-th"><path d="M24.0 27.5 L28.5 40.5"/><path d="M33.0 27.5 L37.5 40.5"/><path d="M42.0 27.5 L46.5 40.5"/><path d="M51.0 27.5 L55.5 40.5"/><path d="M60.0 27.5 L64.5 40.5"/><path d="M69.0 27.5 L73.5 40.5"/><path d="M78.0 27.5 L82.5 40.5"/><path d="M87.0 27.5 L91.5 40.5"/><path d="M96.0 27.5 L100.5 40.5"/><path d="M105.0 27.5 L109.5 40.5"/><path d="M114.0 27.5 L118.5 40.5"/><path d="M123.0 27.5 L127.5 40.5"/></g><path class="sc-tip" d="M135.5 30 L149.5 34 L135.5 38Z"/><path class="sc-head" d="M0 21 L0 47 Q6 47 18 38 L18 30 Q6 21 0 21Z"/></svg></div><b>1-5/8″ coarse thread</b><span>5/8″ Type X on wood: garages, ceilings, rated walls</span></li>
 <li><div class="sc-draw"><svg class="sc" viewBox="0 18 115 32" style="width:115px" aria-hidden="true"><rect class="sc-shank" x="18" y="30" width="83.0" height="8"/><g class="sc-th"><path d="M24.0 27.5 L26.3 40.5"/><path d="M28.6 27.5 L30.9 40.5"/><path d="M33.2 27.5 L35.5 40.5"/><path d="M37.8 27.5 L40.1 40.5"/><path d="M42.4 27.5 L44.7 40.5"/><path d="M47.0 27.5 L49.3 40.5"/><path d="M51.6 27.5 L53.9 40.5"/><path d="M56.2 27.5 L58.5 40.5"/><path d="M60.8 27.5 L63.1 40.5"/><path d="M65.4 27.5 L67.7 40.5"/><path d="M70.0 27.5 L72.3 40.5"/><path d="M74.6 27.5 L76.9 40.5"/><path d="M79.2 27.5 L81.5 40.5"/><path d="M83.8 27.5 L86.1 40.5"/><path d="M88.4 27.5 L90.7 40.5"/><path d="M93.0 27.5 L95.3 40.5"/></g><path class="sc-tip" d="M101.0 30 L115.0 34 L101.0 38Z"/><path class="sc-head" d="M0 21 L0 47 Q6 47 18 38 L18 30 Q6 21 0 21Z"/></svg></div><b>1-1/4″ fine thread</b><span>1/2″ or 5/8″ on light steel studs, commercial</span></li>
 <li><div class="sc-draw"><svg class="sc" viewBox="0 18 115 32" style="width:115px" aria-hidden="true"><rect class="sc-shank" x="18" y="30" width="83.0" height="8"/><g class="sc-th"><path d="M24.0 27.5 L26.3 40.5"/><path d="M28.6 27.5 L30.9 40.5"/><path d="M33.2 27.5 L35.5 40.5"/><path d="M37.8 27.5 L40.1 40.5"/><path d="M42.4 27.5 L44.7 40.5"/><path d="M47.0 27.5 L49.3 40.5"/><path d="M51.6 27.5 L53.9 40.5"/><path d="M56.2 27.5 L58.5 40.5"/><path d="M60.8 27.5 L63.1 40.5"/><path d="M65.4 27.5 L67.7 40.5"/><path d="M70.0 27.5 L72.3 40.5"/><path d="M74.6 27.5 L76.9 40.5"/><path d="M79.2 27.5 L81.5 40.5"/><path d="M83.8 27.5 L86.1 40.5"/><path d="M88.4 27.5 L90.7 40.5"/><path d="M93.0 27.5 L95.3 40.5"/></g><path class="sc-tip" d="M99.0 30 L115.0 32.6 L115.0 35.4 L99.0 38Z"/><path class="sc-flute" d="M99.0 31 L111.0 35"/><path class="sc-head" d="M0 21 L0 47 Q6 47 18 38 L18 30 Q6 21 0 21Z"/></svg></div><b>1-1/4″ self-drilling</b><span>Heavy-gauge steel, the point drills its own hole</span></li>
 <li><div class="sc-draw"><svg class="sc" viewBox="0 18 184 32" style="width:184px" aria-hidden="true"><rect class="sc-shank" x="18" y="30" width="152" height="8"/><g class="sc-th"><path d="M24.0 27.5 L28.5 40.5"/><path d="M33.0 27.5 L37.5 40.5"/><path d="M42.0 27.5 L46.5 40.5"/><path d="M51.0 27.5 L55.5 40.5"/><path d="M60.0 27.5 L64.5 40.5"/><path d="M69.0 27.5 L73.5 40.5"/><path d="M78.0 27.5 L82.5 40.5"/><path d="M87.0 27.5 L91.5 40.5"/><path d="M96.0 27.5 L100.5 40.5"/><path d="M105.0 27.5 L109.5 40.5"/><path d="M114.0 27.5 L118.5 40.5"/><path d="M123.0 27.5 L127.5 40.5"/><path d="M132.0 27.5 L136.5 40.5"/><path d="M141.0 27.5 L145.5 40.5"/><path d="M150.0 27.5 L154.5 40.5"/><path d="M159.0 27.5 L163.5 40.5"/></g><path class="sc-tip" d="M170 30 L184 34 L170 38Z"/><path class="sc-head" d="M0 21 L0 47 Q6 47 18 38 L18 30 Q6 21 0 21Z"/></svg></div><b>2″ coarse thread</b><span>Second layer of 5/8″ on rated assemblies</span></li></ul>
         <p class="sc-foot">Drawn to scale. Screws every 12″ on ceilings and 16″ on walls, set just under the paper, never through it.</p>
+      <p class="b2-why">Why it matters: a re-inspection can cost the schedule days.</p>
       </article>
       <article class="b2-card b2-owner">
         <img src="assets/img/crew-johnathan.webp" alt="Johnathan Becerra, owner of Next Gen Drywall" loading="lazy">
         <div>
           <p class="b2-k"><span>03</span>One point of contact</p>
           <h3>The person who bids it runs it.</h3>
-          <p>Johnathan walks the job, writes the bid and is on site while we work. One number from walkthrough to final.</p>
+          <p>Johnathan walks the job, writes the bid and is on site while we work. When your super has a question, it gets answered on site that day, not after a round of phone tag that holds up the next trade.</p>
           <p class="b2-sig"><em>Johnathan Becerra</em><span>Owner &middot; 480-799-8173</span></p>
         </div>
+      <p class="b2-why">Why it matters: decisions happen at the wall, the same day.</p>
       </article>
       <article class="b2-card b2-dates">
         <p class="b2-k"><span>04</span>Done when we said</p>
-        <h3>The dates on the bid are the dates on the job.</h3>
+        <h3>The dates on the bid are the dates the next trade can book.</h3>
         <table class="dt">
           <thead><tr><th>Milestone</th><th>Promised at bid</th><th>Done</th></tr></thead>
           <tbody>
@@ -535,6 +529,7 @@
           </tbody>
         </table>
         <p class="dt-note">A sample schedule, to show how we report it.</p>
+      <p class="b2-why">Why it matters: cabinets, trim and flooring are scheduled off this table.</p>
       </article>
     </div>
     <a class="btn bld-cta" href="#bid">Send us the plans <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 10h13M11 5l5 5-5 5"/></svg></a>
@@ -758,6 +753,6 @@
 
 <div class="dock" aria-label="Quick contact"><a href="#" data-preview-off="1">Call</a><a href="#bid">Request a bid</a></div>
 
-<script type="module" src="assets/app.js?v=p0bd36684"></script>
+<script type="module" src="assets/app.js?v=p68b6579b"></script>
 </body>
 </html>

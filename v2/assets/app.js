@@ -352,6 +352,7 @@ function autoTour({ section, video: v, seq, cardOf, handAt = {}, drift = 1, card
     if (k === on) return; on = k;
     items.forEach((li, i) => li.classList.toggle('on', i === k));
     chipN.textContent = `${String(k + 1).padStart(2, '0')} / 07`; chipT.textContent = $('b', items[k]).textContent;
+    const fc = $('.bw-fact'); if (fc) { $('.bw-stat', fc).textContent = items[k].dataset.stat; $('.bw-fact-t', fc).textContent = items[k].dataset.fact; fc.classList.remove('pop'); void fc.offsetWidth; fc.classList.add('pop'); }
   };
   setOn(0);
   const run = () => { if (visible && !paused && !document.hidden) v.play().catch(() => {}); else if (!v.paused) v.pause(); };
@@ -408,6 +409,7 @@ addEventListener('scroll', navTone, { passive: true }); navTone();
     const fl = $('.lv-flag'); fl.textContent = flag; fl.hidden = !flag;
     $('.lv-plain').textContent = plain; $('.lv-where').textContent = where; $('.lv-know').textContent = know;
     meter.forEach((m, i) => m.classList.toggle('on', i < coats));
+    lvNotes(n);
   }));
   {
     let lv = -1, t = 0, wait = 0;
@@ -1015,6 +1017,61 @@ $$('.us, .lic, .how li, .faq details').forEach(el => { el.classList.add('rv'); r
     inp.addEventListener('input', () => { hold(); stage.style.setProperty('--x', `${inp.value}%`); });
     new IntersectionObserver(([e]) => { live = e.isIntersecting; go(); }, { threshold: .35 }).observe(stage);
   }
+}
+
+/* ---------- repairs: the repair log steps through each repair's four stages, then the next repair ---------- */
+{
+  const sec = $('.rlog');
+  if (sec) {
+    const card = $('.rl-card', sec), SET = JSON.parse(card.dataset.set), picks = $$('.rl-pick', sec);
+    const imgs = $$('.rl-img', card), sts = $$('.rl-st', card), tape = $('.rl-tape', card), job = $('.rl-job', card), stepN = $('.rl-step-n b', card);
+    const STEP = 2500;
+    let r = 0, k = 0, timer = 0, live = false, held = false;
+    SET.forEach(([key]) => { for (let j = 1; j <= 4; j++) new Image().src = `assets/img/rxs-${key}-${j}.webp`; });
+    sec.style.setProperty('--rl-t', `${STEP * 4 / 1000}s`);
+    const paint = () => {
+      const [key, st, al] = SET[r];
+      imgs.forEach((im, j) => { im.classList.toggle('on', j === k); });
+      sts.forEach((el, j) => { el.classList.toggle('on', j === k); el.classList.toggle('done', j < k); $('b', el).textContent = st[j]; });
+      $('span', tape).textContent = `Step ${k + 1}`; $('b', tape).textContent = st[k]; stepN.textContent = k + 1;
+    };
+    const setRepair = i => {
+      r = i; k = 0; const [key, st, al] = SET[i];
+      imgs.forEach((im, j) => { im.src = `assets/img/rxs-${key}-${j + 1}.webp`; im.alt = al[j]; });
+      job.textContent = $('.rl-t', picks[i]).textContent;
+      picks.forEach((p, j) => { p.classList.remove('on'); if (j === i) { void p.offsetWidth; p.classList.add('on'); } });
+      paint();
+    };
+    const tick = () => { if (held || !live) return; if (k < 3) { k++; paint(); } else setRepair((r + 1) % SET.length); };
+    const start = () => { if (!timer) timer = setInterval(tick, STEP); };
+    const stop = () => { clearInterval(timer); timer = 0; };
+    picks.forEach((p, i) => p.addEventListener('click', () => { held = false; sec.classList.remove('held'); stop(); setRepair(i); start(); }));
+    sts.forEach((el, j) => el.addEventListener('click', () => { held = true; sec.classList.add('held'); k = j; paint(); }));
+    new IntersectionObserver(([e]) => { live = e.isIntersecting; if (live) start(); else stop(); }, { threshold: .3 }).observe(card);
+  }
+}
+
+/* ---------- finish levels: the crew's marker notes on the seam, and the Next Gen pick stamp ---------- */
+function lvNotes(n) {
+  const svg = $('.lv-notes'), stamp = $('.lv-stamp');
+  if (!svg) return;
+  // [text, text x, text y, arrow to x, arrow to y]
+  const N = [
+    [['no tape yet', 330, 300, 935, 470], ['screws set just under the paper', 420, 880, 345, 1030]],
+    [['tape bedded in mud', 330, 300, 915, 470], ['screws still bare', 470, 880, 345, 1030]],
+    [['1 coat over the tape', 330, 300, 900, 470], ['screws spotted once', 470, 880, 345, 1030]],
+    [['2 coats, about 9″ wide', 300, 300, 880, 470], ['screws spotted twice', 470, 880, 345, 1030]],
+    [['3 coats, feathered 14″', 300, 300, 850, 470], ['spotted 3 times, sanded', 450, 880, 345, 1030]],
+    [['skim coat, whole wall', 330, 300, 760, 520], ['nothing flashes in low sun', 330, 900, 700, 760]],
+  ][n];
+  svg.innerHTML = N.map(([t, x, y, tx, ty], i) => {
+    const mx = (x + tx) / 2 + (i ? -60 : 60), my = (y + ty) / 2 + (i ? 40 : -40);
+    const ang = Math.atan2(ty - my, tx - mx), h1 = [tx - 34 * Math.cos(ang - .45), ty - 34 * Math.sin(ang - .45)], h2 = [tx - 34 * Math.cos(ang + .45), ty - 34 * Math.sin(ang + .45)];
+    const sy = y + (ty > y ? 18 : -46);
+    const ex = x + Math.min(t.length * 24, 560) * (tx > x ? 1 : .35);
+    return `<g class="lvn" style="--i:${i}"><text x="${x}" y="${y}">${t}</text><path pathLength="1" d="M${ex} ${sy} Q${(ex + tx) / 2 + (i ? -40 : 40)} ${(sy + ty) / 2 - (i ? -30 : 50)} ${tx} ${ty}M${h1[0]} ${h1[1]}L${tx} ${ty}L${h2[0]} ${h2[1]}"/></g>`;
+  }).join('') + (n < 5 && n > 0 ? '' : '');
+  if (stamp) { stamp.hidden = !(n === 4 || n === 5); $('b', stamp).textContent = n === 4 ? 'Most homes' : 'Big light, satin paint'; }
 }
 
 /* preview build: calls, email and the bid form are off */
