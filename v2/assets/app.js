@@ -1088,28 +1088,32 @@ function lvNotes(n) {
   if (stamp) { stamp.hidden = !(n === 4 || n === 5); $('b', stamp).textContent = n === 4 ? 'Most homes' : 'Big light, satin paint'; }
 }
 
-/* ---------- services: the tape goes on the three real joints in the wall photo, wherever cover-fit puts them ---------- */
+/* ---------- services: the wall photo is placed so its joints miss the copy; the tape goes on those joints ---------- */
 {
   const wall = $('.svc-wall');
   if (wall) {
-    // the photo is 2400 x 1018, drawn at background-position 30% 40%; joints measured in photo pixels
-    const IW = 2400, IH = 1018, PX = .3, PY = .4, TAPE = 40;
-    const J = { h: [0, 310, IW, 310], v1: [710, 310, 710, IH], v2: [1658, 0, 1658, 310] };
-    const seams = $$('.seam', wall);
+    // the photo is 2400 x 1018; joints measured in photo pixels
+    const IW = 2400, IH = 1018, HY = 310, V1 = 710, V2 = 1658, TAPE = 40;
+    const seams = $$('.seam', wall), head = $('.svc-head'), wrap = $('.svc .wrap');
     const place = () => {
-      const W = wall.clientWidth, H = wall.clientHeight; if (!W) return;
-      const s = Math.max(W / IW, H / IH), ox = (W - IW * s) * PX, oy = (H - IH * s) * PY, tw = Math.max(26, TAPE * s);
+      const W = wall.clientWidth, H = wall.clientHeight; if (!W || !head) return;
+      const wr = wall.getBoundingClientRect(), hr = head.getBoundingClientRect(), cr = wrap.getBoundingClientRect();
+      // the horizontal joint runs just above the heading; the lower vertical joint sits in the margin left of the content
+      const ty = Math.max(14, hr.top - wr.top - 34), tx = Math.max(10, cr.left - wr.left - 46);
+      const s = Math.max(W / IW, H / IH, (H - ty) / (IH - HY) + .002, (W - tx) / (IW - V1) + .002);
+      const oy = Math.min(0, ty - HY * s), ox = Math.min(0, Math.max(W - IW * s, tx - V1 * s));
+      wall.style.backgroundSize = `100% 100%, ${IW * s}px ${IH * s}px`;
+      wall.style.backgroundPosition = `0 0, ${ox}px ${oy}px`;
+      const tw = Math.max(26, TAPE * s), Y = oy + HY * s;
+      const set = (el, css) => { el.style.cssText = css; el.style.setProperty('--tw', tw + 'px'); };
       seams.forEach(el => {
-        const [x0, y0, x1, y1] = J[el.dataset.seam], X0 = ox + x0 * s, Y0 = oy + y0 * s, Y1 = oy + y1 * s;
-        const vert = x0 === x1;
-        if (vert) {
-          const top = y0 === 0 ? -20 : Y0 + tw / 2, bot = y1 === IH ? H + 20 : Y1 - tw / 2;
-          el.style.cssText = `left:${X0 + tw / 2}px;top:${top}px;width:${bot - top}px;height:${tw}px;transform:rotate(90deg);transform-origin:0 0`;
-        } else el.style.cssText = `left:-20px;top:${Y0 - tw / 2}px;width:${W + 40}px;height:${tw}px`;
-        el.style.setProperty('--tw', tw + 'px');
+        const k = el.dataset.seam;
+        if (k === 'h') set(el, `left:-20px;top:${Y - tw / 2}px;width:${W + 40}px;height:${tw}px`);
+        if (k === 'v1') { const x = ox + V1 * s, top = Y + tw / 2; set(el, `left:${x + tw / 2}px;top:${top}px;width:${H + 20 - top}px;height:${tw}px;transform:rotate(90deg);transform-origin:0 0`); }
+        if (k === 'v2') { const x = ox + V2 * s, bot = Y - tw / 2; set(el, `left:${x + tw / 2}px;top:-20px;width:${bot + 20}px;height:${tw}px;transform:rotate(90deg);transform-origin:0 0;display:${bot > 4 ? 'flex' : 'none'}`); }
       });
     };
-    new ResizeObserver(place).observe(wall); place();
+    new ResizeObserver(place).observe(wall); addEventListener('load', place); place();
   }
 }
 

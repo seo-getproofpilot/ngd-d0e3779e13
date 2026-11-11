@@ -14,7 +14,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900;1,62..125,100..900&family=Architects+Daughter&family=Michroma&display=swap" rel="stylesheet">
 <link rel="preload" as="image" href="assets/seq/d/0000.webp" media="(min-width: 821px)">
 <link rel="preload" as="image" href="assets/seq/m/0000.webp" media="(max-width: 820px)">
-<link rel="stylesheet" href="assets/site.css?v=p45c75695">
+<link rel="stylesheet" href="assets/site.css?v=pe3b48ba5">
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -574,14 +574,21 @@
 <!-- ================= BID: fill in the title block ================= -->
 <section class="bid lux-dark" id="bid">
   <div class="wrap">
-    <header class="bid-head">
+    <header class="bid-head bid-head2">
       <p class="kicker">Let’s build it the right way</p>
       <h2 class="h2 lit">Send us the job. <em>Get a clear, itemized bid.</em></h2>
-      <p class="sub">Tap the rooms on this sample plan, fill in the title block, and we’ll call you back. Have real plans? Attach them. Prefer to talk? <a href="#" data-preview-off="1">480-799-8173</a>, Monday to Friday, 8 to 4.</p>
+      <div class="bid-row">
+        <p class="sub">This blueprint is the bid form. Fill it in right here and we’ll call you back. Have real plans? Attach them. Prefer to talk? <a href="#" data-preview-off="1">480-799-8173</a>, Monday to Friday, 8 to 4.</p>
+        <ol class="bid-steps">
+          <li><b>1</b><span><strong>Tap the rooms</strong>on the plan that need work</span></li>
+          <li><b>2</b><span><strong>Fill in the title block</strong>name, phone, job site</span></li>
+          <li><b>3</b><span><strong>Submit for bid</strong>the walkthrough and bid are free</span></li>
+        </ol>
+      </div>
     </header>
     <form class="print" novalidate>
       <div class="print-plan">
-        <p class="print-k"><b>A-101</b> Tap the rooms that need drywall work</p>
+        <p class="print-k"><i class="stepn">1</i><b>A-101</b> Tap the rooms that need drywall work</p>
         <div class="plan-wrap"><!--plan-->
 <svg class="plan" viewBox="0 0 1000 836" role="group" aria-label="Sample floor plan. Select the rooms that need drywall work.">
 <defs><pattern id="hatch" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="9" height="9" fill="#fff" fill-opacity=".1"/><line x1="0" y1="0" x2="0" y2="9" stroke="#fff" stroke-opacity=".55" stroke-width="1.6"/></pattern></defs>
@@ -731,6 +738,7 @@
       </div>
       <div class="tb">
         <div class="tb-co"><svg viewBox="0 0 704 342" aria-hidden="true"> <g fill="none" stroke="#fff" stroke-width="11" stroke-linejoin="miter"> <path d="M5 190 L352 7 L546 109" /> <path d="M542 109 V50 H645 V322" /> <path d="M645 162 L699 190" /> <path d="M65 158 V327" /> </g> <g fill="#fff" stroke="#fff" stroke-linejoin="round"> <text x="145" y="178" font-family="Michroma, sans-serif" font-size="63" stroke-width="2.6" textLength="412" lengthAdjust="spacingAndGlyphs">NEXT GEN</text> <text x="88" y="266" font-family="Michroma, sans-serif" font-size="80" stroke-width="2.8" textLength="533" lengthAdjust="spacingAndGlyphs">DRYWALL</text> <text x="102" y="328" font-family="Archivo, sans-serif" font-weight="500" font-size="47" stroke-width="0" textLength="519" lengthAdjust="spacingAndGlyphs">Next-Gen Drywall.com</text> </g> </svg><span>Next Gen Drywall LLC<br>ROC-334040</span></div>
+        <p class="tb-req"><i class="stepn">2</i>Bid request<span>Free walkthrough</span></p>
         <fieldset class="tb-type"><legend>Project type</legend>
           <label><input type="radio" name="type" value="Repair" checked><span>Repair</span></label>
           <label><input type="radio" name="type" value="Remodel / TI"><span>Remodel / TI</span></label>
@@ -747,7 +755,7 @@
         <label class="tb-f tb-wide">Notes<textarea name="details" rows="2" placeholder="Square footage, finish level, dates"></textarea></label>
         <label class="tb-file"><input type="file" multiple accept="image/*,.pdf"><span class="bf-file-t">Attach plans or photos</span><small>They go with the email that opens</small></label>
         <div class="tb-date"><span>Sheet</span><b>1 of 1</b><span>Date</span><b class="tb-today"></b></div>
-        <div class="tb-go"><button class="stamp-btn" type="submit">Submit for bid</button><p class="bf-msg" aria-live="polite"></p></div>
+        <div class="tb-go"><i class="stepn">3</i><button class="stamp-btn go-btn" type="submit">Submit for bid <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 10h13M11 5l5 5-5 5"/></svg></button><p class="go-note">Your email app opens with this sheet filled in. Nothing is sent until you hit send.</p><p class="bf-msg" aria-live="polite"></p></div>
       </div>
       <div class="approved" aria-hidden="true"><b>Received</b><span>Next Gen Drywall</span></div>
     </form>
@@ -788,6 +796,6 @@
 
 <div class="dock" aria-label="Quick contact"><a href="#" data-preview-off="1">Call</a><a href="#bid">Request a bid</a></div>
 
-<script type="module" src="assets/app.js?v=p45c75695"></script>
+<script type="module" src="assets/app.js?v=pe3b48ba5"></script>
 </body>
 </html>
