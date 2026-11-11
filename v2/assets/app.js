@@ -478,7 +478,7 @@ addEventListener('scroll', navTone, { passive: true }); navTone();
     const key = `${lt}-${W}x${H}`;
     if (baseCache[key]) return baseCache[key];
     const b = document.createElement('canvas'); b.width = W; b.height = H; const g = b.getContext('2d');
-    const d = DPR(), sw = Math.max(W / 2.3, 560 * d), sh = sw / 2, tw = 11 * d, rake = lt === 'rake';
+    const d = DPR(), sw = Math.max(W / 2.3, 560 * d), sh = sw / 2, tw = Math.max(11 * d, sw / 26), rake = lt === 'rake';
     g.fillStyle = rake ? '#cfccc3' : '#d9d7d0'; g.fillRect(0, 0, W, H);
     // the paper face: fine fibre, a little mottling
     const nz = document.createElement('canvas'); nz.width = nz.height = 180; const nc = nz.getContext('2d'), id = nc.createImageData(180, 180);
@@ -491,11 +491,22 @@ addEventListener('scroll', navTone, { passive: true }); navTone();
       g.fillStyle = 'rgba(60, 54, 44, .45)'; g.beginPath(); g.arc(x, y, 1.6 * d, 0, 6.3); g.fill();
       g.fillStyle = 'rgba(255, 255, 255, .35)'; g.beginPath(); g.arc(x + .8 * d, y + .8 * d, 1.4 * d, 0, 6.3); g.fill();
     }
+    // the joints carry Next Gen's own paper tape, printed along its length; the texture covers it, the way mud does
+    const PRINT = '\u25A0  NEXT GEN DRYWALL  ', fs = tw * .4;
+    const tapeRun = (x0, y0, len, vertical) => {
+      g.save(); g.translate(x0, y0); if (vertical) g.rotate(Math.PI / 2);
+      g.fillStyle = 'rgba(246, 242, 232, .62)'; g.fillRect(0, -tw / 2, len, tw);
+      g.beginPath(); g.rect(0, -tw / 2, len, tw); g.clip();
+      g.font = `400 ${fs}px Michroma, sans-serif`; g.fillStyle = 'rgba(47, 85, 228, .42)'; g.textBaseline = 'middle';
+      const step = g.measureText(PRINT).width || fs * 12;
+      for (let x = -((x0 * 1.7 + y0) % step); x < len; x += step) g.fillText(PRINT, x, fs * .06);
+      g.restore();
+    };
     for (let row = 0, y = -sh * .35; y < H; row++, y += sh) {
-      g.fillStyle = 'rgba(248, 245, 238, .42)'; g.fillRect(0, y - tw / 2, W, tw);
+      tapeRun(0, y, W, false);
       g.fillStyle = 'rgba(70, 62, 50, .16)'; g.fillRect(0, y, W, Math.max(1, d * .8));
       for (let x = (row % 2 ? -sw / 2 : 0) + sw * .62; x < W; x += sw) {
-        g.fillStyle = 'rgba(248, 245, 238, .42)'; g.fillRect(x - tw / 2, y, tw, sh);
+        tapeRun(x, y + tw / 2, sh - tw, true);
         g.fillStyle = 'rgba(70, 62, 50, .16)'; g.fillRect(x, y, Math.max(1, d * .8), sh);
       }
     }
@@ -521,6 +532,7 @@ addEventListener('scroll', navTone, { passive: true }); navTone();
     g.drawImage(o, 0, 0);
     return (tiles[k] = t);
   };
+  if (document.fonts) document.fonts.load('400 12px Michroma').then(() => { for (const k in baseCache) delete baseCache[k]; paint(); }).catch(() => {});
   function paint() {
     if (!W) return;
     c.drawImage(baseOf(light), 0, 0);
@@ -833,6 +845,7 @@ addEventListener('scroll', navTone, { passive: true }); navTone();
       pct.textContent = Math.round(f * 100) + '%'; meter.style.setProperty('--hp', (f * 100).toFixed(1) + '%');
       const st = f < .02 ? 0 : f < .98 ? 1 : 2;
       if (stage.dataset.s !== String(st)) { stage.dataset.s = st; $('span', stage).textContent = STAGES[st]; }
+      sec.classList.toggle('hung', st === 2);
     };
     addEventListener('scroll', onScroll, { passive: true }); addEventListener('resize', size);
     size(); onScroll();
@@ -1070,7 +1083,7 @@ function lvNotes(n) {
     const sy = y + (ty > y ? 18 : -46);
     const ex = x + Math.min(t.length * 24, 560) * (tx > x ? 1 : .35);
     return `<g class="lvn" style="--i:${i}"><text x="${x}" y="${y}">${t}</text><path pathLength="1" d="M${ex} ${sy} Q${(ex + tx) / 2 + (i ? -40 : 40)} ${(sy + ty) / 2 - (i ? -30 : 50)} ${tx} ${ty}M${h1[0]} ${h1[1]}L${tx} ${ty}L${h2[0]} ${h2[1]}"/></g>`;
-  }).join('') + (n < 5 && n > 0 ? '' : '');
+  }).join('') + (n === 1 ? `<text class="lv-tape" transform="translate(946 -40) rotate(90)">${'\u25A0 NEXT GEN DRYWALL '.repeat(4)}</text>` : '');
   if (stamp) { stamp.hidden = !(n === 4 || n === 5); $('b', stamp).textContent = n === 4 ? 'Most homes' : 'Big light, satin paint'; }
 }
 
