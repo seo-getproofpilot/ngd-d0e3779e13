@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_2" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100.96 76.03">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #ffffff;
+      }
+    </style>
+  </defs>
+  <g id="Layer_1-2" data-name="Layer 1">
+    <g id="CHEVRON_-_30_" data-name="CHEVRON - 30º">
+      <g>
+        <polygon class="cls-1" points="39.27 33.44 54.16 0 33.85 0 0 76.03 30.57 76.03 50.51 31.25 39.27 33.44"/>
+        <polygon class="cls-1" points="97.78 0 67.21 0 57.8 21.14 69.46 19.06 54.23 53.27 74.06 53.27 77.24 53.27 100.96 0 97.78 0"/>
+      </g>
+    </g>
+  </g>
+</svg>
