@@ -409,14 +409,15 @@ addEventListener('scroll', navTone, { passive: true }); navTone();
     $('.lv-plain').textContent = plain; $('.lv-where').textContent = where; $('.lv-know').textContent = know;
     meter.forEach((m, i) => m.classList.toggle('on', i < coats));
   }));
-  if (!reduced) {
+  {
     let lv = -1, t = 0, wait = 0;
-    const step = () => { if (Date.now() < wait) return; lv = (lv + 1) % 6; tabs[lv].click(); wait = 0; };
-    tabs.forEach(b => b.addEventListener('pointerdown', () => { wait = Date.now() + 9000; lv = +b.dataset.lv; }));
+    const show = $('.lv-show');
+    const step = () => { if (Date.now() < wait) return; lv = (lv + 1) % 6; tabs[lv].click(); show.style.setProperty('--lvt', '0'); void show.offsetWidth; show.classList.remove('lv-run'); void show.offsetWidth; show.classList.add('lv-run'); };
+    tabs.forEach(b => b.addEventListener('pointerdown', () => { wait = Date.now() + 9000; lv = +b.dataset.lv; show.classList.remove('lv-run'); }));
     new IntersectionObserver(([e]) => {
-      if (e.isIntersecting && !t) { if (lv < 0) step(); t = setInterval(step, 3000); }
+      if (e.isIntersecting && !t) { step(); t = setInterval(step, 3000); }
       else if (!e.isIntersecting && t) { clearInterval(t); t = 0; }
-    }, { threshold: .4 }).observe($('.lv-show'));
+    }, { threshold: .25 }).observe(show);
   }
 }
 
@@ -635,34 +636,34 @@ addEventListener('scroll', navTone, { passive: true }); navTone();
   }
 }
 
-/* ---------- services: the deck. One sheet at a time comes to the front ---------- */
+/* ---------- services: the deck, driven by the scroll. The section pins and each quarter of the scroll brings the next
+   sheet to the front, so nobody scrolls past without seeing all four. On phones it's a swipe row. ---------- */
 {
-  const deck = $('.deck');
+  const deck = $('.deck'), svc = $('.svc');
   if (deck) {
-    const cards = $$('.dk', deck), bars = $$('.deck-nav i'), T = 3400;
+    const cards = $$('.dk', deck), bars = $$('.deck-nav i');
     cards.forEach((c, i) => { const sp = document.createElement('div'); sp.className = 'dk-spine'; sp.setAttribute('aria-hidden', 'true'); sp.innerHTML = `<b>${String(i + 1).padStart(2, '0')}</b><span>${$('h3', c).textContent}</span>`; c.appendChild(sp); });
-    let cur = 0, timer = 0;
+    let cur = -1;
     const set = i => {
-      cur = i;
+      if (i === cur) return; cur = i;
       cards.forEach((c, k) => { c.classList.toggle('on', k === i); c.style.setProperty('--z', k === i ? 10 : k + 1); });
-      bars.forEach((b, k) => { b.classList.toggle('done', k < i); b.classList.remove('on'); });
-      if (bars[i]) { void bars[i].offsetWidth; bars[i].classList.add('on'); }
     };
-    let paused = false, seen = false;
-    const run = () => { clearInterval(timer); timer = setInterval(() => { if (!paused) set((cur + 1) % cards.length); }, T); };
-    cards.forEach((c, i) => {
-      c.addEventListener('mouseenter', () => { if (matchMedia('(hover: hover) and (min-width: 821px)').matches) { paused = true; if (i !== cur) set(i); } });
-      c.addEventListener('click', e => { if (!e.target.closest('a')) { set(i); run(); } });
-    });
-    deck.addEventListener('mouseleave', () => { paused = false; run(); });
-    set(0);
-    if (!reduced && innerWidth > 820) {
-      deck.classList.add('wait');
-      new IntersectionObserver(([e]) => {
-        if (e.isIntersecting) { deck.classList.remove('wait'); if (!seen) { seen = true; set(0); } run(); }
-        else { clearInterval(timer); timer = 0; }
-      }, { threshold: .35 }).observe(deck);
-    }
+    const wide = () => innerWidth > 820;
+    const onScroll = () => {
+      if (!wide()) { set(0); return; }
+      const r = svc.getBoundingClientRect(), span = r.height - innerHeight;
+      const p = Math.min(1, Math.max(0, -r.top / Math.max(span, 1)));
+      const f = p * cards.length, i = Math.min(cards.length - 1, Math.floor(f));
+      set(i);
+      bars.forEach((b, k) => b.style.setProperty('--f', Math.min(1, Math.max(0, f - k)).toFixed(3)));
+    };
+    // clicking a sheet scrolls to its stretch of the pin
+    cards.forEach((c, i) => c.addEventListener('click', e => {
+      if (e.target.closest('a') || !wide()) return;
+      const top = svc.getBoundingClientRect().top + scrollY, span = svc.offsetHeight - innerHeight;
+      scrollTo({ top: top + span * (i + .5) / cards.length, behavior: 'smooth' });
+    }));
+    addEventListener('scroll', onScroll, { passive: true }); addEventListener('resize', onScroll); onScroll();
   }
 }
 
@@ -721,6 +722,64 @@ addEventListener('scroll', navTone, { passive: true }); navTone();
       live = e.isIntersecting;
       if (live && !raf) { t0 = 0; raf = requestAnimationFrame(frame); }
     }, { threshold: .35 }).observe(rw);
+  }
+}
+
+/* ---------- process: the sheets go up on the studs as you scroll (pinned on wide screens) ---------- */
+{
+  const sec = $('.hang');
+  if (sec) {
+    const faces = $$('.bd-face', sec), seams = $$('.seams i', sec), n = faces.length;
+    const ease = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+    const onScroll = () => {
+      if (innerWidth <= 820) { faces.forEach(f => f.style.setProperty('--t', 1)); return; }
+      const r = sec.getBoundingClientRect(), span = r.height - innerHeight;
+      const p = Math.min(1, Math.max(0, -r.top / Math.max(span, 1)));
+      faces.forEach((f, i) => f.style.setProperty('--t', ease(Math.min(1, Math.max(0, p * (n + .6) - i))).toFixed(3)));
+      const tape = Math.min(1, Math.max(0, (p - .88) / .1));
+      seams.forEach((s, i) => s.style.setProperty('--tape', Math.min(1, Math.max(0, tape * 1.6 - i * .3)).toFixed(3)));
+    };
+    addEventListener('scroll', onScroll, { passive: true }); addEventListener('resize', onScroll); onScroll();
+  }
+}
+
+/* ---------- repairs: four kinds, each a before and after; it sweeps each one and moves on until someone picks ---------- */
+{
+  const sec = $('.rx');
+  if (sec) {
+    const stage = $('.rx-stage', sec), inp = $('.rx-in', sec), tabs = $$('.rx-tabs button', sec);
+    const after = $('.rx-after', stage), before = $('.rx-before img', stage);
+    const SET = [
+      ['assets/img/repair-before.webp', 'assets/img/repair-after.webp', 'A ceiling with a large brown water stain', 'The same ceiling after the repair'],
+      ['assets/img/rep-doorknob-before.webp', 'assets/img/rep-doorknob-after.webp', 'A doorknob hole punched through a wall', 'The same wall, patched and textured'],
+      ['assets/img/rep-cutout-before.webp', 'assets/img/rep-cutout-after.webp', 'An access hole cut in a wall for wiring', 'The same wall, closed up and matched'],
+      ['assets/img/rep-crack-before.webp', 'assets/img/rep-crack-after.webp', 'A settling crack running from a door corner', 'The same wall, re-taped and blended'],
+    ];
+    SET.forEach(([b, a]) => { new Image().src = b; new Image().src = a; });
+    let cur = 0, raf = 0, t0 = 0, live = false, held = false;
+    const RUN = 6400;
+    const setX = x => { stage.style.setProperty('--x', `${x.toFixed(2)}%`); inp.value = x; };
+    const show = i => {
+      cur = i; const [b, a, ab, aa] = SET[i];
+      before.src = b; before.alt = ab; after.src = a; after.alt = aa;
+      tabs.forEach((t, k) => { t.classList.remove('on'); if (k === i) { void t.offsetWidth; t.classList.add('on'); } });
+      t0 = 0;
+    };
+    const frame = now => {
+      if (held) { raf = 0; return; }
+      if (!t0) t0 = now;
+      const t = (now - t0) / RUN;
+      // rest on the before, sweep across to the after, rest, then the next repair
+      const k = t < .18 ? 0 : t < .7 ? (t - .18) / .52 : 1, e = k < .5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
+      setX(96 - 92 * e);
+      if (t >= 1) show((cur + 1) % SET.length);
+      raf = live && !held ? requestAnimationFrame(frame) : 0;
+    };
+    const go = () => { if (!raf && live && !held) raf = requestAnimationFrame(frame); };
+    tabs.forEach((b, i) => b.addEventListener('click', () => { held = true; sec.classList.add('held'); show(i); setX(50); }));
+    inp.addEventListener('input', () => { held = true; sec.classList.add('held'); stage.style.setProperty('--x', `${inp.value}%`); });
+    new IntersectionObserver(([e]) => { live = e.isIntersecting; go(); }, { threshold: .35 }).observe(stage);
+    setX(50);
   }
 }
 
