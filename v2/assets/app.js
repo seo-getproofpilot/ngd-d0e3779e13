@@ -1187,6 +1187,48 @@ function lvNotes(n) {
   }
 }
 
+/* ---------- builders: scroll moves twelve weeks; each floor is hung, inspected, taped, finished, then painted ---------- */
+{
+  const sec = $('.bld3');
+  if (sec) {
+    const floors = $$('.fl', sec), items = $$('.fm-list > li', sec), rows = $$('.fm-dt tr[data-w]', sec);
+    const wkEl = $('.fm-wk', sec), dateEl = $('.fm-date', sec), track = $('.fm-track', sec);
+    const D = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'], M = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
+    const START = new Date(2026, 2, 9), RANGE = [[0, 2.8], [2.8, 5.6], [5.6, 8.4], [8.4, 12.01]];
+    const seg = (w, a, b) => clamp((w - a) / (b - a), 0, 1);
+    let mode = 'scroll', on = -1, held = -1;
+    const render = w => {
+      floors.forEach((f, i) => {
+        const s = 2 * i, hang = seg(w, s, s + 2), tape = seg(w, s + 2.3, s + 3.5), fin = seg(w, s + 3.5, s + 4.6), paint = seg(w, s + 4.8, s + 6.6);
+        f.style.setProperty('--hang', hang.toFixed(3)); f.style.setProperty('--tape', tape.toFixed(3)); f.style.setProperty('--fin', fin.toFixed(3)); f.style.setProperty('--paint', paint.toFixed(3));
+        f.dataset.board = hang > .5 ? 1 : 0;
+        f.classList.toggle('inspect', w >= s + 2 && w < s + 2.3);
+        const st = paint > 0 ? ['paint', 'PAINT MOVES IN'] : fin >= 1 ? ['us', 'READY FOR PAINT'] : fin > 0 ? ['us', 'NEXT GEN · FINISHING'] : tape > 0 ? ['us', 'NEXT GEN · TAPING'] : w >= s + 2 ? ['us', 'INSPECTED ✓'] : hang > 0 ? ['us', 'NEXT GEN · HANGING'] : ['wait', 'FRAMED, WAITING'];
+        f.dataset.st = st[0]; const t = $('.fl-chip text', f); if (t.textContent !== st[1]) t.textContent = st[1];
+      });
+      const wk = Math.min(12, Math.floor(w) + 1), d = new Date(START); d.setDate(d.getDate() + Math.min(Math.floor(w * 7), 82));
+      if (d.getDay() === 0) d.setDate(d.getDate() + 1); if (d.getDay() === 6) d.setDate(d.getDate() - 1);
+      wkEl.textContent = String(wk).padStart(2, '0'); dateEl.textContent = `${D[d.getDay()]}, ${M[d.getMonth()]} ${d.getDate()}`;
+      track.style.setProperty('--w', Math.min(12, w).toFixed(2));
+      rows.forEach(r => r.classList.toggle('done', w >= +r.dataset.w));
+      const k = held > -1 ? held : RANGE.findIndex(([a, b]) => w >= a && w < b);
+      if (k !== on && k > -1) { on = k; items.forEach((li, j) => li.classList.toggle('on', j === k)); }
+    };
+    const pinned = () => matchMedia('(min-width: 1025px) and (min-height: 760px)').matches;
+    const fromScroll = () => { const r = sec.getBoundingClientRect(), span = sec.offsetHeight - innerHeight; return clamp(-r.top / span, 0, 1) * 12; };
+    let raf = 0, t0 = 0, live = false;
+    const loop = now => { if (!t0) t0 = now; render(((now - t0) / 1400) % 14.5); raf = live ? requestAnimationFrame(loop) : 0; };
+    const onScroll = () => { if (pinned()) { mode = 'scroll'; render(fromScroll()); } };
+    addEventListener('scroll', onScroll, { passive: true });
+    new IntersectionObserver(([e]) => { live = e.isIntersecting; if (!pinned() && live && !reduced && !raf) raf = requestAnimationFrame(loop); }, { threshold: .15 }).observe($('.fm-draw', sec));
+    items.forEach((li, j) => $('button', li).addEventListener('click', () => {
+      if (pinned()) { const span = sec.offsetHeight - innerHeight; scrollTo({ top: sec.offsetTop + span * (RANGE[j][0] + .4) / 12, behavior: 'smooth' }); }
+      else { held = j; items.forEach((x, i) => x.classList.toggle('on', i === j)); on = j; }
+    }));
+    render(reduced ? 7 : 0); onScroll();
+  }
+}
+
 /* preview build: calls, email and the bid form are off */
 (function () {
   const t = document.createElement('div'); t.className = 'pv-toast'; document.body.appendChild(t); let k;
