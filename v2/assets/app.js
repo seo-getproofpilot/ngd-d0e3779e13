@@ -1214,18 +1214,17 @@ function lvNotes(n) {
       const k = held > -1 ? held : RANGE.findIndex(([a, b]) => w >= a && w < b);
       if (k !== on && k > -1) { on = k; items.forEach((li, j) => li.classList.toggle('on', j === k)); }
     };
-    const pinned = () => matchMedia('(min-width: 1025px) and (min-height: 760px)').matches;
-    const fromScroll = () => { const r = sec.getBoundingClientRect(), span = sec.offsetHeight - innerHeight; return clamp(-r.top / span, 0, 1) * 12; };
+    // it plays on its own while it's on screen: twelve weeks in about 18 seconds, a beat on week 12, then again
+    const SPEED = 1500, HOLD = 3.5;
     let raf = 0, t0 = 0, live = false;
-    const loop = now => { if (!t0) t0 = now; render(((now - t0) / 1400) % 14.5); raf = live ? requestAnimationFrame(loop) : 0; };
-    const onScroll = () => { if (pinned()) { mode = 'scroll'; render(fromScroll()); } };
-    addEventListener('scroll', onScroll, { passive: true });
-    new IntersectionObserver(([e]) => { live = e.isIntersecting; if (!pinned() && live && !reduced && !raf) raf = requestAnimationFrame(loop); }, { threshold: .15 }).observe($('.fm-draw', sec));
+    const loop = now => { if (!t0) t0 = now; const w = ((now - t0) / SPEED) % (12 + HOLD); render(Math.min(w, 12)); if (w < .05) held = -1; raf = live ? requestAnimationFrame(loop) : 0; };
+    new IntersectionObserver(([e]) => { live = e.isIntersecting; if (live && !reduced && !raf) { t0 = 0; raf = requestAnimationFrame(loop); } }, { threshold: .25 }).observe($('.fm-draw', sec));
+    // a tap on a promise jumps the clock to that part of the job and keeps it playing from there
     items.forEach((li, j) => $('button', li).addEventListener('click', () => {
-      if (pinned()) { const span = sec.offsetHeight - innerHeight; scrollTo({ top: sec.offsetTop + span * (RANGE[j][0] + .4) / 12, behavior: 'smooth' }); }
-      else { held = j; items.forEach((x, i) => x.classList.toggle('on', i === j)); on = j; }
+      if (reduced) { held = j; render(RANGE[j][0] + 1); return; }
+      t0 = performance.now() - (RANGE[j][0] + .2) * SPEED;
     }));
-    render(reduced ? 7 : 0); onScroll();
+    render(reduced ? 7 : 0);
   }
 }
 
