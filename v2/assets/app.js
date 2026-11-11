@@ -830,7 +830,8 @@ addEventListener('scroll', navTone, { passive: true }); navTone();
     const onScroll = () => {
       const r = sec.getBoundingClientRect(), span = r.height - innerHeight;
       const p = Math.min(1, Math.max(0, -r.top / Math.max(span, 1)));
-      let k = -1; START.forEach((s0, i) => { if (p >= s0) k = i; });
+      // step 1 is up from the start, so the card is never an empty box as you scroll in
+      let k = 0; START.forEach((s0, i) => { if (p >= s0) k = i; });
       sec.dataset.step = k + 1;
       steps.forEach((el, i) => { el.classList.toggle('in', i <= k); el.classList.toggle('now', i === k); el.classList.toggle('past', i < k); });
       // 1-2: the text thread fills in; the dots give way to the reply
@@ -1099,7 +1100,9 @@ function lvNotes(n) {
       const W = wall.clientWidth, H = wall.clientHeight; if (!W || !head) return;
       const wr = wall.getBoundingClientRect(), hr = head.getBoundingClientRect(), cr = wrap.getBoundingClientRect();
       // the horizontal joint runs just above the heading; the lower vertical joint sits in the margin left of the content
-      const ty = Math.max(14, hr.top - wr.top - 34), tx = Math.max(10, cr.left - wr.left - 46);
+      // on a phone the side margin is too narrow for tape, so the lower vertical joint is pushed just off the left edge
+      const phone = W < 600;
+      const ty = Math.max(14, hr.top - wr.top - 34), tx = phone ? -70 : Math.max(10, cr.left - wr.left - 46);
       const s = Math.max(W / IW, H / IH, (H - ty) / (IH - HY) + .002, (W - tx) / (IW - V1) + .002);
       const oy = Math.min(0, ty - HY * s), ox = Math.min(0, Math.max(W - IW * s, tx - V1 * s));
       wall.style.backgroundSize = `100% 100%, ${IW * s}px ${IH * s}px`;
@@ -1109,7 +1112,7 @@ function lvNotes(n) {
       seams.forEach(el => {
         const k = el.dataset.seam;
         if (k === 'h') set(el, `left:-20px;top:${Y - tw / 2}px;width:${W + 40}px;height:${tw}px`);
-        if (k === 'v1') { const x = ox + V1 * s, top = Y + tw / 2; set(el, `left:${x + tw / 2}px;top:${top}px;width:${H + 20 - top}px;height:${tw}px;transform:rotate(90deg);transform-origin:0 0`); }
+        if (k === 'v1') { const x = ox + V1 * s, top = Y + tw / 2; set(el, `left:${x + tw / 2}px;top:${top}px;width:${H + 20 - top}px;height:${tw}px;transform:rotate(90deg);transform-origin:0 0;display:${x + tw / 2 > 0 ? 'flex' : 'none'}`); }
         if (k === 'v2') { const x = ox + V2 * s, bot = Y - tw / 2; set(el, `left:${x + tw / 2}px;top:-20px;width:${bot + 20}px;height:${tw}px;transform:rotate(90deg);transform-origin:0 0;display:${bot > 4 ? 'flex' : 'none'}`); }
       });
     };
@@ -1233,6 +1236,9 @@ function lvNotes(n) {
     render(reduced ? 7 : 0);
   }
 }
+
+/* v19: drop the plan's edge fade once it has been scrolled to the end */
+{ const pw = $('.plan-wrap'); if (pw) pw.addEventListener('scroll', () => pw.classList.toggle('end', pw.scrollLeft + pw.clientWidth >= pw.scrollWidth - 4), { passive: true }); }
 
 /* preview build: calls, email and the bid form are off */
 (function () {

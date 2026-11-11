@@ -2311,6 +2311,14 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .print-k b { white-space: nowrap; }
 .bld3 + .faq { border-top: 1px solid rgba(12, 12, 11, .1); padding-top: clamp(80px, 8vw, 120px); }
 
+/* v19 phone: the plan scrolls sideways (rooms stay big enough to tap), so say so and fade the cut edge */
+.plan-hint { display: none; }
+@media (max-width: 820px) {
+  .plan-hint { display: block; margin: 4px 0 10px; font: 400 15px/1.3 var(--hand); color: rgba(255, 255, 255, .8); }
+  .plan-wrap { -webkit-mask-image: linear-gradient(90deg, #000 82%, transparent); mask-image: linear-gradient(90deg, #000 82%, transparent); }
+  .plan-wrap.end { -webkit-mask-image: none; mask-image: none; }
+}
+
 /* preview build */
 .pv-toast{position:fixed;left:50%;bottom:90px;z-index:200;transform:translate(-50%,20px);opacity:0;pointer-events:none;padding:12px 18px;border-radius:2px;background:#151618;box-shadow:inset 0 0 0 1.5px #2f55e4;
   font:500 14px/1.4 'Archivo',sans-serif;color:#fff;transition:opacity .3s,transform .3s;max-width:calc(100vw - 32px);text-align:center}
