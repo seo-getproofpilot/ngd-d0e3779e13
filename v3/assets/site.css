@@ -2665,6 +2665,9 @@ button, input, select, textarea { font: inherit; color: inherit; }
   .levels .ng-mark { width: 62vw; top: 40px; opacity: .06; }
 }
 
+/* v3 round 5: callouts cut; the illustration disclosure lives once, in the footer */
+.foot-disc { margin: 0 0 18px; max-width: 70ch; font-size: 13px; line-height: 1.5; color: rgba(255, 255, 255, .45); }
+
 /* preview build */
 .pv-toast{position:fixed;left:50%;bottom:90px;z-index:200;transform:translate(-50%,20px);opacity:0;pointer-events:none;padding:12px 18px;border-radius:2px;background:#151618;box-shadow:inset 0 0 0 1.5px #2f55e4;
   font:500 14px/1.4 'Archivo',sans-serif;color:#fff;transition:opacity .3s,transform .3s;max-width:calc(100vw - 32px);text-align:center}

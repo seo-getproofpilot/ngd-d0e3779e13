@@ -352,7 +352,7 @@ if ($('.tour-vid')) {
     items.forEach((li, j) => { if (j < k) li.classList.add('done'); });
     if (k === on) return; on = k;
     items.forEach((li, i) => li.classList.toggle('on', i === k));
-    chipN.textContent = `${String(k + 1).padStart(2, '0')} / 07`; chipT.textContent = $('b', items[k]).textContent;
+    if (chipN) { chipN.textContent = `${String(k + 1).padStart(2, '0')} / 07`; chipT.textContent = $('b', items[k]).textContent; }
     const fc = $('.bw-fact'); if (fc) { $('.bw-stat', fc).textContent = items[k].dataset.stat; $('.bw-fact-t', fc).textContent = items[k].dataset.fact; fc.classList.remove('pop'); void fc.offsetWidth; fc.classList.add('pop'); }
   };
   setOn(0);
@@ -408,7 +408,7 @@ addEventListener('scroll', navTone, { passive: true }); navTone();
     imgs.forEach((im, i) => { im.classList.toggle('on', i === n); im.alt = i === n ? `A drywall seam finished to Level ${n}, shown up close` : ''; });
     $('.lv-num b').textContent = n; $('.lv-tag').textContent = name;
     const fl = $('.lv-flag'); fl.textContent = flag; fl.hidden = !flag;
-    $('.lv-plain').textContent = plain; $('.lv-where').textContent = where; $('.lv-know').textContent = know;
+    $('.lv-plain').textContent = plain; $('.lv-where').textContent = where; const kn = $('.lv-know'); if (kn) kn.textContent = know;
     meter.forEach((m, i) => m.classList.toggle('on', i < coats));
     lvNotes(n);
   }));
@@ -846,7 +846,7 @@ addEventListener('scroll', navTone, { passive: true }); navTone();
       want = Math.round(f * (N - 1)); draw();
       pct.textContent = Math.round(f * 100) + '%'; meter.style.setProperty('--hp', (f * 100).toFixed(1) + '%');
       const st = f < .02 ? 0 : f < .98 ? 1 : 2;
-      if (stage.dataset.s !== String(st)) { stage.dataset.s = st; $('span', stage).textContent = STAGES[st]; }
+      if (stage && stage.dataset.s !== String(st)) { stage.dataset.s = st; $('span', stage).textContent = STAGES[st]; }
       sec.classList.toggle('hung', st === 2);
     };
     addEventListener('scroll', onScroll, { passive: true }); addEventListener('resize', size);
