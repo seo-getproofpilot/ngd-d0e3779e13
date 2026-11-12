@@ -1292,7 +1292,7 @@ function lvNotes(n) {
   const gal = $('.gal');
   if (gal) {
     const band = $('.ngband-track', gal), house = '<svg viewBox="0 0 704 342" aria-hidden="true"><use href="#ng-house"/></svg>';
-    band.innerHTML = Array.from({ length: 16 }, () => `<span>${house}NEXT GEN DRYWALL</span><span>NEXTGEN-DRYWALL.COM</span>`).join('');
+    $$('.ngband-track').forEach(b => { b.innerHTML = Array.from({ length: 16 }, () => `<span>${house}NEXT GEN DRYWALL</span><span>NEXTGEN-DRYWALL.COM</span>`).join(''); });
     const vids = [...$$('.g video', gal), ...$$('.rf-crew-vid video'), ...$$('.cw-clip video')];
     const io = new IntersectionObserver(es => es.forEach(e => {
       const v = e.target;
